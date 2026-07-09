@@ -133,17 +133,29 @@ function renderDashboard() {
 
     booksData.forEach(cat => {
         const card = document.createElement('div');
-        card.className = `glass-panel p-8 rounded-3xl border-t-4 cursor-pointer hover:shadow-lg transition transform hover:-translate-y-1 theme-${cat.id} niche-border`;
+        card.className = `group relative overflow-hidden bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm cursor-pointer hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 theme-${cat.id}`;
         card.onclick = () => {
             navTo('explorer');
             filterCategory(cat.id);
         };
         card.innerHTML = `
-            <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-6 niche-bg-light niche-text">
+            <div class="absolute -right-12 -top-12 w-40 h-40 niche-bg opacity-5 group-hover:opacity-10 rounded-full blur-[40px] transition-opacity duration-300 pointer-events-none"></div>
+            
+            <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-8 niche-bg-light niche-text group-hover:bg-slate-900 group-hover:text-white transition-colors duration-300 border niche-border">
                 <span class="font-black text-2xl">${cat.category.charAt(0)}</span>
             </div>
-            <h3 class="text-xl font-bold mb-2">${cat.category}</h3>
-            <p class="text-xs text-slate-500 font-bold uppercase tracking-widest">${cat.books.length * 10} Concepts</p>
+            
+            <div class="space-y-2">
+                <h3 class="text-2xl font-bold text-slate-900 group-hover:niche-text transition-colors duration-300">${cat.category}</h3>
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full niche-bg"></span>
+                    <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">${cat.books.length * 10} Concepts</p>
+                </div>
+            </div>
+            
+            <div class="mt-8 pt-6 border-t border-slate-100 flex items-center justify-between group-hover:niche-border transition-colors">
+                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest group-hover:niche-text transition-colors">Explore Domain →</span>
+            </div>
         `;
         grid.appendChild(card);
     });
@@ -391,6 +403,45 @@ function toggleCompleted() {
     renderExplorer(); // update background grid state
 }
 
+function getConsistentScore(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) - hash) + str.charCodeAt(i);
+        hash |= 0;
+    }
+    return 75 + (Math.abs(hash) % 25);
+}
+
+function getEffortLevel(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) - hash) + str.charCodeAt(i);
+        hash |= 0;
+    }
+    const levels = [
+        { label: '⚡ Low Effort', color: 'text-green-500' },
+        { label: '⏳ Medium Effort', color: 'text-yellow-500' },
+        { label: '🔴 High Effort', color: 'text-red-500' }
+    ];
+    return levels[Math.abs(hash) % 3];
+}
+
+function toggleChecklist(el) {
+    const icon = el.querySelector('svg');
+    const text = el.querySelector('span');
+    if (el.classList.contains('opacity-50')) {
+        el.classList.remove('opacity-50', 'line-through');
+        icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>';
+        icon.classList.remove('text-green-500');
+        icon.classList.add('text-transparent');
+    } else {
+        el.classList.add('opacity-50', 'line-through');
+        icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>';
+        icon.classList.add('text-green-500');
+        icon.classList.remove('text-transparent');
+    }
+}
+
 function renderConceptDisplay() {
     const book = findBookById(currentBookId).book;
     const display = document.getElementById('reader-display');
@@ -400,60 +451,92 @@ function renderConceptDisplay() {
     void display.offsetWidth;
     display.classList.add('animate-fade');
 
-    if (currentConceptIndex === 10) {
-        // MASTER HORIZONTAL FLOWCHART (Currently hidden because tabs are gone, but logic remains in case of future use)
-    } else {
-        // SINGLE CONCEPT VIEW
-        const concept = book.concepts[currentConceptIndex];
-        
-        document.getElementById('reader-main-title').textContent = concept.title;
-        document.getElementById('reader-subtitle').innerHTML = `Concept 0${currentConceptIndex + 1} &nbsp;&mdash;&nbsp; from <span class="font-bold italic ${isNightMode ? 'text-white' : 'text-slate-900'}">${book.title}</span>`;
-        document.getElementById('reader-title').textContent = concept.title;
+    const concept = book.concepts[currentConceptIndex];
+    
+    document.getElementById('reader-main-title').textContent = concept.title;
+    document.getElementById('reader-subtitle').innerHTML = `Concept 0${currentConceptIndex + 1} &nbsp;&mdash;&nbsp; from <span class="font-bold italic ${isNightMode ? 'text-white' : 'text-slate-900'}">${book.title}</span>`;
+    document.getElementById('reader-title').textContent = concept.title;
 
-        // Render based on currentReaderTab
-        if (currentReaderTab === 'concept') {
-            display.innerHTML = `
-                <div class="max-w-4xl mx-auto">
-                    <!-- Masterclass Theory Card -->
-                    <div class="bg-slate-900 rounded-[2rem] p-8 md:p-12 border border-slate-800 shadow-2xl relative overflow-hidden group hover:border-slate-700 transition duration-500 animate-fade">
-                        <div class="absolute top-0 right-0 w-64 h-64 niche-bg opacity-5 rounded-full blur-[80px] -z-10 group-hover:opacity-10 transition duration-500"></div>
-                        
-                        <div class="flex items-center gap-4 mb-8 border-b border-slate-800 pb-6">
-                            <div class="w-12 h-12 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center font-black niche-text shadow-inner">01</div>
-                            <div>
-                                <h4 class="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-1">Theoretical Framework</h4>
-                                <h3 class="text-xl font-bold text-white serif">Concept Overview</h3>
-                            </div>
-                        </div>
-                        
-                        <div class="relative z-10 pl-4 border-l-2 niche-border">
-                            <p class="text-slate-300 text-xl leading-relaxed md:text-2xl font-light">${concept.explanation}</p>
+    const impactScore = getConsistentScore(concept.title);
+    const effort = getEffortLevel(concept.title);
+
+    // Impact Bar HTML (Minimal & Premium)
+    const impactHtml = `
+        <div class="flex items-center justify-end gap-3 mb-6">
+            <span class="${effort.color} text-xs font-bold uppercase tracking-widest bg-slate-900 px-3 py-1 rounded-full border border-slate-800">${effort.label}</span>
+            <div class="flex items-center gap-2 bg-slate-900 pl-3 pr-4 py-1 rounded-full border border-slate-800">
+                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Impact</span>
+                <div class="w-16 h-1.5 bg-slate-800 rounded-full overflow-hidden flex">
+                    <div class="h-full bg-gradient-to-r from-red-500 via-yellow-400 to-green-500" style="width: ${impactScore}%"></div>
+                </div>
+                <span class="text-xs font-black text-white">${impactScore}%</span>
+            </div>
+        </div>
+    `;
+
+    // Render based on currentReaderTab
+    if (currentReaderTab === 'concept') {
+        display.innerHTML = `
+            <div class="max-w-4xl mx-auto">
+                ${impactHtml}
+                <!-- Masterclass Theory Card -->
+                <div class="bg-slate-900 rounded-[2rem] p-8 md:p-12 border border-slate-800 shadow-2xl relative overflow-hidden group hover:border-slate-700 transition duration-500 animate-fade">
+                    <div class="absolute top-0 right-0 w-64 h-64 niche-bg opacity-5 rounded-full blur-[80px] -z-10 group-hover:opacity-10 transition duration-500"></div>
+                    
+                    <div class="flex items-center gap-4 mb-8 border-b border-slate-800 pb-6">
+                        <div class="w-12 h-12 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center font-black niche-text shadow-inner">01</div>
+                        <div>
+                            <h4 class="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-1">Theoretical Framework</h4>
+                            <h3 class="text-xl font-bold text-white serif">Concept Overview</h3>
                         </div>
                     </div>
-                </div>
-            `;
-        } else {
-            display.innerHTML = `
-                <div class="max-w-4xl mx-auto">
-                    <!-- Masterclass Action Card -->
-                    <div class="niche-bg-light rounded-[2rem] p-8 md:p-12 border niche-border shadow-xl relative overflow-hidden practical-box animate-fade">
-                        <div class="flex items-center gap-4 mb-8 border-b border-black/10 pb-6">
-                            <div class="w-12 h-12 rounded-xl niche-bg text-white flex items-center justify-center font-black shadow-lg">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                            </div>
-                            <div>
-                                <h4 class="text-[10px] font-black uppercase tracking-widest opacity-70 mb-1">Execution Plan</h4>
-                                <h3 class="text-xl font-bold serif text-slate-900">Practical Application Guide</h3>
-                            </div>
-                        </div>
-                        
-                        <div class="relative z-10 pl-4">
-                            <p class="text-slate-900 text-xl leading-relaxed md:text-2xl font-bold serif italic">"${concept.approach}"</p>
-                        </div>
+                    
+                    <!-- Key Takeaway Quote -->
+                    <blockquote class="border-l-4 niche-border pl-6 mb-8 italic text-white text-2xl serif leading-relaxed opacity-90">
+                        "${concept.explanation.split('.')[0]}."
+                    </blockquote>
+                    
+                    <div class="relative z-10">
+                        <p class="text-slate-400 text-lg leading-relaxed font-light">${concept.explanation}</p>
                     </div>
                 </div>
-            `;
-        }
+            </div>
+        `;
+    } else {
+        // Parse approach into checklist if it contains sentences
+        let steps = concept.approach.split('. ').filter(s => s.trim().length > 0);
+        if (steps.length === 1) steps = concept.approach.split(', ').filter(s => s.trim().length > 0);
+        
+        let checklistHtml = steps.map((step, idx) => `
+            <div class="flex items-start gap-4 p-4 rounded-xl hover:bg-black/5 cursor-pointer transition border border-transparent hover:border-black/10 group" onclick="toggleChecklist(this)">
+                <div class="w-6 h-6 rounded-md border-2 border-slate-400 group-hover:border-slate-600 flex items-center justify-center flex-shrink-0 mt-1 bg-white">
+                    <svg class="w-4 h-4 text-transparent transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"></svg>
+                </div>
+                <span class="text-slate-800 text-lg md:text-xl font-bold leading-relaxed serif transition-all">${step}${step.endsWith('.') ? '' : '.'}</span>
+            </div>
+        `).join('');
+
+        display.innerHTML = `
+            <div class="max-w-4xl mx-auto">
+                ${impactHtml}
+                <!-- Masterclass Action Card -->
+                <div class="niche-bg-light rounded-[2rem] p-8 md:p-12 border niche-border shadow-xl relative overflow-hidden practical-box animate-fade">
+                    <div class="flex items-center gap-4 mb-8 border-b border-black/10 pb-6">
+                        <div class="w-12 h-12 rounded-xl niche-bg text-white flex items-center justify-center font-black shadow-lg">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+                        </div>
+                        <div>
+                            <h4 class="text-[10px] font-black uppercase tracking-widest opacity-70 mb-1">Execution Plan</h4>
+                            <h3 class="text-xl font-bold serif text-slate-900">Interactive Checklist</h3>
+                        </div>
+                    </div>
+                    
+                    <div class="relative z-10 space-y-2">
+                        ${checklistHtml}
+                    </div>
+                </div>
+            </div>
+        `;
     }
 }
 

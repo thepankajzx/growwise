@@ -462,14 +462,14 @@ function renderConceptDisplay() {
 
     // Impact Bar HTML (Minimal & Premium)
     const impactHtml = `
-        <div class="flex items-center justify-end gap-3 mb-6">
-            <span class="${effort.color} text-xs font-bold uppercase tracking-widest bg-slate-900 px-3 py-1 rounded-full border border-slate-800">${effort.label}</span>
+        <div class="flex flex-wrap items-center justify-start md:justify-end gap-2 md:gap-3 mb-4 md:mb-6">
+            <span class="${effort.color} text-[10px] md:text-xs font-bold uppercase tracking-widest bg-slate-900 px-3 py-1 rounded-full border border-slate-800">${effort.label}</span>
             <div class="flex items-center gap-2 bg-slate-900 pl-3 pr-4 py-1 rounded-full border border-slate-800">
                 <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Impact</span>
-                <div class="w-16 h-1.5 bg-slate-800 rounded-full overflow-hidden flex">
+                <div class="w-12 md:w-16 h-1.5 bg-slate-800 rounded-full overflow-hidden flex">
                     <div class="h-full bg-gradient-to-r from-red-500 via-yellow-400 to-green-500" style="width: ${impactScore}%"></div>
                 </div>
-                <span class="text-xs font-black text-white">${impactScore}%</span>
+                <span class="text-[10px] md:text-xs font-black text-white">${impactScore}%</span>
             </div>
         </div>
     `;

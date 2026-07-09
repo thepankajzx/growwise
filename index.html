@@ -122,71 +122,71 @@
         .light-reader .reader-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; }
     </style>
 </head>
-<body class="antialiased">
+<body class="antialiased overflow-x-hidden">
 
     <!-- Navigation -->
     <nav class="sticky top-0 z-50 glass-panel border-b border-slate-200">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
-            <div class="flex items-center gap-3 cursor-pointer hover:opacity-80 transition" onclick="resetToDashboard(); navTo('dashboard')">
-                <div class="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white font-extrabold text-xl shadow-lg">G</div>
-                <span class="text-xl font-black tracking-tighter text-slate-900 uppercase">GROW<span class="text-green-500">WISE</span></span>
+        <div class="max-w-7xl mx-auto px-4 md:px-6 py-4 flex justify-between items-center gap-2">
+            <div class="flex items-center gap-2 md:gap-3 cursor-pointer hover:opacity-80 transition" onclick="resetToDashboard(); navTo('dashboard')">
+                <div class="w-8 h-8 md:w-10 md:h-10 bg-slate-900 rounded-lg md:rounded-xl flex items-center justify-center text-white font-extrabold text-lg md:text-xl shadow-lg">G</div>
+                <span class="text-lg md:text-xl font-black tracking-tighter text-slate-900 uppercase">GROW<span class="text-green-500">WISE</span></span>
             </div>
-            <div class="flex flex-wrap justify-center gap-4 md:gap-8 text-xs font-bold uppercase tracking-widest text-slate-500">
+            <div class="flex flex-wrap justify-center gap-2 md:gap-8 text-[10px] md:text-xs font-bold uppercase tracking-widest text-slate-500">
                 <button onclick="navTo('dashboard')" id="btn-dashboard" class="nav-active pb-1 hover:text-slate-900 transition">Overview</button>
-                <button onclick="navTo('explorer')" id="btn-explorer" class="pb-1 hover:text-slate-900 transition">Concept Engine</button>
+                <button onclick="navTo('explorer')" id="btn-explorer" class="pb-1 hover:text-slate-900 transition">Engine</button>
             </div>
         </div>
     </nav>
 
-    <main class="max-w-7xl mx-auto px-6 py-12">
+    <main class="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12">
         
         <!-- DASHBOARD VIEW -->
-        <section id="view-dashboard" class="space-y-16 animate-fade">
+        <section id="view-dashboard" class="space-y-10 md:space-y-16 animate-fade w-full overflow-hidden">
             <!-- Premium Hero Banner -->
-            <div class="relative bg-slate-950 rounded-[2.5rem] p-10 md:p-24 overflow-hidden shadow-2xl border border-slate-800">
+            <div class="relative bg-slate-950 rounded-3xl md:rounded-[2.5rem] p-6 py-12 md:p-24 overflow-hidden shadow-2xl border border-slate-800">
                 <!-- Background Glows -->
-                <div class="absolute -top-20 -left-20 w-[30rem] h-[30rem] bg-green-500/20 rounded-full blur-[120px] mix-blend-screen pointer-events-none"></div>
-                <div class="absolute -bottom-20 -right-20 w-[30rem] h-[30rem] bg-blue-500/20 rounded-full blur-[120px] mix-blend-screen pointer-events-none"></div>
+                <div class="absolute -top-10 -left-10 md:-top-20 md:-left-20 w-64 h-64 md:w-[30rem] md:h-[30rem] bg-green-500/20 rounded-full blur-[80px] md:blur-[120px] mix-blend-screen pointer-events-none"></div>
+                <div class="absolute -bottom-10 -right-10 md:-bottom-20 md:-right-20 w-64 h-64 md:w-[30rem] md:h-[30rem] bg-blue-500/20 rounded-full blur-[80px] md:blur-[120px] mix-blend-screen pointer-events-none"></div>
                 
-                <div class="relative z-10 flex flex-col items-center text-center max-w-4xl mx-auto space-y-8">
+                <div class="relative z-10 flex flex-col items-center text-center max-w-4xl mx-auto space-y-6 md:space-y-8">
                     <!-- Stat pill -->
-                    <div class="inline-flex items-center gap-3 bg-slate-900/80 border border-slate-700 px-5 py-2 rounded-full backdrop-blur-md">
+                    <div class="inline-flex items-center gap-2 md:gap-3 bg-slate-900/80 border border-slate-700 px-4 py-2 rounded-full backdrop-blur-md">
                         <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                        <span class="text-xs font-bold uppercase tracking-widest text-slate-300">10 Books &nbsp;•&nbsp; 100 Frameworks</span>
+                        <span class="text-[10px] md:text-xs font-bold uppercase tracking-widest text-slate-300">10 Books &nbsp;•&nbsp; 100 Frameworks</span>
                     </div>
                     
-                    <h1 class="text-5xl md:text-7xl lg:text-8xl font-extrabold serif text-white leading-[1.1] tracking-tight">
+                    <h1 class="text-4xl md:text-7xl lg:text-8xl font-extrabold serif text-white leading-[1.15] tracking-tight">
                         The ultimate library for <br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">knowledge assets.</span>
                     </h1>
                     
-                    <p class="text-lg md:text-xl text-slate-400 font-light leading-relaxed max-w-2xl">
+                    <p class="text-base md:text-xl text-slate-400 font-light leading-relaxed max-w-2xl px-2">
                         A curated engine of the world's most powerful paradigms, distilled into highly actionable frameworks for immediate impact.
                     </p>
                     
-                    <div class="pt-4 flex flex-col sm:flex-row gap-4 items-center">
-                        <button onclick="navTo('explorer')" class="bg-white text-slate-950 px-10 py-5 rounded-full font-bold uppercase tracking-widest text-sm hover:scale-105 transition duration-300 shadow-[0_0_40px_rgba(255,255,255,0.2)]">Enter The Engine</button>
+                    <div class="pt-2 md:pt-4 flex flex-col sm:flex-row gap-4 items-center w-full sm:w-auto">
+                        <button onclick="navTo('explorer')" class="w-full sm:w-auto bg-white text-slate-950 px-8 py-4 md:px-10 md:py-5 rounded-full font-bold uppercase tracking-widest text-xs md:text-sm hover:scale-105 transition duration-300 shadow-[0_0_40px_rgba(255,255,255,0.2)]">Enter The Engine</button>
                     </div>
                 </div>
             </div>
 
             <!-- Categories Header -->
-            <div class="text-center space-y-3 pt-4">
-                <h2 class="text-3xl font-bold serif text-slate-900">Explore by Niche</h2>
-                <p class="text-slate-500 text-sm font-bold uppercase tracking-widest">Select a domain to begin</p>
+            <div class="text-center space-y-2 md:space-y-3 pt-4">
+                <h2 class="text-2xl md:text-3xl font-bold serif text-slate-900">Explore by Niche</h2>
+                <p class="text-slate-500 text-[10px] md:text-sm font-bold uppercase tracking-widest">Select a domain to begin</p>
             </div>
 
             <!-- Categories Grid -->
-            <div id="categoryGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 pb-20">
+            <div id="categoryGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 pb-10 md:pb-20">
                 <!-- Injected via JS -->
             </div>
         </section>
 
         <!-- EXPLORER VIEW -->
-        <section id="view-explorer" class="hidden space-y-12 animate-fade">
-            <div class="flex flex-col gap-6 border-b border-slate-200 pb-8">
+        <section id="view-explorer" class="hidden space-y-8 md:space-y-12 animate-fade w-full">
+            <div class="flex flex-col gap-6 border-b border-slate-200 pb-6 md:pb-8">
                 <div class="max-w-2xl">
-                    <h2 class="text-4xl font-bold serif">Concept Directory</h2>
-                    <p class="text-slate-500 mt-2">Filter and explore 200 high-leverage frameworks.</p>
+                    <h2 class="text-3xl md:text-4xl font-bold serif">Concept Directory</h2>
+                    <p class="text-sm md:text-base text-slate-500 mt-2">Filter and explore 200 high-leverage frameworks.</p>
                 </div>
                 
                 <!-- Premium Filters -->
@@ -196,32 +196,32 @@
                     <div>
                         <label class="block text-[10px] font-black uppercase text-slate-400 tracking-widest mb-3">My Library</label>
                         <div id="libraryFilters" class="flex flex-wrap gap-2">
-                            <button onclick="filterLibrary('all')" id="lib-all" class="px-5 py-1.5 rounded-full text-xs font-bold border-2 border-slate-900 bg-slate-900 text-white transition">All Concepts</button>
-                            <button onclick="filterLibrary('saved')" id="lib-saved" class="px-5 py-1.5 rounded-full text-xs font-bold border-2 border-slate-200 text-slate-600 hover:border-blue-500 hover:text-blue-500 transition flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Read Later</button>
-                            <button onclick="filterLibrary('bookmarked')" id="lib-bookmarked" class="px-5 py-1.5 rounded-full text-xs font-bold border-2 border-slate-200 text-slate-600 hover:border-red-500 hover:text-red-500 transition flex items-center gap-1"><svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg> Favourites</button>
-                            <button onclick="filterLibrary('completed')" id="lib-completed" class="px-5 py-1.5 rounded-full text-xs font-bold border-2 border-slate-200 text-slate-600 hover:border-green-500 hover:text-green-500 transition flex items-center gap-1"><svg class="w-4 h-4 text-green-500" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" /></svg> Completed</button>
+                            <button onclick="filterLibrary('all')" id="lib-all" class="px-4 md:px-5 py-1.5 rounded-full text-[10px] md:text-xs font-bold border-2 border-slate-900 bg-slate-900 text-white transition">All Concepts</button>
+                            <button onclick="filterLibrary('saved')" id="lib-saved" class="px-4 md:px-5 py-1.5 rounded-full text-[10px] md:text-xs font-bold border-2 border-slate-200 text-slate-600 hover:border-blue-500 hover:text-blue-500 transition flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Read Later</button>
+                            <button onclick="filterLibrary('bookmarked')" id="lib-bookmarked" class="px-4 md:px-5 py-1.5 rounded-full text-[10px] md:text-xs font-bold border-2 border-slate-200 text-slate-600 hover:border-red-500 hover:text-red-500 transition flex items-center gap-1"><svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg> Favourites</button>
+                            <button onclick="filterLibrary('completed')" id="lib-completed" class="px-4 md:px-5 py-1.5 rounded-full text-[10px] md:text-xs font-bold border-2 border-slate-200 text-slate-600 hover:border-green-500 hover:text-green-500 transition flex items-center gap-1"><svg class="w-4 h-4 text-green-500" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" /></svg> Completed</button>
                         </div>
                     </div>
 
-                    <div class="flex flex-col md:flex-row gap-6 justify-between items-start md:items-end w-full border-t border-slate-100 pt-6">
+                    <div class="flex flex-col lg:flex-row gap-6 justify-between items-start lg:items-end w-full border-t border-slate-100 pt-6">
                         
                         <!-- Category Pills -->
                         <div class="w-full">
                             <label class="block text-[10px] font-black uppercase text-slate-400 tracking-widest mb-3">Explore Niches</label>
-                            <div id="filterPills" class="flex flex-wrap gap-3">
-                                <button onclick="filterCategory('all')" id="pill-all" class="px-6 py-2 rounded-full text-sm font-bold border-2 border-slate-900 bg-slate-900 text-white transition">All Concepts</button>
-                                <button onclick="filterCategory('wealth')" id="pill-wealth" class="px-6 py-2 rounded-full text-sm font-bold border-2 border-slate-200 hover:border-green-500 hover:text-green-600 transition">Wealth & Finance</button>
-                                <button onclick="filterCategory('self-improvement')" id="pill-self-improvement" class="px-6 py-2 rounded-full text-sm font-bold border-2 border-slate-200 hover:border-purple-500 hover:text-purple-600 transition">Self-Improvement</button>
-                                <button onclick="filterCategory('business')" id="pill-business" class="px-6 py-2 rounded-full text-sm font-bold border-2 border-slate-200 hover:border-emerald-500 hover:text-emerald-600 transition">Business & Strategy</button>
-                                <button onclick="filterCategory('productivity')" id="pill-productivity" class="px-6 py-2 rounded-full text-sm font-bold border-2 border-slate-200 hover:border-blue-500 hover:text-blue-600 transition">Productivity</button>
+                            <div id="filterPills" class="flex flex-wrap gap-2 md:gap-3">
+                                <button onclick="filterCategory('all')" id="pill-all" class="px-4 md:px-6 py-1.5 md:py-2 rounded-full text-xs md:text-sm font-bold border-2 border-slate-900 bg-slate-900 text-white transition">All Concepts</button>
+                                <button onclick="filterCategory('wealth')" id="pill-wealth" class="px-4 md:px-6 py-1.5 md:py-2 rounded-full text-xs md:text-sm font-bold border-2 border-slate-200 hover:border-green-500 hover:text-green-600 transition">Wealth & Finance</button>
+                                <button onclick="filterCategory('self-improvement')" id="pill-self-improvement" class="px-4 md:px-6 py-1.5 md:py-2 rounded-full text-xs md:text-sm font-bold border-2 border-slate-200 hover:border-purple-500 hover:text-purple-600 transition">Self-Improvement</button>
+                                <button onclick="filterCategory('business')" id="pill-business" class="px-4 md:px-6 py-1.5 md:py-2 rounded-full text-xs md:text-sm font-bold border-2 border-slate-200 hover:border-emerald-500 hover:text-emerald-600 transition">Business & Strategy</button>
+                                <button onclick="filterCategory('productivity')" id="pill-productivity" class="px-4 md:px-6 py-1.5 md:py-2 rounded-full text-xs md:text-sm font-bold border-2 border-slate-200 hover:border-blue-500 hover:text-blue-600 transition">Productivity</button>
                             </div>
                         </div>
 
                         <!-- Book Dropdown Filter -->
-                        <div class="w-full md:w-64 flex-shrink-0">
+                        <div class="w-full lg:w-64 flex-shrink-0">
                             <label class="block text-[10px] font-black uppercase text-slate-400 tracking-widest mb-3">Filter by Source Book</label>
                             <div class="relative">
-                                <select id="bookSelect" onchange="filterBook()" class="w-full bg-white border-2 border-slate-200 rounded-xl px-4 py-3 text-sm font-bold focus:ring-2 focus:ring-slate-900 outline-none shadow-sm cursor-pointer appearance-none pr-10">
+                                <select id="bookSelect" onchange="filterBook()" class="w-full bg-white border-2 border-slate-200 rounded-xl px-4 py-2.5 md:py-3 text-xs md:text-sm font-bold focus:ring-2 focus:ring-slate-900 outline-none shadow-sm cursor-pointer appearance-none pr-10">
                                     <option value="all">All Books</option>
                                     <!-- Injected via JS -->
                                 </select>
@@ -235,69 +235,69 @@
             </div>
 
             <!-- Concept-First Grid -->
-            <div id="explorerContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div id="explorerContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                 <!-- Injected via JS -->
             </div>
         </section>
     </main>
 
     <!-- FULL SCREEN NIGHT MODE READER -->
-    <div id="reader-overlay" class="fixed inset-0 z-[100] hidden bg-slate-950 text-slate-200 overflow-y-auto reader-scrollbar light-reader">
+    <div id="reader-overlay" class="fixed inset-0 z-[100] hidden bg-slate-950 text-slate-200 overflow-y-auto reader-scrollbar light-reader w-full">
         <!-- Reader Navigation Header -->
-        <div class="sticky top-0 z-50 bg-slate-950/90 backdrop-blur-md border-b border-slate-800 px-6 py-4 flex flex-col md:flex-row justify-between items-start md:items-center shadow-lg gap-4">
-            <div class="flex flex-col">
+        <div class="sticky top-0 z-50 bg-slate-950/90 backdrop-blur-md border-b border-slate-800 px-4 md:px-6 py-3 md:py-4 flex flex-col md:flex-row justify-between items-start md:items-center shadow-lg gap-3 md:gap-4">
+            <div class="flex flex-col max-w-full">
                 <span id="reader-category" class="niche-text font-black uppercase text-[10px] tracking-widest">Category</span>
-                <h2 id="reader-title" class="text-lg md:text-xl font-bold serif text-white truncate max-w-[200px] md:max-w-md">Book Title</h2>
+                <h2 id="reader-title" class="text-base md:text-xl font-bold serif text-white truncate max-w-full md:max-w-md">Book Title</h2>
             </div>
             
             <!-- Action Buttons Container (Right Side) -->
-            <div class="flex flex-wrap items-center gap-2 md:gap-4 w-full md:w-auto justify-between md:justify-end">
+            <div class="flex flex-row items-center gap-2 md:gap-4 w-full md:w-auto justify-between md:justify-end overflow-x-auto pb-1 md:pb-0">
                 
-                <div class="flex items-center gap-2 border-r border-slate-800 pr-4">
-                    <button onclick="toggleSaved()" id="btn-saved" class="px-3 py-1.5 rounded-full border border-slate-700 text-slate-400 font-bold text-xs hover:border-blue-500 hover:text-blue-500 transition flex items-center gap-1">
+                <div class="flex items-center gap-1.5 md:gap-2 border-r border-slate-800 pr-2 md:pr-4 flex-shrink-0">
+                    <button onclick="toggleSaved()" id="btn-saved" class="px-2.5 py-1.5 rounded-full border border-slate-700 text-slate-400 font-bold text-[10px] md:text-xs hover:border-blue-500 hover:text-blue-500 transition flex items-center gap-1">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        <span id="text-saved" class="hidden lg:inline">Read Later</span>
+                        <span id="text-saved" class="hidden md:inline">Read Later</span>
                     </button>
-                    <button onclick="toggleBookmark()" id="btn-bookmark" class="px-3 py-1.5 rounded-full border border-slate-700 text-slate-400 font-bold text-xs hover:border-red-500 hover:text-red-500 transition flex items-center gap-1">
+                    <button onclick="toggleBookmark()" id="btn-bookmark" class="px-2.5 py-1.5 rounded-full border border-slate-700 text-slate-400 font-bold text-[10px] md:text-xs hover:border-red-500 hover:text-red-500 transition flex items-center gap-1">
                         <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
-                        <span id="text-bookmark" class="hidden lg:inline">Favourites</span>
+                        <span id="text-bookmark" class="hidden md:inline">Favourites</span>
                     </button>
-                    <button onclick="toggleCompleted()" id="btn-completed" class="px-3 py-1.5 rounded-full border border-slate-700 text-slate-400 font-bold text-xs hover:border-green-500 hover:text-green-500 transition flex items-center gap-1">
+                    <button onclick="toggleCompleted()" id="btn-completed" class="px-2.5 py-1.5 rounded-full border border-slate-700 text-slate-400 font-bold text-[10px] md:text-xs hover:border-green-500 hover:text-green-500 transition flex items-center gap-1">
                         <svg class="w-4 h-4 text-green-500" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" /></svg>
-                        <span id="text-completed" class="hidden lg:inline">Completed</span>
+                        <span id="text-completed" class="hidden md:inline">Completed</span>
                     </button>
                 </div>
                 
-                <div class="flex items-center gap-2">
-                    <button onclick="downloadAsImage()" class="niche-text hover:text-white bg-slate-900 w-8 h-8 rounded-full border border-slate-800 transition flex items-center justify-center" title="Download as Image">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                <div class="flex items-center gap-1.5 md:gap-2 flex-shrink-0">
+                    <button onclick="downloadAsImage()" class="niche-text hover:text-white bg-slate-900 w-7 h-7 md:w-8 md:h-8 rounded-full border border-slate-800 transition flex items-center justify-center" title="Download as Image">
+                        <svg class="w-3.5 h-3.5 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                     </button>
                     
-                    <button onclick="toggleTheme()" class="niche-text hover:text-white bg-slate-900 w-8 h-8 rounded-full border border-slate-800 transition flex items-center justify-center" title="Toggle Day/Night Mode">
-                        <svg id="theme-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button onclick="toggleTheme()" class="niche-text hover:text-white bg-slate-900 w-7 h-7 md:w-8 md:h-8 rounded-full border border-slate-800 transition flex items-center justify-center" title="Toggle Day/Night Mode">
+                        <svg id="theme-icon" class="w-3.5 h-3.5 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
                         </svg>
                     </button>
                     
-                    <button onclick="closeReader()" id="reader-close-btn" class="niche-bg text-white hover:opacity-90 flex items-center gap-2 transition px-3 py-1.5 rounded-full border border-slate-800 shadow-lg">
-                        <span class="text-xs font-bold uppercase tracking-widest hidden md:inline">Close</span>
-                        <span class="text-lg leading-none">&times;</span>
+                    <button onclick="closeReader()" id="reader-close-btn" class="niche-bg text-white hover:opacity-90 flex items-center gap-1 md:gap-2 transition px-2 py-1 md:px-3 md:py-1.5 rounded-full border border-slate-800 shadow-lg">
+                        <span class="text-[10px] md:text-xs font-bold uppercase tracking-widest hidden md:inline">Close</span>
+                        <span class="text-base md:text-lg leading-none">&times;</span>
                     </button>
                 </div>
             </div>
         </div>
 
-        <div class="max-w-6xl mx-auto px-6 py-12">
+        <div class="max-w-6xl mx-auto px-4 md:px-6 py-8 md:py-12">
             <!-- Concept Header Info -->
-            <div class="text-center mb-8 space-y-4 animate-fade" id="reader-header-area">
-                <h1 id="reader-main-title" class="text-5xl md:text-7xl font-extrabold serif text-white px-4">Concept Title</h1>
-                <p id="reader-subtitle" class="text-xl text-slate-400">from <span class="font-bold italic text-white" id="reader-author">Book</span></p>
+            <div class="text-center mb-8 space-y-3 md:space-y-4 animate-fade" id="reader-header-area">
+                <h1 id="reader-main-title" class="text-3xl md:text-5xl lg:text-7xl font-extrabold serif text-white px-2 md:px-4 break-words">Concept Title</h1>
+                <p id="reader-subtitle" class="text-sm md:text-xl text-slate-400">from <span class="font-bold italic text-white" id="reader-author">Book</span></p>
                 
                 <!-- Tabs for Concept and Application -->
-                <div class="flex justify-center mt-8">
-                    <div class="bg-slate-900 p-1 rounded-full border border-slate-800 flex gap-1">
-                        <button onclick="switchReaderTab('concept')" id="rtab-concept" class="px-8 py-3 rounded-full text-sm font-bold niche-bg text-white shadow-lg transition">Theory Overview</button>
-                        <button onclick="switchReaderTab('application')" id="rtab-application" class="px-8 py-3 rounded-full text-sm font-bold text-slate-400 hover:text-slate-200 transition">Practical Execution</button>
+                <div class="flex justify-center mt-6 md:mt-8 w-full">
+                    <div class="bg-slate-900 p-1 rounded-3xl sm:rounded-full border border-slate-800 flex flex-col sm:flex-row gap-1 w-full sm:w-auto">
+                        <button onclick="switchReaderTab('concept')" id="rtab-concept" class="px-6 md:px-8 py-2.5 md:py-3 rounded-full text-xs md:text-sm font-bold niche-bg text-white shadow-lg transition w-full sm:w-auto">Theory Overview</button>
+                        <button onclick="switchReaderTab('application')" id="rtab-application" class="px-6 md:px-8 py-2.5 md:py-3 rounded-full text-xs md:text-sm font-bold text-slate-400 hover:text-slate-200 transition w-full sm:w-auto">Practical Execution</button>
                     </div>
                 </div>
             </div>

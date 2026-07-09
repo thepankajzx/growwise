@@ -7,309 +7,251 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=Lora:ital,wght@0,400;0,700;1,400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&display=swap');
 
         :root {
-            --color-primary: #0f172a;
-            --color-bg: #f8fafc;
+            --color-primary: #0a0a0a;
+            --color-bg: #ffffff;
+            --color-border: #eaeaea;
+            --color-accent: #166534; /* Forest Green / Emerald-800 */
         }
 
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Inter', sans-serif;
             background-color: var(--color-bg);
             color: var(--color-primary);
         }
 
-        .serif { font-family: 'Lora', serif; }
+        .serif { font-family: 'Playfair Display', serif; }
 
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(226, 232, 240, 0.8);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        .institutional-border {
+            border: 1px solid var(--color-border);
         }
 
         .nav-active {
-            border-bottom: 2px solid #0f172a;
-            color: #0f172a !important;
-            font-weight: 800;
+            border-bottom: 2px solid var(--color-primary);
+            color: var(--color-primary) !important;
+            font-weight: 700;
         }
 
-        /* Niche Colors */
-        .theme-wealth { --niche-base: #22c55e; --niche-light: #dcfce7; --niche-dark: #166534; } /* Bright Green */
-        .theme-wealth .niche-bg { color: #0f172a !important; font-weight: 900; } /* Black text for bright green */
-        .theme-self-improvement { --niche-base: #a855f7; --niche-light: #f3e8ff; --niche-dark: #7e22ce; } /* Purple */
-        .theme-business { --niche-base: #10b981; --niche-light: #d1fae5; --niche-dark: #047857; } /* Emerald */
-        .theme-productivity { --niche-base: #3b82f6; --niche-light: #dbeafe; --niche-dark: #1d4ed8; } /* Blue */
+        /* Niche Colors (Muted/Institutional versions) */
+        .theme-wealth { --niche-base: #166534; }
+        .theme-self-improvement { --niche-base: #312e81; }
+        .theme-business { --niche-base: #0f172a; }
+        .theme-productivity { --niche-base: #1e3a8a; }
         
         .niche-text { color: var(--niche-base); }
         .niche-bg { background-color: var(--niche-base); }
-        .niche-bg-light { background-color: var(--niche-light); }
-        .niche-border { border-color: var(--niche-base); }
+        
         .group:hover .group-hover\:niche-text { color: var(--niche-base); }
-        .group:hover .group-hover\:niche-border { border-color: var(--niche-light); }
-        .group:hover .group-hover\:niche-bg { background-color: var(--niche-base); }
 
         /* Custom scrollbar */
         .custom-scrollbar::-webkit-scrollbar, .reader-scrollbar::-webkit-scrollbar {
-            height: 8px;
-            width: 8px;
+            height: 6px;
+            width: 6px;
         }
-        .reader-scrollbar::-webkit-scrollbar-track { background: #0f172a; }
-        .reader-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
-        .reader-scrollbar::-webkit-scrollbar-thumb:hover { background: #475569; }
+        .reader-scrollbar::-webkit-scrollbar-track { background: #fafafa; }
+        .reader-scrollbar::-webkit-scrollbar-thumb { background: #d4d4d8; border-radius: 10px; }
+        .reader-scrollbar::-webkit-scrollbar-thumb:hover { background: #a1a1aa; }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .animate-fade { animation: fadeIn 0.5s ease-out forwards; }
+        .animate-fade { animation: fadeIn 0.4s ease-out forwards; }
         
-        /* Reader Lines */
-        .flow-line {
-            position: absolute; left: 20px; top: 24px; bottom: -24px;
-            width: 2px; background: #334155; z-index: 0;
-        }
-        .flow-node { position: relative; z-index: 1; }
-
-        /* Master Flowchart Horizontal Scroll */
-        .master-scroll-container {
-            display: flex;
-            overflow-x: auto;
-            gap: 2rem;
-            padding: 2rem;
-            align-items: stretch;
-            scroll-snap-type: x mandatory;
-        }
-        .master-card {
-            scroll-snap-align: center;
-            min-width: 320px;
-            max-width: 350px;
-            flex-shrink: 0;
-            display: flex;
-            flex-direction: column;
-        }
-        .horizontal-line {
-            position: absolute;
-            top: 50%; left: 0; right: 0;
-            height: 2px;
-            background: var(--niche-base);
-            z-index: 0;
-            transform: translateY(-50%);
-        }
-
-        /* Light Reader Overrides */
-        .light-reader { background-color: #f8fafc !important; color: #0f172a !important; }
-        .light-reader .bg-slate-950, .light-reader .bg-slate-950\/50 { background-color: #ffffff !important; }
-        .light-reader .bg-slate-950\/90 { background-color: rgba(255, 255, 255, 0.95) !important; }
-        .light-reader .bg-slate-900 { background-color: #f1f5f9 !important; }
-        .light-reader .border-slate-800, .light-reader .border-slate-700 { border-color: #e2e8f0 !important; }
-        .light-reader .text-white { color: #0f172a !important; }
-        .light-reader .text-slate-400 { color: #64748b !important; }
-        .light-reader .text-slate-300 { color: #334155 !important; }
-        .light-reader .text-slate-200 { color: #1e293b !important; }
-        
-        /* Fix for brown box in light mode */
-        .light-reader .practical-box {
-            color: #0f172a !important; 
-            background: rgba(255, 255, 255, 0.8) !important; 
-            border: 1px solid #e2e8f0 !important;
-        }
-        
-        .light-reader .shadow-2xl { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1) !important; }
-        .light-reader .flow-line { background: #e2e8f0 !important; }
-        .light-reader .reader-scrollbar::-webkit-scrollbar-track { background: #f8fafc; }
-        .light-reader .reader-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; }
     </style>
 </head>
 <body class="antialiased overflow-x-hidden">
 
     <!-- Navigation -->
-    <nav class="sticky top-0 z-50 glass-panel border-b border-slate-200">
-        <div class="max-w-7xl mx-auto px-4 md:px-6 py-4 flex justify-between items-center gap-2">
-            <div class="flex items-center gap-2 md:gap-3 cursor-pointer hover:opacity-80 transition" onclick="resetToDashboard(); navTo('dashboard')">
-                <div class="w-8 h-8 md:w-10 md:h-10 bg-slate-900 rounded-lg md:rounded-xl flex items-center justify-center text-white font-extrabold text-lg md:text-xl shadow-lg">G</div>
-                <span class="text-lg md:text-xl font-black tracking-tighter text-slate-900 uppercase">GROW<span class="text-green-500">WISE</span></span>
+    <nav class="sticky top-0 z-50 bg-white institutional-border border-t-0 border-l-0 border-r-0">
+        <div class="max-w-7xl mx-auto px-4 md:px-8 py-4 flex justify-between items-center gap-2">
+            <div class="flex items-center gap-2 md:gap-3 cursor-pointer hover:opacity-70 transition" onclick="resetToDashboard(); navTo('dashboard')">
+                <div class="w-8 h-8 md:w-10 md:h-10 bg-[#0a0a0a] rounded-sm flex items-center justify-center text-white font-serif font-bold text-lg md:text-xl">G</div>
+                <span class="text-lg md:text-xl font-bold tracking-tight text-[#0a0a0a] serif">Grow<span class="italic text-emerald-800">Wise</span></span>
             </div>
-            <div class="flex flex-wrap justify-center gap-2 md:gap-8 text-[10px] md:text-xs font-bold uppercase tracking-widest text-slate-500">
-                <button onclick="navTo('dashboard')" id="btn-dashboard" class="nav-active pb-1 hover:text-slate-900 transition">Overview</button>
-                <button onclick="navTo('explorer')" id="btn-explorer" class="pb-1 hover:text-slate-900 transition">Engine</button>
+            
+            <div class="flex flex-col items-end">
+                <div class="flex flex-wrap justify-end gap-3 md:gap-8 text-[11px] md:text-xs font-semibold uppercase tracking-widest text-gray-500">
+                    <button onclick="navTo('dashboard')" id="btn-dashboard" class="nav-active pb-1 hover:text-[#0a0a0a] transition">The Arsenal</button>
+                    <button onclick="navTo('explorer')" id="btn-explorer" class="pb-1 hover:text-[#0a0a0a] transition">Directory</button>
+                </div>
             </div>
         </div>
     </nav>
 
-    <main class="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12">
+    <!-- Global Progress Tracker (Sticky under Nav) -->
+    <div class="w-full bg-[#fafafa] institutional-border border-t-0 border-l-0 border-r-0 py-2 hidden md:block">
+        <div class="max-w-7xl mx-auto px-4 md:px-8 flex justify-between items-center">
+            <span class="text-[10px] font-bold uppercase tracking-widest text-gray-500">Global Progress</span>
+            <div class="flex items-center gap-3 w-64">
+                <div class="flex-grow h-1 bg-gray-200 rounded-full overflow-hidden">
+                    <div id="global-progress-fill" class="h-full bg-emerald-800 transition-all duration-500" style="width: 0%;"></div>
+                </div>
+                <span id="global-progress-text" class="text-[10px] font-bold uppercase tracking-widest text-[#0a0a0a]">0 / 200 Mastered</span>
+            </div>
+        </div>
+    </div>
+
+    <main class="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-16">
         
         <!-- DASHBOARD VIEW -->
-        <section id="view-dashboard" class="space-y-10 md:space-y-16 animate-fade w-full overflow-hidden">
-            <!-- Premium Hero Banner -->
-            <div class="relative bg-slate-950 rounded-3xl md:rounded-[2.5rem] p-6 py-12 md:p-24 overflow-hidden shadow-2xl border border-slate-800">
-                <!-- Background Glows -->
-                <div class="absolute -top-10 -left-10 md:-top-20 md:-left-20 w-64 h-64 md:w-[30rem] md:h-[30rem] bg-green-500/20 rounded-full blur-[80px] md:blur-[120px] mix-blend-screen pointer-events-none"></div>
-                <div class="absolute -bottom-10 -right-10 md:-bottom-20 md:-right-20 w-64 h-64 md:w-[30rem] md:h-[30rem] bg-blue-500/20 rounded-full blur-[80px] md:blur-[120px] mix-blend-screen pointer-events-none"></div>
-                
-                <div class="relative z-10 flex flex-col items-center text-center max-w-4xl mx-auto space-y-6 md:space-y-8">
-                    <!-- Stat pill -->
-                    <div class="inline-flex items-center gap-2 md:gap-3 bg-slate-900/80 border border-slate-700 px-4 py-2 rounded-full backdrop-blur-md">
-                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                        <span class="text-[10px] md:text-xs font-bold uppercase tracking-widest text-slate-300">10 Books &nbsp;•&nbsp; 100 Frameworks</span>
-                    </div>
-                    
-                    <h1 class="text-4xl md:text-7xl lg:text-8xl font-extrabold serif text-white leading-[1.15] tracking-tight">
-                        The ultimate library for <br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">knowledge assets.</span>
-                    </h1>
-                    
-                    <p class="text-base md:text-xl text-slate-400 font-light leading-relaxed max-w-2xl px-2">
-                        A curated engine of the world's most powerful paradigms, distilled into highly actionable frameworks for immediate impact.
-                    </p>
-                    
-                    <div class="pt-2 md:pt-4 flex flex-col sm:flex-row gap-4 items-center w-full sm:w-auto">
-                        <button onclick="navTo('explorer')" class="w-full sm:w-auto bg-white text-slate-950 px-8 py-4 md:px-10 md:py-5 rounded-full font-bold uppercase tracking-widest text-xs md:text-sm hover:scale-105 transition duration-300 shadow-[0_0_40px_rgba(255,255,255,0.2)]">Enter The Engine</button>
-                    </div>
+        <section id="view-dashboard" class="space-y-12 md:space-y-20 animate-fade w-full overflow-hidden">
+            <!-- Institutional Hero -->
+            <div class="py-12 md:py-20 text-center max-w-4xl mx-auto space-y-6 md:space-y-8">
+                <span class="text-xs font-bold uppercase tracking-widest text-gray-500 border border-gray-200 px-3 py-1 rounded-full">Edition I • 200 Frameworks</span>
+                <h1 class="text-5xl md:text-7xl font-bold serif text-[#0a0a0a] leading-[1.1] tracking-tight">
+                    The authoritative index of <span class="italic text-emerald-800">high-leverage</span> mental models.
+                </h1>
+                <p class="text-base md:text-xl text-gray-600 font-normal leading-relaxed max-w-2xl mx-auto">
+                    A rigorously structured directory of the world's most powerful paradigms, distilled into actionable frameworks for executive execution.
+                </p>
+                <div class="pt-4 flex justify-center">
+                    <button onclick="navTo('explorer')" class="bg-[#0a0a0a] text-white px-8 py-4 rounded-sm font-semibold uppercase tracking-widest text-xs md:text-sm hover:bg-gray-800 transition duration-300">Access The Directory</button>
                 </div>
             </div>
 
-            <!-- Categories Header -->
-            <div class="text-center space-y-2 md:space-y-3 pt-4">
-                <h2 class="text-2xl md:text-3xl font-bold serif text-slate-900">Explore by Niche</h2>
-                <p class="text-slate-500 text-[10px] md:text-sm font-bold uppercase tracking-widest">Select a domain to begin</p>
-            </div>
+            <div class="institutional-border border-l-0 border-r-0 border-b-0 pt-16">
+                <!-- Categories Header -->
+                <div class="mb-10 space-y-2">
+                    <h2 class="text-2xl font-bold serif text-[#0a0a0a]">Explore by Domain</h2>
+                    <p class="text-gray-500 text-xs font-semibold uppercase tracking-widest">Select an area of focus</p>
+                </div>
 
-            <!-- Categories Grid -->
-            <div id="categoryGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 pb-10 md:pb-20">
-                <!-- Injected via JS -->
+                <!-- Categories Grid -->
+                <div id="categoryGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 pb-20">
+                    <!-- Injected via JS -->
+                </div>
             </div>
         </section>
 
         <!-- EXPLORER VIEW -->
         <section id="view-explorer" class="hidden space-y-8 md:space-y-12 animate-fade w-full">
-            <div class="flex flex-col gap-6 border-b border-slate-200 pb-6 md:pb-8">
+            <div class="flex flex-col gap-6 institutional-border border-l-0 border-r-0 border-t-0 pb-6 md:pb-8">
                 <div class="max-w-2xl">
                     <h2 class="text-3xl md:text-4xl font-bold serif">Concept Directory</h2>
-                    <p class="text-sm md:text-base text-slate-500 mt-2">Filter and explore 200 high-leverage frameworks.</p>
+                    <p class="text-sm md:text-base text-gray-500 mt-2">Filter and explore the 200 frameworks.</p>
                 </div>
                 
-                <!-- Premium Filters -->
-                <div class="flex flex-col gap-6 w-full">
-                    
-                    <!-- My Library Filters -->
+                <!-- Filters -->
+                <div class="flex flex-col gap-6 w-full mt-4">
+                    <!-- Library Filters -->
                     <div>
-                        <label class="block text-[10px] font-black uppercase text-slate-400 tracking-widest mb-3">My Library</label>
                         <div id="libraryFilters" class="flex flex-wrap gap-2">
-                            <button onclick="filterLibrary('all')" id="lib-all" class="px-4 md:px-5 py-1.5 rounded-full text-[10px] md:text-xs font-bold border-2 border-slate-900 bg-slate-900 text-white transition">All Concepts</button>
-                            <button onclick="filterLibrary('saved')" id="lib-saved" class="px-4 md:px-5 py-1.5 rounded-full text-[10px] md:text-xs font-bold border-2 border-slate-200 text-slate-600 hover:border-blue-500 hover:text-blue-500 transition flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Read Later</button>
-                            <button onclick="filterLibrary('bookmarked')" id="lib-bookmarked" class="px-4 md:px-5 py-1.5 rounded-full text-[10px] md:text-xs font-bold border-2 border-slate-200 text-slate-600 hover:border-red-500 hover:text-red-500 transition flex items-center gap-1"><svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg> Favourites</button>
-                            <button onclick="filterLibrary('completed')" id="lib-completed" class="px-4 md:px-5 py-1.5 rounded-full text-[10px] md:text-xs font-bold border-2 border-slate-200 text-slate-600 hover:border-green-500 hover:text-green-500 transition flex items-center gap-1"><svg class="w-4 h-4 text-green-500" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" /></svg> Completed</button>
+                            <button onclick="filterLibrary('all')" id="lib-all" class="px-4 py-1.5 rounded-sm text-xs font-bold border border-[#0a0a0a] bg-[#0a0a0a] text-white transition">All Frameworks</button>
+                            <button onclick="filterLibrary('saved')" id="lib-saved" class="px-4 py-1.5 rounded-sm text-xs font-bold border border-gray-300 text-gray-600 hover:border-gray-800 hover:text-gray-900 transition">Saved (Read Later)</button>
+                            <button onclick="filterLibrary('bookmarked')" id="lib-bookmarked" class="px-4 py-1.5 rounded-sm text-xs font-bold border border-gray-300 text-gray-600 hover:border-gray-800 hover:text-gray-900 transition">My Arsenal (Favourites)</button>
+                            <button onclick="filterLibrary('completed')" id="lib-completed" class="px-4 py-1.5 rounded-sm text-xs font-bold border border-gray-300 text-gray-600 hover:border-gray-800 hover:text-gray-900 transition">Mastered</button>
                         </div>
                     </div>
 
-                    <div class="flex flex-col lg:flex-row gap-6 justify-between items-start lg:items-end w-full border-t border-slate-100 pt-6">
-                        
-                        <!-- Category Pills -->
+                    <div class="flex flex-col lg:flex-row gap-6 justify-between items-start lg:items-end w-full institutional-border border-l-0 border-r-0 border-b-0 pt-6">
                         <div class="w-full">
-                            <label class="block text-[10px] font-black uppercase text-slate-400 tracking-widest mb-3">Explore Niches</label>
-                            <div id="filterPills" class="flex flex-wrap gap-2 md:gap-3">
-                                <button onclick="filterCategory('all')" id="pill-all" class="px-4 md:px-6 py-1.5 md:py-2 rounded-full text-xs md:text-sm font-bold border-2 border-slate-900 bg-slate-900 text-white transition">All Concepts</button>
-                                <button onclick="filterCategory('wealth')" id="pill-wealth" class="px-4 md:px-6 py-1.5 md:py-2 rounded-full text-xs md:text-sm font-bold border-2 border-slate-200 hover:border-green-500 hover:text-green-600 transition">Wealth & Finance</button>
-                                <button onclick="filterCategory('self-improvement')" id="pill-self-improvement" class="px-4 md:px-6 py-1.5 md:py-2 rounded-full text-xs md:text-sm font-bold border-2 border-slate-200 hover:border-purple-500 hover:text-purple-600 transition">Self-Improvement</button>
-                                <button onclick="filterCategory('business')" id="pill-business" class="px-4 md:px-6 py-1.5 md:py-2 rounded-full text-xs md:text-sm font-bold border-2 border-slate-200 hover:border-emerald-500 hover:text-emerald-600 transition">Business & Strategy</button>
-                                <button onclick="filterCategory('productivity')" id="pill-productivity" class="px-4 md:px-6 py-1.5 md:py-2 rounded-full text-xs md:text-sm font-bold border-2 border-slate-200 hover:border-blue-500 hover:text-blue-600 transition">Productivity</button>
+                            <div id="filterPills" class="flex flex-wrap gap-2">
+                                <button onclick="filterCategory('all')" id="pill-all" class="px-4 py-1.5 rounded-full text-xs font-bold border border-[#0a0a0a] bg-[#0a0a0a] text-white transition">All Domains</button>
+                                <button onclick="filterCategory('wealth')" id="pill-wealth" class="px-4 py-1.5 rounded-full text-xs font-bold border border-gray-300 text-gray-600 hover:border-gray-800 transition">Wealth & Finance</button>
+                                <button onclick="filterCategory('self-improvement')" id="pill-self-improvement" class="px-4 py-1.5 rounded-full text-xs font-bold border border-gray-300 text-gray-600 hover:border-gray-800 transition">Self-Improvement</button>
+                                <button onclick="filterCategory('business')" id="pill-business" class="px-4 py-1.5 rounded-full text-xs font-bold border border-gray-300 text-gray-600 hover:border-gray-800 transition">Business & Strategy</button>
+                                <button onclick="filterCategory('productivity')" id="pill-productivity" class="px-4 py-1.5 rounded-full text-xs font-bold border border-gray-300 text-gray-600 hover:border-gray-800 transition">Productivity</button>
                             </div>
                         </div>
 
                         <!-- Book Dropdown Filter -->
-                        <div class="w-full lg:w-64 flex-shrink-0">
-                            <label class="block text-[10px] font-black uppercase text-slate-400 tracking-widest mb-3">Filter by Source Book</label>
+                        <div class="w-full lg:w-72 flex-shrink-0">
                             <div class="relative">
-                                <select id="bookSelect" onchange="filterBook()" class="w-full bg-white border-2 border-slate-200 rounded-xl px-4 py-2.5 md:py-3 text-xs md:text-sm font-bold focus:ring-2 focus:ring-slate-900 outline-none shadow-sm cursor-pointer appearance-none pr-10">
-                                    <option value="all">All Books</option>
+                                <select id="bookSelect" onchange="filterBook()" class="w-full bg-white institutional-border rounded-sm px-4 py-2.5 text-xs md:text-sm font-semibold focus:ring-1 focus:ring-[#0a0a0a] outline-none cursor-pointer appearance-none">
+                                    <option value="all">Filter by Source Material</option>
                                     <!-- Injected via JS -->
                                 </select>
-                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Concept-First Grid -->
-            <div id="explorerContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+            <!-- Concept Grid -->
+            <div id="explorerContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 pb-20">
                 <!-- Injected via JS -->
             </div>
         </section>
     </main>
 
-    <!-- FULL SCREEN NIGHT MODE READER -->
-    <div id="reader-overlay" class="fixed inset-0 z-[100] hidden bg-slate-950 text-slate-200 overflow-y-auto reader-scrollbar light-reader w-full">
+    <!-- FULL SCREEN READER (Editorial Design) -->
+    <div id="reader-overlay" class="fixed inset-0 z-[100] hidden bg-white text-[#0a0a0a] overflow-y-auto reader-scrollbar w-full">
         <!-- Reader Navigation Header -->
-        <div class="sticky top-0 z-50 bg-slate-950/90 backdrop-blur-md border-b border-slate-800 px-4 md:px-6 py-3 md:py-4 flex flex-col md:flex-row justify-between items-start md:items-center shadow-lg gap-3 md:gap-4">
+        <div class="sticky top-0 z-50 bg-white/95 backdrop-blur-md institutional-border border-t-0 border-l-0 border-r-0 px-4 md:px-8 py-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div class="flex flex-col max-w-full">
-                <span id="reader-category" class="niche-text font-black uppercase text-[10px] tracking-widest">Category</span>
-                <h2 id="reader-title" class="text-base md:text-xl font-bold serif text-white truncate max-w-full md:max-w-md">Book Title</h2>
+                <span id="reader-category" class="text-gray-500 font-bold uppercase text-[10px] tracking-widest">Category</span>
+                <h2 id="reader-title" class="text-sm md:text-base font-bold serif text-[#0a0a0a] truncate max-w-full md:max-w-md">Book Title</h2>
             </div>
             
             <!-- Action Buttons Container (Right Side) -->
             <div class="flex flex-row items-center gap-2 md:gap-4 w-full md:w-auto justify-between md:justify-end overflow-x-auto pb-1 md:pb-0">
                 
-                <div class="flex items-center gap-1.5 md:gap-2 border-r border-slate-800 pr-2 md:pr-4 flex-shrink-0">
-                    <button onclick="toggleSaved()" id="btn-saved" class="px-2.5 py-1.5 rounded-full border border-slate-700 text-slate-400 font-bold text-[10px] md:text-xs hover:border-blue-500 hover:text-blue-500 transition flex items-center gap-1">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        <span id="text-saved" class="hidden md:inline">Read Later</span>
+                <div class="flex items-center gap-2 border-r border-gray-200 pr-2 md:pr-4 flex-shrink-0">
+                    <button onclick="toggleSaved()" id="btn-saved" class="px-3 py-1.5 rounded-sm border border-gray-300 text-gray-600 font-semibold text-[10px] md:text-xs hover:bg-gray-50 transition">
+                        <span id="text-saved">Read Later</span>
                     </button>
-                    <button onclick="toggleBookmark()" id="btn-bookmark" class="px-2.5 py-1.5 rounded-full border border-slate-700 text-slate-400 font-bold text-[10px] md:text-xs hover:border-red-500 hover:text-red-500 transition flex items-center gap-1">
-                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
-                        <span id="text-bookmark" class="hidden md:inline">Favourites</span>
+                    <button onclick="toggleBookmark()" id="btn-bookmark" class="px-3 py-1.5 rounded-sm border border-gray-300 text-gray-600 font-semibold text-[10px] md:text-xs hover:bg-gray-50 transition">
+                        <span id="text-bookmark">Save to Arsenal</span>
                     </button>
-                    <button onclick="toggleCompleted()" id="btn-completed" class="px-2.5 py-1.5 rounded-full border border-slate-700 text-slate-400 font-bold text-[10px] md:text-xs hover:border-green-500 hover:text-green-500 transition flex items-center gap-1">
-                        <svg class="w-4 h-4 text-green-500" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" /></svg>
-                        <span id="text-completed" class="hidden md:inline">Completed</span>
+                    <button onclick="toggleCompleted()" id="btn-completed" class="px-3 py-1.5 rounded-sm border border-gray-300 text-gray-600 font-semibold text-[10px] md:text-xs hover:bg-gray-50 transition">
+                        <span id="text-completed">Mark Mastered</span>
                     </button>
                 </div>
                 
-                <div class="flex items-center gap-1.5 md:gap-2 flex-shrink-0">
-                    <button onclick="downloadAsImage()" class="niche-text hover:text-white bg-slate-900 w-7 h-7 md:w-8 md:h-8 rounded-full border border-slate-800 transition flex items-center justify-center" title="Download as Image">
-                        <svg class="w-3.5 h-3.5 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                <div class="flex items-center gap-2 flex-shrink-0">
+                    <button onclick="shareInsight()" id="btn-share" class="px-3 py-1.5 rounded-sm bg-[#0a0a0a] text-white font-semibold text-[10px] md:text-xs hover:bg-gray-800 transition flex items-center gap-2">
+                        Share Insight
                     </button>
                     
-                    <button onclick="toggleTheme()" class="niche-text hover:text-white bg-slate-900 w-7 h-7 md:w-8 md:h-8 rounded-full border border-slate-800 transition flex items-center justify-center" title="Toggle Day/Night Mode">
-                        <svg id="theme-icon" class="w-3.5 h-3.5 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-                        </svg>
-                    </button>
-                    
-                    <button onclick="closeReader()" id="reader-close-btn" class="niche-bg text-white hover:opacity-90 flex items-center gap-1 md:gap-2 transition px-2 py-1 md:px-3 md:py-1.5 rounded-full border border-slate-800 shadow-lg">
-                        <span class="text-[10px] md:text-xs font-bold uppercase tracking-widest hidden md:inline">Close</span>
-                        <span class="text-base md:text-lg leading-none">&times;</span>
+                    <button onclick="closeReader()" id="reader-close-btn" class="text-gray-500 hover:text-black transition p-1">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 </div>
             </div>
         </div>
 
-        <div class="max-w-6xl mx-auto px-4 md:px-6 py-8 md:py-12">
+        <div class="max-w-3xl mx-auto px-4 md:px-8 py-12 md:py-20">
             <!-- Concept Header Info -->
-            <div class="text-center mb-8 space-y-3 md:space-y-4 animate-fade" id="reader-header-area">
-                <h1 id="reader-main-title" class="text-3xl md:text-5xl lg:text-7xl font-extrabold serif text-white px-2 md:px-4 break-words">Concept Title</h1>
-                <p id="reader-subtitle" class="text-sm md:text-xl text-slate-400">from <span class="font-bold italic text-white" id="reader-author">Book</span></p>
-                
-                <!-- Tabs for Concept and Application -->
-                <div class="flex justify-center mt-6 md:mt-8 w-full">
-                    <div class="bg-slate-900 p-1 rounded-3xl sm:rounded-full border border-slate-800 flex flex-col sm:flex-row gap-1 w-full sm:w-auto">
-                        <button onclick="switchReaderTab('concept')" id="rtab-concept" class="px-6 md:px-8 py-2.5 md:py-3 rounded-full text-xs md:text-sm font-bold niche-bg text-white shadow-lg transition w-full sm:w-auto">Theory Overview</button>
-                        <button onclick="switchReaderTab('application')" id="rtab-application" class="px-6 md:px-8 py-2.5 md:py-3 rounded-full text-xs md:text-sm font-bold text-slate-400 hover:text-slate-200 transition w-full sm:w-auto">Practical Execution</button>
-                    </div>
-                </div>
+            <div class="mb-12 space-y-4 animate-fade" id="reader-header-area">
+                <h1 id="reader-main-title" class="text-4xl md:text-5xl font-bold serif text-[#0a0a0a] leading-[1.1] tracking-tight">Concept Title</h1>
+                <p id="reader-subtitle" class="text-sm md:text-base text-gray-500 font-medium uppercase tracking-widest">Extracted from <span class="font-bold text-[#0a0a0a]" id="reader-author">Book</span></p>
             </div>
             
-            <!-- Exportable Container -->
-            <div id="exportable-content" class="bg-slate-950 p-2 md:p-8 rounded-3xl">
-                <!-- Concept / Flowchart Display -->
-                <div id="reader-display" class="pb-16 w-full">
+            <!-- Exportable Container (The One-Pager) -->
+            <div id="exportable-content" class="w-full">
+                <div id="reader-display" class="pb-16 w-full space-y-12">
                     <!-- Injected via JS -->
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- FREEMIUM MODAL -->
+    <div id="freemium-modal" class="fixed inset-0 z-[200] hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white max-w-md w-full rounded-sm shadow-2xl p-8 relative animate-fade">
+            <button onclick="closeFreemiumModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <div class="text-center space-y-6">
+                <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto text-gray-900">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                </div>
+                <h3 class="text-2xl font-bold serif text-[#0a0a0a]">Unlock the Arsenal</h3>
+                <p class="text-sm text-gray-600 leading-relaxed">
+                    You've reached the limit of the free tier (30 frameworks). Upgrade to access the remaining 170 highly actionable concepts in the directory.
+                </p>
+                <button class="w-full bg-[#0a0a0a] text-white py-3 rounded-sm font-bold uppercase tracking-widest text-xs hover:bg-gray-800 transition shadow-lg">Get Full Access</button>
+                <p class="text-xs text-gray-400 mt-4">One-time payment. Lifetime access.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 z-[300] bg-[#0a0a0a] text-white px-6 py-3 rounded-sm shadow-lg text-xs font-semibold uppercase tracking-widest opacity-0 transition-opacity duration-300 pointer-events-none">
+        Copied to clipboard
     </div>
 
     <!-- Scripts -->

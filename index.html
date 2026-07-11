@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Knowledge Assets - The Concept Engine</title>
+    <title>Thinking Capital</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
@@ -34,18 +34,11 @@
             font-weight: 700;
         }
 
-        /* Niche Colors (Muted/Institutional versions) */
         .theme-wealth { --niche-base: #166534; }
         .theme-self-improvement { --niche-base: #312e81; }
         .theme-business { --niche-base: #0f172a; }
         .theme-productivity { --niche-base: #1e3a8a; }
-        
-        .niche-text { color: var(--niche-base); }
-        .niche-bg { background-color: var(--niche-base); }
-        
-        .group:hover .group-hover\:niche-text { color: var(--niche-base); }
 
-        /* Custom scrollbar */
         .custom-scrollbar::-webkit-scrollbar, .reader-scrollbar::-webkit-scrollbar {
             height: 6px;
             width: 6px;
@@ -68,14 +61,15 @@
     <nav class="sticky top-0 z-50 bg-white institutional-border border-t-0 border-l-0 border-r-0">
         <div class="max-w-7xl mx-auto px-4 md:px-8 py-4 flex justify-between items-center gap-2">
             <div class="flex items-center gap-2 md:gap-3 cursor-pointer hover:opacity-70 transition" onclick="resetToDashboard(); navTo('dashboard')">
-                <div class="w-8 h-8 md:w-10 md:h-10 bg-[#0a0a0a] rounded-sm flex items-center justify-center text-white font-serif font-bold text-lg md:text-xl">G</div>
-                <span class="text-lg md:text-xl font-bold tracking-tight text-[#0a0a0a] serif">Grow<span class="italic text-emerald-800">Wise</span></span>
+                <div class="w-8 h-8 md:w-10 md:h-10 bg-[#0a0a0a] rounded-sm flex items-center justify-center text-white font-serif font-bold text-lg md:text-xl">TC</div>
+                <span class="text-lg md:text-xl font-bold tracking-tight text-[#0a0a0a] serif">Thinking<span class="italic text-emerald-800">Capital</span></span>
             </div>
             
             <div class="flex flex-col items-end">
                 <div class="flex flex-wrap justify-end gap-3 md:gap-8 text-[11px] md:text-xs font-semibold uppercase tracking-widest text-gray-500">
                     <button onclick="navTo('dashboard')" id="btn-dashboard" class="nav-active pb-1 hover:text-[#0a0a0a] transition">The Arsenal</button>
                     <button onclick="navTo('explorer')" id="btn-explorer" class="pb-1 hover:text-[#0a0a0a] transition">Directory</button>
+                    <button onclick="navTo('admin')" id="btn-admin" class="hidden pb-1 hover:text-[#0a0a0a] transition">Admin Studio</button>
                 </div>
             </div>
         </div>
@@ -85,11 +79,17 @@
     <div class="w-full bg-[#fafafa] institutional-border border-t-0 border-l-0 border-r-0 py-2 hidden md:block">
         <div class="max-w-7xl mx-auto px-4 md:px-8 flex justify-between items-center">
             <span class="text-[10px] font-bold uppercase tracking-widest text-gray-500">Global Progress</span>
-            <div class="flex items-center gap-3 w-64">
-                <div class="flex-grow h-1 bg-gray-200 rounded-full overflow-hidden">
-                    <div id="global-progress-fill" class="h-full bg-emerald-800 transition-all duration-500" style="width: 0%;"></div>
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-3 w-64">
+                    <div class="flex-grow h-1 bg-gray-200 rounded-full overflow-hidden">
+                        <div id="global-progress-fill" class="h-full bg-emerald-800 transition-all duration-500" style="width: 0%;"></div>
+                    </div>
+                    <span id="global-progress-text" class="text-[10px] font-bold uppercase tracking-widest text-[#0a0a0a]">0 / 1 Mastered</span>
                 </div>
-                <span id="global-progress-text" class="text-[10px] font-bold uppercase tracking-widest text-[#0a0a0a]">0 / 200 Mastered</span>
+                <!-- Hidden Code Input -->
+                <div class="ml-4 border-l border-gray-300 pl-4">
+                    <input type="password" id="secretCodeInput" placeholder="Enter Access Code" onkeyup="checkAccessCode(event)" class="bg-transparent border-none text-[10px] uppercase font-bold text-gray-400 focus:outline-none focus:text-[#0a0a0a] w-32 placeholder-gray-300">
+                </div>
             </div>
         </div>
     </div>
@@ -100,14 +100,14 @@
         <section id="view-dashboard" class="space-y-12 md:space-y-20 animate-fade w-full overflow-hidden">
             <!-- Institutional Hero -->
             <div class="py-12 md:py-20 text-center max-w-4xl mx-auto space-y-6 md:space-y-8">
-                <span class="text-xs font-bold uppercase tracking-widest text-gray-500 border border-gray-200 px-3 py-1 rounded-full">Edition I • 200 Frameworks</span>
+                <span class="text-xs font-bold uppercase tracking-widest text-gray-500 border border-gray-200 px-3 py-1 rounded-full">Edition I</span>
                 <h1 class="text-5xl md:text-7xl font-bold serif text-[#0a0a0a] leading-[1.1] tracking-tight">
                     The authoritative index of <span class="italic text-emerald-800">high-leverage</span> mental models.
                 </h1>
                 <p class="text-base md:text-xl text-gray-600 font-normal leading-relaxed max-w-2xl mx-auto">
                     A rigorously structured directory of the world's most powerful paradigms, distilled into actionable frameworks for executive execution.
                 </p>
-                <div class="pt-4 flex justify-center">
+                <div class="pt-4 flex justify-center gap-4">
                     <button onclick="navTo('explorer')" class="bg-[#0a0a0a] text-white px-8 py-4 rounded-sm font-semibold uppercase tracking-widest text-xs md:text-sm hover:bg-gray-800 transition duration-300">Access The Directory</button>
                 </div>
             </div>
@@ -129,9 +129,20 @@
         <!-- EXPLORER VIEW -->
         <section id="view-explorer" class="hidden space-y-8 md:space-y-12 animate-fade w-full">
             <div class="flex flex-col gap-6 institutional-border border-l-0 border-r-0 border-t-0 pb-6 md:pb-8">
-                <div class="max-w-2xl">
-                    <h2 class="text-3xl md:text-4xl font-bold serif">Concept Directory</h2>
-                    <p class="text-sm md:text-base text-gray-500 mt-2">Filter and explore the 200 frameworks.</p>
+                <div class="flex justify-between items-start">
+                    <div class="max-w-2xl">
+                        <h2 class="text-3xl md:text-4xl font-bold serif">Concept Directory</h2>
+                        <p class="text-sm md:text-base text-gray-500 mt-2">Filter and explore the frameworks.</p>
+                    </div>
+
+                    <!-- PREMIUM TOGGLE -->
+                    <div class="flex items-center gap-3 bg-gray-100 p-1.5 rounded-full border border-gray-200">
+                        <button onclick="setPremiumFilter(false)" id="toggle-standard" class="px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest bg-white shadow-sm text-[#0a0a0a] transition">Standard</button>
+                        <button onclick="setPremiumFilter(true)" id="toggle-premium" class="px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-[#0a0a0a] transition flex items-center gap-2">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                            Premium
+                        </button>
+                    </div>
                 </div>
                 
                 <!-- Filters -->
@@ -140,9 +151,9 @@
                     <div>
                         <div id="libraryFilters" class="flex flex-wrap gap-2">
                             <button onclick="filterLibrary('all')" id="lib-all" class="px-4 py-1.5 rounded-sm text-xs font-bold border border-[#0a0a0a] bg-[#0a0a0a] text-white transition">All Frameworks</button>
-                            <button onclick="filterLibrary('saved')" id="lib-saved" class="px-4 py-1.5 rounded-sm text-xs font-bold border border-gray-300 text-gray-600 hover:border-gray-800 hover:text-gray-900 transition">Saved (Read Later)</button>
-                            <button onclick="filterLibrary('bookmarked')" id="lib-bookmarked" class="px-4 py-1.5 rounded-sm text-xs font-bold border border-gray-300 text-gray-600 hover:border-gray-800 hover:text-gray-900 transition">My Arsenal (Favourites)</button>
-                            <button onclick="filterLibrary('completed')" id="lib-completed" class="px-4 py-1.5 rounded-sm text-xs font-bold border border-gray-300 text-gray-600 hover:border-gray-800 hover:text-gray-900 transition">Mastered</button>
+                            <button onclick="filterLibrary('saved')" id="lib-saved" class="px-4 py-1.5 rounded-sm text-xs font-bold border border-gray-300 text-gray-600 hover:border-[#0a0a0a] hover:text-[#0a0a0a] transition">Saved (Read Later)</button>
+                            <button onclick="filterLibrary('bookmarked')" id="lib-bookmarked" class="px-4 py-1.5 rounded-sm text-xs font-bold border border-gray-300 text-gray-600 hover:border-[#0a0a0a] hover:text-[#0a0a0a] transition">My Arsenal (Favourites)</button>
+                            <button onclick="filterLibrary('completed')" id="lib-completed" class="px-4 py-1.5 rounded-sm text-xs font-bold border border-gray-300 text-gray-600 hover:border-[#0a0a0a] hover:text-[#0a0a0a] transition">Mastered</button>
                         </div>
                     </div>
 
@@ -150,10 +161,7 @@
                         <div class="w-full">
                             <div id="filterPills" class="flex flex-wrap gap-2">
                                 <button onclick="filterCategory('all')" id="pill-all" class="px-4 py-1.5 rounded-full text-xs font-bold border border-[#0a0a0a] bg-[#0a0a0a] text-white transition">All Domains</button>
-                                <button onclick="filterCategory('wealth')" id="pill-wealth" class="px-4 py-1.5 rounded-full text-xs font-bold border border-gray-300 text-gray-600 hover:border-gray-800 transition">Wealth & Finance</button>
                                 <button onclick="filterCategory('self-improvement')" id="pill-self-improvement" class="px-4 py-1.5 rounded-full text-xs font-bold border border-gray-300 text-gray-600 hover:border-gray-800 transition">Self-Improvement</button>
-                                <button onclick="filterCategory('business')" id="pill-business" class="px-4 py-1.5 rounded-full text-xs font-bold border border-gray-300 text-gray-600 hover:border-gray-800 transition">Business & Strategy</button>
-                                <button onclick="filterCategory('productivity')" id="pill-productivity" class="px-4 py-1.5 rounded-full text-xs font-bold border border-gray-300 text-gray-600 hover:border-gray-800 transition">Productivity</button>
                             </div>
                         </div>
 
@@ -175,6 +183,69 @@
                 <!-- Injected via JS -->
             </div>
         </section>
+
+        <!-- ADMIN VIEW (CAROUSEL GENERATOR) -->
+        <section id="view-admin" class="hidden space-y-12 md:space-y-16 animate-fade w-full pb-20">
+            <div class="max-w-4xl mx-auto">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold serif text-[#0a0a0a]">Studio Generator</h2>
+                    <p class="text-sm text-gray-500 mt-2">Generate 1080x1080 carousels for X and LinkedIn.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <!-- Controls -->
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Slide Title</label>
+                            <input type="text" id="cg-title" value="The Identity-Based Habit Loop" class="w-full institutional-border rounded-sm px-4 py-3 text-sm font-semibold focus:outline-none focus:border-[#0a0a0a]">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Slide Content (Core Premise / Mechanism)</label>
+                            <textarea id="cg-content" rows="6" class="w-full institutional-border rounded-sm px-4 py-3 text-sm font-semibold focus:outline-none focus:border-[#0a0a0a]">True behavior change is identity change. If you focus on who you want to become rather than what you want to achieve, your habits automatically align with your new self-image.</textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Slide Number</label>
+                            <input type="text" id="cg-number" value="1/3" class="w-full institutional-border rounded-sm px-4 py-3 text-sm font-semibold focus:outline-none focus:border-[#0a0a0a]">
+                        </div>
+                        
+                        <button onclick="updateCarouselPreview()" class="w-full bg-gray-100 text-[#0a0a0a] border border-gray-300 py-3 rounded-sm font-bold uppercase tracking-widest text-xs hover:bg-gray-200 transition">Update Preview</button>
+                        <button onclick="downloadCarousel()" class="w-full bg-[#0a0a0a] text-white py-3 rounded-sm font-bold uppercase tracking-widest text-xs hover:bg-gray-800 transition shadow-lg">Download 1080x1080 PNG</button>
+                    </div>
+
+                    <!-- Preview Container -->
+                    <div class="flex justify-center items-start">
+                        <!-- We scale it down for preview, but when downloading we render full size -->
+                        <div style="width: 360px; height: 360px;" class="border border-gray-200 shadow-xl overflow-hidden relative">
+                            <!-- Actual 1080x1080 canvas scaled down via transform -->
+                            <div id="carousel-export-node" style="width: 1080px; height: 1080px; transform: scale(0.3333); transform-origin: top left;" class="bg-white p-24 flex flex-col justify-between relative">
+                                <!-- Top Bar -->
+                                <div class="flex justify-between items-center w-full">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-16 h-16 bg-[#0a0a0a] text-white flex items-center justify-center font-serif font-bold text-3xl rounded-sm">TC</div>
+                                        <span class="text-3xl font-bold tracking-tight text-[#0a0a0a] serif">Thinking<span class="italic text-emerald-800">Capital</span></span>
+                                    </div>
+                                    <span class="text-2xl font-bold uppercase tracking-widest text-gray-400" id="cg-preview-number">1/3</span>
+                                </div>
+                                
+                                <!-- Content -->
+                                <div class="flex-1 flex flex-col justify-center space-y-12 w-full pr-12">
+                                    <h1 class="text-[5.5rem] font-bold serif text-[#0a0a0a] leading-[1.1] tracking-tight" id="cg-preview-title">The Identity-Based Habit Loop</h1>
+                                    <div class="border-l-8 border-emerald-800 pl-12">
+                                        <p class="text-5xl text-gray-700 leading-relaxed font-medium" id="cg-preview-content">True behavior change is identity change. If you focus on who you want to become rather than what you want to achieve, your habits automatically align with your new self-image.</p>
+                                    </div>
+                                </div>
+
+                                <!-- Footer -->
+                                <div class="w-full border-t-[3px] border-gray-100 pt-8 flex justify-between items-center text-3xl font-bold text-gray-400 uppercase tracking-widest">
+                                    <span>Swipe</span>
+                                    <span>thepankajzx.github.io/growwise</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <!-- FULL SCREEN READER (Editorial Design) -->
@@ -186,7 +257,7 @@
                 <h2 id="reader-title" class="text-sm md:text-base font-bold serif text-[#0a0a0a] truncate max-w-full md:max-w-md">Book Title</h2>
             </div>
             
-            <!-- Action Buttons Container (Right Side) -->
+            <!-- Action Buttons Container -->
             <div class="flex flex-row items-center gap-2 md:gap-4 w-full md:w-auto justify-between md:justify-end overflow-x-auto pb-1 md:pb-0">
                 
                 <div class="flex items-center gap-2 border-r border-gray-200 pr-2 md:pr-4 flex-shrink-0">
@@ -229,7 +300,26 @@
         </div>
     </div>
 
-    <!-- FREEMIUM MODAL -->
+    <!-- FULL SCREEN LOGIN MODAL (Lead Gen) -->
+    <div id="login-modal" class="fixed inset-0 z-[150] hidden bg-white flex flex-col justify-center items-center p-4">
+        <button onclick="closeLoginModal()" class="absolute top-8 right-8 text-gray-400 hover:text-black transition p-2">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <div class="max-w-md w-full space-y-8 animate-fade text-center">
+            <div class="w-16 h-16 bg-[#0a0a0a] text-white flex items-center justify-center font-serif font-bold text-3xl rounded-sm mx-auto shadow-xl">TC</div>
+            <h2 class="text-4xl font-bold serif text-[#0a0a0a] tracking-tight">Enter the Directory</h2>
+            <p class="text-gray-500 text-sm leading-relaxed">
+                Join our private list of executives and operators building high-leverage mental models. Enter your email to continue.
+            </p>
+            <form onsubmit="handleLogin(event)" class="space-y-4 pt-4">
+                <input type="email" id="login-email" required placeholder="name@company.com" class="w-full institutional-border rounded-sm px-4 py-4 text-sm font-semibold focus:outline-none focus:border-[#0a0a0a] focus:ring-1 focus:ring-[#0a0a0a] text-center">
+                <button type="submit" class="w-full bg-[#0a0a0a] text-white py-4 rounded-sm font-bold uppercase tracking-widest text-xs hover:bg-gray-800 transition shadow-lg">Access Frameworks</button>
+            </form>
+            <p class="text-xs text-gray-400">Your email is kept strictly confidential.</p>
+        </div>
+    </div>
+
+    <!-- FREEMIUM MODAL (WhatsApp Redirect) -->
     <div id="freemium-modal" class="fixed inset-0 z-[200] hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-white max-w-md w-full rounded-sm shadow-2xl p-8 relative animate-fade">
             <button onclick="closeFreemiumModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black transition">
@@ -241,10 +331,10 @@
                 </div>
                 <h3 class="text-2xl font-bold serif text-[#0a0a0a]">Unlock the Arsenal</h3>
                 <p class="text-sm text-gray-600 leading-relaxed">
-                    You've reached the limit of the free tier (30 frameworks). Upgrade to access the remaining 170 highly actionable concepts in the directory.
+                    You're attempting to access a Premium Framework. Upgrade your access to unlock the full Thinking Capital execution directory.
                 </p>
-                <button class="w-full bg-[#0a0a0a] text-white py-3 rounded-sm font-bold uppercase tracking-widest text-xs hover:bg-gray-800 transition shadow-lg">Get Full Access</button>
-                <p class="text-xs text-gray-400 mt-4">One-time payment. Lifetime access.</p>
+                <a href="https://wa.me/917018168156?text=I%20want%20to%20buy%20premium" target="_blank" onclick="closeFreemiumModal()" class="block w-full bg-[#0a0a0a] text-white py-3 rounded-sm font-bold uppercase tracking-widest text-xs hover:bg-gray-800 transition shadow-lg">Get Full Access via WhatsApp</a>
+                <p class="text-[10px] text-gray-400 mt-4 uppercase tracking-widest font-bold">One-time payment. Lifetime access.</p>
             </div>
         </div>
     </div>

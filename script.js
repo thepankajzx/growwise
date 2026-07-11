@@ -3,6 +3,7 @@ let allConcepts = [];
 let currentCategoryFilter = 'all';
 let currentBookFilter = 'all';
 let currentLibraryFilter = 'all'; 
+let showPremiumOnly = false;
 
 let currentBookId = null;
 let currentConceptIndex = 0;
@@ -46,13 +47,108 @@ function initBookFilter() {
     });
 }
 
+// ----------------------------------------------------
+// AUTH & PREMIUM LOGIC
+// ----------------------------------------------------
+
+function isLoggedIn() {
+    return !!localStorage.getItem('tc_email');
+}
+
+function hasPremium() {
+    return localStorage.getItem('tc_premium') === 'true';
+}
+
+function handleLogin(e) {
+    e.preventDefault();
+    const email = document.getElementById('login-email').value;
+    if(email) {
+        localStorage.setItem('tc_email', email);
+        closeLoginModal();
+        // Retry opening what they clicked
+        if(pendingConceptToOpen) {
+            openReader(pendingConceptToOpen.bookId, pendingConceptToOpen.conceptIndex, pendingConceptToOpen.globalIndex);
+            pendingConceptToOpen = null;
+        }
+    }
+}
+
+function showLoginModal() {
+    document.getElementById('login-modal').classList.remove('hidden');
+}
+
+function closeLoginModal() {
+    document.getElementById('login-modal').classList.add('hidden');
+}
+
+function checkAccessCode(e) {
+    const val = e.target.value;
+    if(val === 'pankaj@') {
+        localStorage.setItem('tc_premium', 'true');
+        e.target.value = 'ACCESS GRANTED';
+        e.target.classList.add('text-green-500');
+        setTimeout(() => {
+            e.target.value = '';
+            e.target.classList.remove('text-green-500');
+        }, 2000);
+        renderExplorer(); // re-render to remove lock icons
+    }
+}
+
+// ----------------------------------------------------
+// NAVIGATION & UI
+// ----------------------------------------------------
+
 function navTo(view) {
     document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
     document.getElementById(`view-${view}`).classList.remove('hidden');
     
     document.querySelectorAll('nav button').forEach(b => b.classList.remove('nav-active'));
     document.getElementById(`btn-${view}`).classList.add('nav-active');
+    
+    // Check if going to admin via hash (security by obscurity for MVP)
+    if(view === 'admin' && window.location.hash !== '#admin') {
+        window.location.hash = '#admin';
+    }
     window.scrollTo(0, 0);
+}
+
+// Support hash routing on load
+window.addEventListener('load', () => {
+    if(window.location.hash === '#admin') {
+        document.getElementById('btn-admin').classList.remove('hidden');
+        navTo('admin');
+    }
+});
+window.addEventListener('hashchange', () => {
+    if(window.location.hash === '#admin') {
+        document.getElementById('btn-admin').classList.remove('hidden');
+        navTo('admin');
+    }
+});
+
+
+function setPremiumFilter(isPremium) {
+    showPremiumOnly = isPremium;
+    
+    const btnStandard = document.getElementById('toggle-standard');
+    const btnPremium = document.getElementById('toggle-premium');
+    
+    if (showPremiumOnly) {
+        btnPremium.classList.add('bg-white', 'shadow-sm', 'text-[#0a0a0a]');
+        btnPremium.classList.remove('text-gray-500');
+        
+        btnStandard.classList.remove('bg-white', 'shadow-sm', 'text-[#0a0a0a]');
+        btnStandard.classList.add('text-gray-500');
+    } else {
+        btnStandard.classList.add('bg-white', 'shadow-sm', 'text-[#0a0a0a]');
+        btnStandard.classList.remove('text-gray-500');
+        
+        btnPremium.classList.remove('bg-white', 'shadow-sm', 'text-[#0a0a0a]');
+        btnPremium.classList.add('text-gray-500');
+    }
+    
+    renderExplorer();
 }
 
 function filterCategory(catId) {
@@ -111,15 +207,17 @@ function resetToDashboard() {
     currentCategoryFilter = 'all';
     currentBookFilter = 'all';
     currentLibraryFilter = 'all';
+    showPremiumOnly = false;
     
     filterCategory('all');
     filterLibrary('all');
+    setPremiumFilter(false);
     closeReader();
 }
 
 function updateGlobalProgress() {
     const completedItems = JSON.parse(localStorage.getItem('ka_completed') || '[]');
-    const total = 200; // Expected total frameworks
+    const total = allConcepts.length;
     const mastered = completedItems.length;
     const percentage = Math.min(100, Math.round((mastered / total) * 100));
     
@@ -141,6 +239,10 @@ function renderDashboard() {
             navTo('explorer');
             filterCategory(cat.id);
         };
+        
+        let conceptCount = 0;
+        cat.books.forEach(b => conceptCount += b.concepts.length);
+
         card.innerHTML = `
             <div class="mb-8">
                 <span class="text-3xl font-serif text-[#0a0a0a]">${cat.category.charAt(0)}</span>
@@ -149,7 +251,7 @@ function renderDashboard() {
             <div class="space-y-3">
                 <h3 class="text-xl font-bold text-[#0a0a0a] serif">${cat.category}</h3>
                 <div class="flex items-center gap-2">
-                    <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">${cat.books.length * 10} Frameworks</p>
+                    <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">${conceptCount} Frameworks</p>
                 </div>
             </div>
             
@@ -171,6 +273,11 @@ function renderExplorer() {
 
     let filtered = allConcepts;
     
+    // Premium Toggle Filter
+    if(showPremiumOnly) {
+        filtered = filtered.filter(c => c.concept.isPremium);
+    }
+
     if (currentLibraryFilter === 'saved') {
         filtered = filtered.filter(c => savedItems.includes(`${c.bookId}-${c.conceptIndex}`));
     } else if (currentLibraryFilter === 'bookmarked') {
@@ -202,16 +309,17 @@ function renderExplorer() {
         const isSaved = savedItems.includes(conceptId);
         const isBookmarked = bookmarkedItems.includes(conceptId);
         const isCompleted = completedItems.includes(conceptId);
-        const isLocked = item.globalIndex >= 30;
+        const isLocked = item.concept.isPremium && !hasPremium();
 
         const card = document.createElement('div');
-        card.className = `bg-white p-6 md:p-8 border border-gray-200 relative cursor-pointer hover:border-[#0a0a0a] transition-all group flex flex-col h-full theme-${item.categoryId}`;
+        card.className = `bg-white p-6 md:p-8 border ${item.concept.isPremium ? 'border-amber-200 bg-amber-50/10' : 'border-gray-200'} relative cursor-pointer hover:border-[#0a0a0a] transition-all group flex flex-col h-full theme-${item.categoryId}`;
         card.onclick = () => openReader(item.bookId, item.conceptIndex, item.globalIndex);
         
         let statusIconsHtml = '';
-        if (isCompleted) statusIconsHtml += `<span class="text-[10px] font-bold uppercase tracking-widest text-emerald-700 bg-emerald-50 px-2 py-0.5 border border-emerald-100">Mastered</span>`;
-        if (isBookmarked) statusIconsHtml += `<span class="text-[10px] font-bold uppercase tracking-widest text-[#0a0a0a] bg-gray-100 px-2 py-0.5 border border-gray-200">Arsenal</span>`;
-        if (isSaved) statusIconsHtml += `<span class="text-[10px] font-bold uppercase tracking-widest text-blue-700 bg-blue-50 px-2 py-0.5 border border-blue-100">Read Later</span>`;
+        if (item.concept.isPremium) statusIconsHtml += `<span class="text-[9px] font-bold uppercase tracking-widest text-amber-700 bg-amber-100 px-2 py-0.5 border border-amber-200">Premium</span>`;
+        if (isCompleted) statusIconsHtml += `<span class="text-[9px] font-bold uppercase tracking-widest text-emerald-700 bg-emerald-50 px-2 py-0.5 border border-emerald-100">Mastered</span>`;
+        if (isBookmarked) statusIconsHtml += `<span class="text-[9px] font-bold uppercase tracking-widest text-[#0a0a0a] bg-gray-100 px-2 py-0.5 border border-gray-200">Arsenal</span>`;
+        if (isSaved) statusIconsHtml += `<span class="text-[9px] font-bold uppercase tracking-widest text-blue-700 bg-blue-50 px-2 py-0.5 border border-blue-100">Read Later</span>`;
         if (isLocked) statusIconsHtml += `<svg class="w-3.5 h-3.5 text-gray-400 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>`;
 
         card.innerHTML = `
@@ -224,7 +332,7 @@ function renderExplorer() {
                 <p class="text-xs text-gray-500 leading-relaxed italic">Extracted from ${item.bookTitle}</p>
             </div>
             <div class="mt-6 pt-4 border-t border-gray-100 group-hover:border-[#0a0a0a] transition-colors flex justify-between items-center">
-                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest group-hover:text-[#0a0a0a] transition-colors">${isLocked ? 'Unlock Framework' : 'View Protocol'}</span>
+                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest group-hover:text-[#0a0a0a] transition-colors">${isLocked ? 'Unlock Premium' : 'View Protocol'}</span>
             </div>
         `;
         container.appendChild(card);
@@ -250,21 +358,31 @@ function closeFreemiumModal() {
     modal.classList.add('hidden');
 }
 
+let pendingConceptToOpen = null;
+
 function openReader(bookId, conceptIndex, globalIndex) {
-    // Freemium Wall Check
-    if (globalIndex >= 30) {
-        showFreemiumModal();
-        return;
+    const result = findBookById(bookId);
+    if(!result) return;
+    const { book, cat } = result;
+    const concept = book.concepts[conceptIndex];
+
+    // Auth & Freemium Check
+    if (concept.isPremium) {
+        if (!isLoggedIn()) {
+            pendingConceptToOpen = { bookId, conceptIndex, globalIndex };
+            showLoginModal();
+            return;
+        }
+        if (!hasPremium()) {
+            showFreemiumModal();
+            return;
+        }
     }
 
     currentBookId = bookId;
     currentConceptIndex = conceptIndex;
     currentGlobalIndex = globalIndex;
     
-    const result = findBookById(bookId);
-    if(!result) return;
-    const { book, cat } = result;
-
     const overlay = document.getElementById('reader-overlay');
     
     document.getElementById('reader-category').textContent = cat.category;
@@ -381,15 +499,12 @@ function renderConceptDisplay() {
     document.getElementById('reader-title').textContent = concept.title;
 
     // Parse the One-Pager sections
-    // 1. Core Premise: First 1-2 sentences of explanation
     const sentences = concept.explanation.match(/[^.!?]+[.!?]+/g) || [concept.explanation];
     let premise = sentences[0];
     if (sentences.length > 1 && premise.length < 50) premise += sentences[1];
     
-    // 2. The Mechanism: The rest of the explanation
     const mechanism = concept.explanation.replace(premise, '').trim();
     
-    // 3. Actionable Pivot: Format approach into checklist
     let steps = concept.approach.split('. ').filter(s => s.trim().length > 0);
     if (steps.length === 1) steps = concept.approach.split(', ').filter(s => s.trim().length > 0);
     
@@ -404,6 +519,8 @@ function renderConceptDisplay() {
 
     display.innerHTML = `
         <div class="space-y-12 animate-fade">
+            ${concept.isPremium ? '<div class="bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 rounded-sm text-xs font-bold uppercase tracking-widest flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.956 11.956 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg> Premium Framework Unlocked</div>' : ''}
+            
             <!-- 1. The Core Premise -->
             <div class="border-l-4 border-emerald-800 pl-6">
                 <h3 class="text-[10px] font-bold uppercase tracking-widest text-emerald-800 mb-2">I. The Core Premise</h3>
@@ -449,6 +566,50 @@ function shareInsight() {
 function closeReader() {
     document.getElementById('reader-overlay').classList.add('hidden');
     document.body.style.overflow = ''; 
+}
+
+// ----------------------------------------------------
+// ADMIN CAROUSEL GENERATOR LOGIC
+// ----------------------------------------------------
+
+function updateCarouselPreview() {
+    const title = document.getElementById('cg-title').value;
+    const content = document.getElementById('cg-content').value;
+    const number = document.getElementById('cg-number').value;
+
+    document.getElementById('cg-preview-title').textContent = title;
+    document.getElementById('cg-preview-content').textContent = content;
+    document.getElementById('cg-preview-number').textContent = number;
+}
+
+async function downloadCarousel() {
+    // Temporarily remove scaling for crisp 1080x1080 capture
+    const node = document.getElementById('carousel-export-node');
+    const oldTransform = node.style.transform;
+    node.style.transform = 'scale(1)';
+    
+    try {
+        const canvas = await html2canvas(node, {
+            scale: 1, // 1080x1080 native
+            backgroundColor: "#ffffff",
+            logging: false,
+            useCORS: true
+        });
+        
+        node.style.transform = oldTransform;
+        
+        const image = canvas.toDataURL("image/png", 1.0);
+        const link = document.createElement('a');
+        const title = document.getElementById('cg-title').value.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        
+        link.download = `tc-carousel-${title}.png`;
+        link.href = image;
+        link.click();
+    } catch (e) {
+        console.error("Failed to generate image", e);
+        node.style.transform = oldTransform;
+        alert("Sorry, an error occurred while generating the image.");
+    }
 }
 
 // Initialize

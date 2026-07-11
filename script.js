@@ -278,13 +278,6 @@ function filterBook() {
 
 function filterLibrary(type) {
     currentLibraryFilter = type;
-    
-    const pills = document.querySelectorAll('#libraryFilters button');
-    pills.forEach(pill => {
-        pill.classList.remove('bg-[#0a0a0a]', 'dark:bg-white', 'text-white', 'dark:text-[#0a0a0a]', 'border-[#0a0a0a]', 'dark:border-white', 'border-transparent');
-        pill.classList.add('border-transparent', 'text-gray-600', 'dark:text-gray-400', 'hover:text-[#0a0a0a]', 'dark:hover:text-white');
-    });
-    
     const activePill = document.getElementById(`lib-${type}`);
     if (activePill) {
         activePill.classList.remove('border-transparent', 'text-gray-600', 'dark:text-gray-400', 'hover:text-[#0a0a0a]', 'dark:hover:text-white');
@@ -387,27 +380,26 @@ function renderExplorer() {
         const isLocked = item.concept.isPremium && !hasPremium();
 
         const card = document.createElement('div');
-        card.className = `bg-white dark:bg-darkCard p-6 md:p-8 border ${item.concept.isPremium ? 'border-amber-200 dark:border-amber-900 bg-amber-50/10 dark:bg-amber-900/10' : 'border-gray-200 dark:border-gray-800'} relative cursor-pointer hover:border-[#0a0a0a] dark:hover:border-gray-400 transition-all group flex flex-col h-full theme-${item.categoryId}`;
+        card.className = `bg-white dark:bg-darkCard p-4 md:p-5 border ${item.concept.isPremium ? 'border-amber-200 dark:border-amber-900 bg-amber-50/10 dark:bg-amber-900/10' : 'border-gray-200 dark:border-gray-800'} relative cursor-pointer hover:border-[#0a0a0a] dark:hover:border-gray-400 transition-all group flex flex-col h-full theme-${item.categoryId}`;
         card.onclick = () => openReader(item.bookId, item.conceptIndex, item.globalIndex);
         
         let statusIconsHtml = '';
-        if (item.concept.isPremium) statusIconsHtml += `<span class="text-[9px] font-bold uppercase tracking-widest text-amber-700 dark:text-amber-500 bg-amber-100 dark:bg-amber-900/20 px-2 py-0.5 border border-amber-200 dark:border-amber-900">Premium</span>`;
-        if (isCompleted) statusIconsHtml += `<span class="text-[9px] font-bold uppercase tracking-widest text-emerald-700 dark:text-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 border border-emerald-100 dark:border-emerald-900">Completed</span>`;
-        if (isBookmarked) statusIconsHtml += `<span class="text-[9px] font-bold uppercase tracking-widest text-[#0a0a0a] dark:text-white bg-gray-100 dark:bg-darkBg px-2 py-0.5 border border-gray-200 dark:border-gray-800">Bookmarked</span>`;
-        if (isSaved) statusIconsHtml += `<span class="text-[9px] font-bold uppercase tracking-widest text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 px-2 py-0.5 border border-blue-100 dark:border-blue-900">Saved</span>`;
+        if (item.concept.isPremium) statusIconsHtml += `<span class="text-[8px] font-bold uppercase tracking-widest text-amber-700 dark:text-amber-500 bg-amber-100 dark:bg-amber-900/20 px-1.5 py-0.5 border border-amber-200 dark:border-amber-900">Premium</span>`;
+        if (isCompleted) statusIconsHtml += `<span class="text-[8px] font-bold uppercase tracking-widest text-emerald-700 dark:text-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 px-1.5 py-0.5 border border-emerald-100 dark:border-emerald-900">Completed</span>`;
+        if (isBookmarked) statusIconsHtml += `<span class="text-[8px] font-bold uppercase tracking-widest text-[#0a0a0a] dark:text-white bg-gray-100 dark:bg-darkBg px-1.5 py-0.5 border border-gray-200 dark:border-gray-800">Bookmarked</span>`;
+        if (isSaved) statusIconsHtml += `<span class="text-[8px] font-bold uppercase tracking-widest text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 px-1.5 py-0.5 border border-blue-100 dark:border-blue-900">Saved</span>`;
         if (isLocked) statusIconsHtml += `<svg class="w-3.5 h-3.5 text-gray-400 dark:text-gray-600 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>`;
 
         card.innerHTML = `
-            <div class="flex justify-between items-start mb-4 gap-2">
-                <span class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">${item.categoryName}</span>
+            <div class="flex justify-between items-start mb-2 gap-2">
+                <span class="text-[9px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">${item.categoryName}</span>
                 <div class="flex flex-wrap gap-1 items-center justify-end flex-1">${statusIconsHtml}</div>
             </div>
             <div class="flex-1">
-                <h4 class="text-xl font-bold text-[#0a0a0a] dark:text-white leading-tight mb-2 serif">${item.concept.title}</h4>
-                <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed italic">Extracted from ${item.bookTitle}</p>
+                <h4 class="text-lg md:text-xl font-bold text-[#0a0a0a] dark:text-white leading-tight mb-2 serif group-hover:text-emerald-800 dark:group-hover:text-emerald-400 transition-colors">${item.concept.title}</h4>
             </div>
-            <div class="mt-6 pt-4 border-t border-gray-100 dark:border-gray-800 group-hover:border-[#0a0a0a] dark:group-hover:border-gray-400 transition-colors flex justify-between items-center">
-                <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest group-hover:text-[#0a0a0a] dark:group-hover:text-white transition-colors">${isLocked ? 'Unlock Premium' : 'View Protocol'}</span>
+            <div class="mt-2 pt-2 border-t border-gray-50 dark:border-gray-800/50">
+                <p class="text-[10px] md:text-xs text-gray-400 dark:text-gray-500 leading-relaxed italic truncate">Extracted from ${item.bookTitle}</p>
             </div>
         `;
         container.appendChild(card);

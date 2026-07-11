@@ -790,8 +790,8 @@ function updateCarouselPreview() {
         document.getElementById('cg-preview-content').className = "text-[3rem] text-gray-700 leading-snug font-medium transition-all duration-300 mt-6";
         document.getElementById('cg-flex-container').className = "flex-1 flex flex-col justify-center space-y-12 w-full pr-12 pb-12 transition-all duration-300 relative";
         
-        tcLogo.className = "w-16 h-16 bg-[#0a0a0a] text-white flex items-center justify-center font-serif font-bold text-3xl rounded-sm transition-colors";
-        brandName.className = "text-3xl font-bold tracking-tight text-[#0a0a0a] serif transition-colors";
+        tcLogo.className = "w-16 h-16 bg-[#0a0a0a] text-white flex items-center justify-center font-serif font-bold text-3xl leading-none rounded-sm transition-colors pt-1";
+        brandName.className = "text-3xl font-bold tracking-tight text-[#0a0a0a] serif leading-none transition-colors mt-1";
         document.getElementById('btn-download-carousel').textContent = "Download 1080x1080 PNG";
     } else if (ratio === '4:5') {
         width = 1080; height = 1350; scale = 0.333333;
@@ -800,8 +800,8 @@ function updateCarouselPreview() {
         document.getElementById('cg-preview-content').className = "text-[3rem] text-gray-700 leading-snug font-medium transition-all duration-300 mt-8";
         document.getElementById('cg-flex-container').className = "flex-1 flex flex-col justify-center space-y-16 w-full pr-12 pb-12 mt-12 transition-all duration-300 relative";
         
-        tcLogo.className = "w-20 h-20 bg-[#0a0a0a] text-white flex items-center justify-center font-serif font-bold text-4xl rounded-sm transition-colors";
-        brandName.className = "text-4xl font-bold tracking-tight text-[#0a0a0a] serif transition-colors";
+        tcLogo.className = "w-20 h-20 bg-[#0a0a0a] text-white flex items-center justify-center font-serif font-bold text-4xl leading-none rounded-sm transition-colors pt-1.5";
+        brandName.className = "text-4xl font-bold tracking-tight text-[#0a0a0a] serif leading-none transition-colors mt-1.5";
         document.getElementById('btn-download-carousel').textContent = "Download 1080x1350 PNG";
     }
     

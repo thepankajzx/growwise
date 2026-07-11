@@ -197,6 +197,15 @@ function updateMembershipUI() {
     const authContainer = document.getElementById('auth-container');
     if (!authContainer) return;
     
+    if (window.location.hash === '#master') {
+        authContainer.style.display = 'none';
+        const adminBtn = document.getElementById('btn-admin');
+        if(adminBtn) adminBtn.classList.remove('hidden');
+        return;
+    }
+    
+    authContainer.style.display = 'flex';
+    
     if (hasPremium()) {
         authContainer.innerHTML = `
             <button onclick="logout()" class="flex items-center gap-1 bg-amber-100 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-900 px-3 py-1 rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-amber-700 dark:text-amber-500 transition hover:bg-amber-200 dark:hover:bg-amber-900/40" title="Click to Logout">
@@ -731,10 +740,29 @@ function updateCarouselPreview() {
 
     if (ratio === '1:1') {
         width = 1080; height = 1080; scale = 0.333333;
+        document.getElementById('cg-preview-title').className = "text-[5.5rem] font-bold serif text-[#0a0a0a] leading-[1.1] tracking-tight transition-all duration-300";
+        document.getElementById('cg-preview-content').className = "text-[2.25rem] text-gray-700 leading-snug font-medium transition-all duration-300";
+        document.getElementById('cg-flex-container').className = "flex-1 flex flex-col justify-center space-y-12 w-full pr-12 pb-12 transition-all duration-300";
     } else if (ratio === '4:5') {
         width = 1080; height = 1350; scale = 0.333333;
-    } else if (ratio === '16:9') {
-        width = 1920; height = 1080; scale = 0.1875;
+        // Increase text sizing for portrait to fill the vertical space appropriately
+        document.getElementById('cg-preview-title').className = "text-[6.5rem] font-bold serif text-[#0a0a0a] leading-[1.1] tracking-tight transition-all duration-300";
+        document.getElementById('cg-preview-content').className = "text-[2.75rem] text-gray-700 leading-snug font-medium transition-all duration-300";
+        document.getElementById('cg-flex-container').className = "flex-1 flex flex-col justify-center space-y-16 w-full pr-12 pb-12 mt-8 transition-all duration-300";
+    }
+    
+    // Apply Black & White theme if selected
+    const bwMode = document.getElementById('cg-bw-mode').checked;
+    const brandItalic = document.getElementById('cg-brand-italic');
+    const contentBorder = document.getElementById('cg-content-border');
+    
+    if (bwMode) {
+        brandItalic.className = "italic text-[#0a0a0a] transition-colors";
+        contentBorder.className = "border-l-8 border-[#0a0a0a] pl-12 transition-all duration-300";
+        document.getElementById('cg-preview-content').classList.replace('text-gray-700', 'text-[#0a0a0a]');
+    } else {
+        brandItalic.className = "italic text-emerald-800 transition-colors";
+        contentBorder.className = "border-l-8 border-emerald-800 pl-12 transition-all duration-300";
     }
     
     node.style.width = width + 'px';

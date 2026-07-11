@@ -184,6 +184,9 @@
                         <div class="w-full">
                             <div id="filterPills" class="flex flex-wrap gap-2">
                                 <button onclick="filterCategory('all')" id="pill-all" class="px-4 py-1.5 rounded-full text-[10px] md:text-xs font-bold border border-[#0a0a0a] bg-[#0a0a0a] text-white transition">All Domains</button>
+                                <button onclick="filterCategory('wealth')" id="pill-wealth" class="px-4 py-1.5 rounded-full text-[10px] md:text-xs font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition">Wealth & Finance</button>
+                                <button onclick="filterCategory('business')" id="pill-business" class="px-4 py-1.5 rounded-full text-[10px] md:text-xs font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition">Business & Strategy</button>
+                                <button onclick="filterCategory('productivity')" id="pill-productivity" class="px-4 py-1.5 rounded-full text-[10px] md:text-xs font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition">Productivity</button>
                                 <button onclick="filterCategory('self-improvement')" id="pill-self-improvement" class="px-4 py-1.5 rounded-full text-[10px] md:text-xs font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition">Self-Improvement</button>
                             </div>
                         </div>
@@ -262,7 +265,6 @@
                             <select id="cg-ratio" onchange="updateCarouselPreview()" class="w-full bg-transparent border border-gray-200 dark:border-gray-700 dark:text-white rounded-sm px-3 py-2 text-xs font-semibold focus:outline-none focus:border-[#0a0a0a] dark:focus:border-white">
                                 <option value="1:1">1:1 (Square)</option>
                                 <option value="4:5">4:5 (Portrait)</option>
-                                <option value="16:9">16:9 (Landscape)</option>
                             </select>
                         </div>
                         <div>
@@ -271,9 +273,15 @@
                         </div>
                     </div>
                     
-                    <div class="flex items-center gap-2 mt-4">
-                        <input type="checkbox" id="cg-show-number" onchange="updateCarouselPreview()" checked class="w-4 h-4 rounded border-gray-300 dark:border-gray-600 bg-transparent text-[#0a0a0a] dark:text-white focus:ring-[#0a0a0a] dark:focus:ring-white focus:ring-2">
-                        <label for="cg-show-number" class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">Show Slide Number</label>
+                    <div class="flex items-center gap-4 mt-4">
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" id="cg-show-number" onchange="updateCarouselPreview()" checked class="w-4 h-4 rounded border-gray-300 dark:border-gray-600 bg-transparent text-[#0a0a0a] dark:text-white focus:ring-[#0a0a0a] dark:focus:ring-white focus:ring-2">
+                            <label for="cg-show-number" class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">Show Slide Number</label>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" id="cg-bw-mode" onchange="updateCarouselPreview()" class="w-4 h-4 rounded border-gray-300 dark:border-gray-600 bg-transparent text-[#0a0a0a] dark:text-white focus:ring-[#0a0a0a] dark:focus:ring-white focus:ring-2">
+                            <label for="cg-bw-mode" class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">B&W Theme</label>
+                        </div>
                     </div>
                     
                     <button onclick="updateCarouselPreview()" class="w-full bg-gray-100 dark:bg-darkBg text-[#0a0a0a] dark:text-white border border-gray-300 dark:border-gray-700 py-3 rounded-sm font-bold uppercase tracking-widest text-xs hover:bg-gray-200 dark:hover:bg-gray-800 transition">Update Preview</button>
@@ -289,16 +297,16 @@
                             <div class="flex justify-between items-center w-full mb-12">
                                 <div class="flex items-center gap-4">
                                     <div class="w-16 h-16 bg-[#0a0a0a] text-white flex items-center justify-center font-serif font-bold text-3xl rounded-sm">TC</div>
-                                    <span class="text-3xl font-bold tracking-tight text-[#0a0a0a] serif">Thinking<span class="italic text-emerald-800">Capital</span></span>
+                                    <span class="text-3xl font-bold tracking-tight text-[#0a0a0a] serif">Thinking<span id="cg-brand-italic" class="italic text-emerald-800 transition-colors">Capital</span></span>
                                 </div>
                                 <span class="text-2xl font-bold uppercase tracking-widest text-gray-400 hidden" id="cg-preview-number">1/3</span>
                             </div>
                             
                             <!-- Content -->
-                            <div class="flex-1 flex flex-col justify-center space-y-12 w-full pr-12 pb-12">
-                                <h1 class="text-[5.5rem] font-bold serif text-[#0a0a0a] leading-[1.1] tracking-tight" id="cg-preview-title">The Identity-Based Habit Loop</h1>
-                                <div class="border-l-8 border-emerald-800 pl-12">
-                                    <p class="text-5xl text-gray-700 leading-relaxed font-medium" id="cg-preview-content">True behavior change is identity change. If you focus on who you want to become rather than what you want to achieve, your habits automatically align with your new self-image.</p>
+                            <div id="cg-flex-container" class="flex-1 flex flex-col justify-center space-y-12 w-full pr-12 pb-12 transition-all duration-300">
+                                <h1 class="text-[5.5rem] font-bold serif text-[#0a0a0a] leading-[1.1] tracking-tight transition-all duration-300" id="cg-preview-title">The Identity-Based Habit Loop</h1>
+                                <div id="cg-content-border" class="border-l-8 border-emerald-800 pl-12 transition-all duration-300">
+                                    <p class="text-[2.25rem] text-gray-700 leading-snug font-medium transition-all duration-300" id="cg-preview-content">True behavior change is identity change. If you focus on who you want to become rather than what you want to achieve, your habits automatically align with your new self-image.</p>
                                 </div>
                             </div>
                         </div>
@@ -413,7 +421,7 @@
     </div>
 
     <!-- Scripts -->
-    <script src="data.js?v=8"></script>
-    <script src="script.js?v=8"></script>
+    <script src="data.js?v=9"></script>
+    <script src="script.js?v=9"></script>
 </body>
 </html>

@@ -153,6 +153,20 @@ window.addEventListener('hashchange', () => {
 });
 
 
+// ----------------------------------------------------
+// THEME & UI TOGGLES
+// ----------------------------------------------------
+
+function toggleTheme() {
+    if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('tc_theme', 'light');
+    } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('tc_theme', 'dark');
+    }
+}
+
 function setPremiumFilter(isPremium) {
     showPremiumOnly = isPremium;
     
@@ -160,17 +174,17 @@ function setPremiumFilter(isPremium) {
     const btnPremium = document.getElementById('toggle-premium');
     
     if (showPremiumOnly) {
-        btnPremium.classList.add('bg-white', 'shadow-sm', 'text-[#0a0a0a]');
-        btnPremium.classList.remove('text-gray-500');
+        btnPremium.classList.add('bg-white', 'dark:bg-darkCard', 'shadow-sm', 'text-[#0a0a0a]', 'dark:text-white');
+        btnPremium.classList.remove('text-gray-500', 'dark:text-gray-400');
         
-        btnStandard.classList.remove('bg-white', 'shadow-sm', 'text-[#0a0a0a]');
-        btnStandard.classList.add('text-gray-500');
+        btnStandard.classList.remove('bg-white', 'dark:bg-darkCard', 'shadow-sm', 'text-[#0a0a0a]', 'dark:text-white');
+        btnStandard.classList.add('text-gray-500', 'dark:text-gray-400');
     } else {
-        btnStandard.classList.add('bg-white', 'shadow-sm', 'text-[#0a0a0a]');
-        btnStandard.classList.remove('text-gray-500');
+        btnStandard.classList.add('bg-white', 'dark:bg-darkCard', 'shadow-sm', 'text-[#0a0a0a]', 'dark:text-white');
+        btnStandard.classList.remove('text-gray-500', 'dark:text-gray-400');
         
-        btnPremium.classList.remove('bg-white', 'shadow-sm', 'text-[#0a0a0a]');
-        btnPremium.classList.add('text-gray-500');
+        btnPremium.classList.remove('bg-white', 'dark:bg-darkCard', 'shadow-sm', 'text-[#0a0a0a]', 'dark:text-white');
+        btnPremium.classList.add('text-gray-500', 'dark:text-gray-400');
     }
     
     renderExplorer();
@@ -183,14 +197,14 @@ function filterCategory(catId) {
     
     const pills = document.querySelectorAll('#filterPills button');
     pills.forEach(pill => {
-        pill.classList.remove('bg-[#0a0a0a]', 'text-white', 'border-[#0a0a0a]');
-        pill.classList.add('border-gray-300', 'text-gray-600');
+        pill.classList.remove('bg-[#0a0a0a]', 'dark:bg-white', 'text-white', 'dark:text-[#0a0a0a]', 'border-[#0a0a0a]', 'dark:border-white');
+        pill.classList.add('border-gray-300', 'dark:border-gray-700', 'text-gray-600', 'dark:text-gray-400');
     });
     
     const activePill = document.getElementById(`pill-${catId}`);
     if(activePill) {
-        activePill.classList.remove('border-gray-300', 'text-gray-600');
-        activePill.classList.add('bg-[#0a0a0a]', 'text-white', 'border-[#0a0a0a]');
+        activePill.classList.remove('border-gray-300', 'dark:border-gray-700', 'text-gray-600', 'dark:text-gray-400');
+        activePill.classList.add('bg-[#0a0a0a]', 'dark:bg-white', 'text-white', 'dark:text-[#0a0a0a]', 'border-[#0a0a0a]', 'dark:border-white');
     }
     
     renderExplorer();
@@ -202,10 +216,10 @@ function filterBook() {
         currentCategoryFilter = 'all';
         const pills = document.querySelectorAll('#filterPills button');
         pills.forEach(pill => {
-            pill.classList.remove('bg-[#0a0a0a]', 'text-white', 'border-[#0a0a0a]');
-            pill.classList.add('border-gray-300', 'text-gray-600');
+            pill.classList.remove('bg-[#0a0a0a]', 'dark:bg-white', 'text-white', 'dark:text-[#0a0a0a]', 'border-[#0a0a0a]', 'dark:border-white');
+            pill.classList.add('border-gray-300', 'dark:border-gray-700', 'text-gray-600', 'dark:text-gray-400');
         });
-        document.getElementById(`pill-all`).classList.add('bg-[#0a0a0a]', 'text-white', 'border-[#0a0a0a]');
+        document.getElementById(`pill-all`).classList.add('bg-[#0a0a0a]', 'dark:bg-white', 'text-white', 'dark:text-[#0a0a0a]', 'border-[#0a0a0a]', 'dark:border-white');
     }
     renderExplorer();
 }
@@ -215,14 +229,14 @@ function filterLibrary(type) {
     
     const pills = document.querySelectorAll('#libraryFilters button');
     pills.forEach(pill => {
-        pill.classList.remove('bg-[#0a0a0a]', 'text-white', 'border-[#0a0a0a]');
-        pill.classList.add('border-gray-300', 'text-gray-600');
+        pill.classList.remove('bg-[#0a0a0a]', 'dark:bg-white', 'text-white', 'dark:text-[#0a0a0a]', 'border-[#0a0a0a]', 'dark:border-white');
+        pill.classList.add('border-gray-300', 'dark:border-gray-700', 'text-gray-600', 'dark:text-gray-400');
     });
     
     const activePill = document.getElementById(`lib-${type}`);
     if (activePill) {
-        activePill.classList.remove('border-gray-300', 'text-gray-600');
-        activePill.classList.add('bg-[#0a0a0a]', 'text-white', 'border-[#0a0a0a]');
+        activePill.classList.remove('border-gray-300', 'dark:border-gray-700', 'text-gray-600', 'dark:text-gray-400');
+        activePill.classList.add('bg-[#0a0a0a]', 'dark:bg-white', 'text-white', 'dark:text-[#0a0a0a]', 'border-[#0a0a0a]', 'dark:border-white');
     }
     
     renderExplorer();
@@ -246,7 +260,7 @@ function renderDashboard() {
 
     booksData.forEach(cat => {
         const card = document.createElement('div');
-        card.className = `group bg-white p-8 border border-gray-200 cursor-pointer hover:border-[#0a0a0a] transition-all duration-300 theme-${cat.id}`;
+        card.className = `group bg-white dark:bg-darkCard p-8 border border-gray-200 dark:border-gray-800 cursor-pointer hover:border-[#0a0a0a] dark:hover:border-gray-400 transition-all duration-300 theme-${cat.id}`;
         card.onclick = () => {
             navTo('explorer');
             filterCategory(cat.id);
@@ -257,18 +271,18 @@ function renderDashboard() {
 
         card.innerHTML = `
             <div class="mb-8">
-                <span class="text-3xl font-serif text-[#0a0a0a]">${cat.category.charAt(0)}</span>
+                <span class="text-3xl font-serif text-[#0a0a0a] dark:text-white">${cat.category.charAt(0)}</span>
             </div>
             
             <div class="space-y-3">
-                <h3 class="text-xl font-bold text-[#0a0a0a] serif">${cat.category}</h3>
+                <h3 class="text-xl font-bold text-[#0a0a0a] dark:text-white serif">${cat.category}</h3>
                 <div class="flex items-center gap-2">
-                    <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">${conceptCount} Frameworks</p>
+                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">${conceptCount} Frameworks</p>
                 </div>
             </div>
             
-            <div class="mt-8 pt-6 border-t border-gray-100 flex items-center justify-between group-hover:border-[#0a0a0a] transition-colors">
-                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest group-hover:text-[#0a0a0a] transition-colors">Enter Domain →</span>
+            <div class="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between group-hover:border-[#0a0a0a] dark:group-hover:border-gray-400 transition-colors">
+                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest group-hover:text-[#0a0a0a] dark:group-hover:text-white transition-colors">Enter Domain →</span>
             </div>
         `;
         grid.appendChild(card);
@@ -308,9 +322,9 @@ function renderExplorer() {
     if (filtered.length === 0) {
         container.innerHTML = `
             <div class="col-span-full py-20 text-center">
-                <h3 class="text-xl font-bold text-[#0a0a0a] serif mb-2">No frameworks found</h3>
-                <p class="text-gray-500">Adjust your filters to see more content.</p>
-                <button onclick="resetToDashboard()" class="mt-6 px-6 py-2 border border-[#0a0a0a] text-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-white transition rounded-sm text-xs font-bold uppercase tracking-widest">Reset Filters</button>
+                <h3 class="text-xl font-bold text-[#0a0a0a] dark:text-white serif mb-2">No frameworks found</h3>
+                <p class="text-gray-500 dark:text-gray-400">Adjust your filters to see more content.</p>
+                <button onclick="resetToDashboard()" class="mt-6 px-6 py-2 border border-[#0a0a0a] dark:border-white text-[#0a0a0a] dark:text-white hover:bg-[#0a0a0a] dark:hover:bg-white hover:text-white dark:hover:text-[#0a0a0a] transition rounded-sm text-xs font-bold uppercase tracking-widest">Reset Filters</button>
             </div>
         `;
         return;
@@ -324,27 +338,27 @@ function renderExplorer() {
         const isLocked = item.concept.isPremium && !hasPremium();
 
         const card = document.createElement('div');
-        card.className = `bg-white p-6 md:p-8 border ${item.concept.isPremium ? 'border-amber-200 bg-amber-50/10' : 'border-gray-200'} relative cursor-pointer hover:border-[#0a0a0a] transition-all group flex flex-col h-full theme-${item.categoryId}`;
+        card.className = `bg-white dark:bg-darkCard p-6 md:p-8 border ${item.concept.isPremium ? 'border-amber-200 dark:border-amber-900 bg-amber-50/10 dark:bg-amber-900/10' : 'border-gray-200 dark:border-gray-800'} relative cursor-pointer hover:border-[#0a0a0a] dark:hover:border-gray-400 transition-all group flex flex-col h-full theme-${item.categoryId}`;
         card.onclick = () => openReader(item.bookId, item.conceptIndex, item.globalIndex);
         
         let statusIconsHtml = '';
-        if (item.concept.isPremium) statusIconsHtml += `<span class="text-[9px] font-bold uppercase tracking-widest text-amber-700 bg-amber-100 px-2 py-0.5 border border-amber-200">Premium</span>`;
-        if (isCompleted) statusIconsHtml += `<span class="text-[9px] font-bold uppercase tracking-widest text-emerald-700 bg-emerald-50 px-2 py-0.5 border border-emerald-100">Mastered</span>`;
-        if (isBookmarked) statusIconsHtml += `<span class="text-[9px] font-bold uppercase tracking-widest text-[#0a0a0a] bg-gray-100 px-2 py-0.5 border border-gray-200">Arsenal</span>`;
-        if (isSaved) statusIconsHtml += `<span class="text-[9px] font-bold uppercase tracking-widest text-blue-700 bg-blue-50 px-2 py-0.5 border border-blue-100">Read Later</span>`;
-        if (isLocked) statusIconsHtml += `<svg class="w-3.5 h-3.5 text-gray-400 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>`;
+        if (item.concept.isPremium) statusIconsHtml += `<span class="text-[9px] font-bold uppercase tracking-widest text-amber-700 dark:text-amber-500 bg-amber-100 dark:bg-amber-900/20 px-2 py-0.5 border border-amber-200 dark:border-amber-900">Premium</span>`;
+        if (isCompleted) statusIconsHtml += `<span class="text-[9px] font-bold uppercase tracking-widest text-emerald-700 dark:text-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 border border-emerald-100 dark:border-emerald-900">Mastered</span>`;
+        if (isBookmarked) statusIconsHtml += `<span class="text-[9px] font-bold uppercase tracking-widest text-[#0a0a0a] dark:text-white bg-gray-100 dark:bg-darkBg px-2 py-0.5 border border-gray-200 dark:border-gray-800">Arsenal</span>`;
+        if (isSaved) statusIconsHtml += `<span class="text-[9px] font-bold uppercase tracking-widest text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 px-2 py-0.5 border border-blue-100 dark:border-blue-900">Read Later</span>`;
+        if (isLocked) statusIconsHtml += `<svg class="w-3.5 h-3.5 text-gray-400 dark:text-gray-600 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>`;
 
         card.innerHTML = `
             <div class="flex justify-between items-start mb-4 gap-2">
-                <span class="text-[10px] font-bold uppercase tracking-widest text-gray-500">${item.categoryName}</span>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">${item.categoryName}</span>
                 <div class="flex flex-wrap gap-1 items-center justify-end flex-1">${statusIconsHtml}</div>
             </div>
             <div class="flex-1">
-                <h4 class="text-xl font-bold text-[#0a0a0a] leading-tight mb-2 serif">${item.concept.title}</h4>
-                <p class="text-xs text-gray-500 leading-relaxed italic">Extracted from ${item.bookTitle}</p>
+                <h4 class="text-xl font-bold text-[#0a0a0a] dark:text-white leading-tight mb-2 serif">${item.concept.title}</h4>
+                <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed italic">Extracted from ${item.bookTitle}</p>
             </div>
-            <div class="mt-6 pt-4 border-t border-gray-100 group-hover:border-[#0a0a0a] transition-colors flex justify-between items-center">
-                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest group-hover:text-[#0a0a0a] transition-colors">${isLocked ? 'Unlock Premium' : 'View Protocol'}</span>
+            <div class="mt-6 pt-4 border-t border-gray-100 dark:border-gray-800 group-hover:border-[#0a0a0a] dark:group-hover:border-gray-400 transition-colors flex justify-between items-center">
+                <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest group-hover:text-[#0a0a0a] dark:group-hover:text-white transition-colors">${isLocked ? 'Unlock Premium' : 'View Protocol'}</span>
             </div>
         `;
         container.appendChild(card);
@@ -520,38 +534,38 @@ function renderConceptDisplay() {
     if (steps.length === 1) steps = concept.approach.split(', ').filter(s => s.trim().length > 0);
     
     let checklistHtml = steps.map((step) => `
-        <div class="flex items-start gap-4 p-4 hover:bg-gray-50 cursor-pointer transition border-b border-gray-100 last:border-0 group" onclick="toggleChecklist(this)">
-            <div class="w-5 h-5 border border-[#0a0a0a] flex items-center justify-center flex-shrink-0 mt-1 bg-white">
+        <div class="flex items-start gap-4 p-4 hover:bg-gray-50 dark:hover:bg-darkBorder cursor-pointer transition border-b border-gray-100 dark:border-gray-800 last:border-0 group" onclick="toggleChecklist(this)">
+            <div class="w-5 h-5 border border-[#0a0a0a] dark:border-gray-500 flex items-center justify-center flex-shrink-0 mt-1 bg-white dark:bg-darkBg">
                 <svg class="w-3 h-3 text-transparent transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"></svg>
             </div>
-            <span class="text-[#0a0a0a] text-base md:text-lg font-medium leading-relaxed transition-all">${step}${step.endsWith('.') ? '' : '.'}</span>
+            <span class="text-[#0a0a0a] dark:text-gray-300 text-base md:text-lg font-medium leading-relaxed transition-all">${step}${step.endsWith('.') ? '' : '.'}</span>
         </div>
     `).join('');
 
     display.innerHTML = `
         <div class="space-y-12 animate-fade">
-            ${concept.isPremium ? '<div class="bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 rounded-sm text-xs font-bold uppercase tracking-widest flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.956 11.956 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg> Premium Framework Unlocked</div>' : ''}
+            ${concept.isPremium ? '<div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-500 px-4 py-3 rounded-sm text-xs font-bold uppercase tracking-widest flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.956 11.956 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg> Premium Framework Unlocked</div>' : ''}
             
             <!-- 1. The Core Premise -->
-            <div class="border-l-4 border-emerald-800 pl-6">
-                <h3 class="text-[10px] font-bold uppercase tracking-widest text-emerald-800 mb-2">I. The Core Premise</h3>
-                <p class="text-2xl md:text-3xl font-bold serif text-[#0a0a0a] leading-snug">
+            <div class="border-l-4 border-emerald-800 dark:border-emerald-500 pl-6">
+                <h3 class="text-[10px] font-bold uppercase tracking-widest text-emerald-800 dark:text-emerald-500 mb-2">I. The Core Premise</h3>
+                <p class="text-2xl md:text-3xl font-bold serif text-[#0a0a0a] dark:text-white leading-snug">
                     ${premise}
                 </p>
             </div>
 
             <!-- 2. The Mechanism -->
-            <div class="bg-gray-50 p-6 md:p-8 border border-gray-200">
-                <h3 class="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-4">II. The Mechanism</h3>
-                <p class="text-[#0a0a0a] text-lg leading-relaxed">
+            <div class="bg-gray-50 dark:bg-darkCard p-6 md:p-8 border border-gray-200 dark:border-gray-800">
+                <h3 class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">II. The Mechanism</h3>
+                <p class="text-[#0a0a0a] dark:text-gray-300 text-lg leading-relaxed">
                     ${mechanism || "This framework operates intrinsically via the aforementioned premise."}
                 </p>
             </div>
 
             <!-- 3. Actionable Pivot -->
             <div>
-                <h3 class="text-[10px] font-bold uppercase tracking-widest text-[#0a0a0a] mb-4 border-b border-gray-200 pb-2">III. Actionable Pivot</h3>
-                <div class="border border-gray-200 bg-white">
+                <h3 class="text-[10px] font-bold uppercase tracking-widest text-[#0a0a0a] dark:text-gray-400 mb-4 border-b border-gray-200 dark:border-gray-800 pb-2">III. Actionable Pivot</h3>
+                <div class="border border-gray-200 dark:border-gray-800 bg-white dark:bg-darkCard">
                     ${checklistHtml}
                 </div>
             </div>
@@ -600,6 +614,13 @@ async function downloadCarousel() {
     node.style.transform = 'scale(1)';
     
     try {
+        const isDark = document.documentElement.classList.contains('dark');
+        
+        // If dark mode is active, temporarily switch to light mode for the export
+        if (isDark) {
+            document.documentElement.classList.remove('dark');
+        }
+
         const canvas = await html2canvas(node, {
             scale: 1, // 1080x1080 native
             backgroundColor: "#ffffff",
@@ -608,6 +629,9 @@ async function downloadCarousel() {
         });
         
         node.style.transform = oldTransform;
+        if (isDark) {
+            document.documentElement.classList.add('dark');
+        }
         
         const image = canvas.toDataURL("image/png", 1.0);
         const link = document.createElement('a');

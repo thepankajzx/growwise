@@ -5,6 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thinking Capital</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#050505',
+                        darkCard: '#0a0a0a',
+                        darkBorder: '#1a1a1a'
+                    }
+                }
+            }
+        }
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&display=swap');
@@ -21,11 +35,20 @@
             background-color: var(--color-bg);
             color: var(--color-primary);
         }
+        .dark body {
+            background-color: #050505;
+            color: #f3f4f6;
+        }
 
-        .serif { font-family: 'Playfair Display', serif; }
+        .serif {
+            font-family: 'Playfair Display', serif;
+        }
 
         .institutional-border {
             border: 1px solid var(--color-border);
+        }
+        .dark .institutional-border {
+            border: 1px solid #1a1a1a;
         }
 
         .nav-active {
@@ -55,30 +78,46 @@
         
     </style>
 </head>
-<body class="antialiased overflow-x-hidden">
+<body class="antialiased min-h-screen flex flex-col transition-colors duration-300 dark:bg-darkBg dark:text-gray-200">
+    <!-- Inline script to prevent FOUC for dark mode -->
+    <script>
+        if (localStorage.getItem('tc_theme') === 'dark' || (!('tc_theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
 
     <!-- Navigation -->
-    <nav class="sticky top-0 z-50 bg-white institutional-border border-t-0 border-l-0 border-r-0">
-        <div class="max-w-7xl mx-auto px-4 md:px-8 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+    <nav class="sticky top-0 z-50 bg-white dark:bg-darkBg institutional-border border-t-0 border-l-0 border-r-0 transition-colors duration-300">
+        <div class="w-full px-4 md:px-8 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <div class="flex items-center gap-2 md:gap-3 cursor-pointer hover:opacity-70 transition w-full md:w-auto justify-center md:justify-start" onclick="resetToDashboard(); navTo('dashboard')">
-                <div class="w-8 h-8 md:w-10 md:h-10 bg-[#0a0a0a] rounded-sm flex items-center justify-center text-white font-serif font-bold text-lg md:text-xl">TC</div>
-                <span class="text-lg md:text-xl font-bold tracking-tight text-[#0a0a0a] serif">Thinking<span class="italic text-emerald-800">Capital</span></span>
+                <div class="w-8 h-8 md:w-10 md:h-10 bg-[#0a0a0a] dark:bg-white rounded-sm flex items-center justify-center text-white dark:text-[#0a0a0a] font-serif font-bold text-lg md:text-xl">TC</div>
+                <span class="text-lg md:text-xl font-bold tracking-tight text-[#0a0a0a] dark:text-white serif">Thinking<span class="italic text-emerald-800 dark:text-emerald-500">Capital</span></span>
             </div>
             
             <div class="flex flex-col md:flex-row items-center gap-6">
-                <div class="flex flex-wrap justify-center gap-6 text-sm font-bold uppercase tracking-widest text-gray-500">
-                    <button onclick="navTo('dashboard')" id="btn-dashboard" class="nav-active pb-1 hover:text-[#0a0a0a] transition">The Arsenal</button>
-                    <button onclick="navTo('explorer')" id="btn-explorer" class="pb-1 hover:text-[#0a0a0a] transition">Directory</button>
-                    <button onclick="navTo('admin')" id="btn-admin" class="hidden pb-1 hover:text-[#0a0a0a] transition">Admin Studio</button>
+                <div class="flex flex-wrap justify-center gap-6 text-sm font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">
+                    <button onclick="navTo('dashboard')" id="btn-dashboard" class="nav-active pb-1 hover:text-[#0a0a0a] dark:hover:text-white transition">The Arsenal</button>
+                    <button onclick="navTo('explorer')" id="btn-explorer" class="pb-1 hover:text-[#0a0a0a] dark:hover:text-white transition">Directory</button>
+                    <button onclick="navTo('admin')" id="btn-admin" class="hidden pb-1 hover:text-[#0a0a0a] dark:hover:text-white transition">Admin Studio</button>
                 </div>
 
-                <!-- PREMIUM TOGGLE -->
-                <div class="flex items-center gap-2 bg-gray-100 p-1 rounded-full border border-gray-200">
-                    <button onclick="setPremiumFilter(false)" id="toggle-standard" class="px-5 py-1.5 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest bg-white shadow-sm text-[#0a0a0a] transition">Standard</button>
-                    <button onclick="setPremiumFilter(true)" id="toggle-premium" class="px-5 py-1.5 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-[#0a0a0a] transition flex items-center gap-1.5">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                        Premium
+                <div class="flex items-center gap-4">
+                    <!-- Theme Toggle -->
+                    <button onclick="toggleTheme()" class="text-gray-500 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition">
+                        <svg id="theme-icon-light" class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        <svg id="theme-icon-dark" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
                     </button>
+
+                    <!-- PREMIUM TOGGLE -->
+                    <div class="flex items-center gap-2 bg-gray-100 dark:bg-darkBorder p-1 rounded-full border border-gray-200 dark:border-gray-800">
+                        <button onclick="setPremiumFilter(false)" id="toggle-standard" class="px-5 py-1.5 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest bg-white dark:bg-darkCard shadow-sm text-[#0a0a0a] dark:text-white transition">Standard</button>
+                        <button onclick="setPremiumFilter(true)" id="toggle-premium" class="px-5 py-1.5 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                            Premium
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -87,15 +126,11 @@
     <main class="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-16">
         
         <!-- DASHBOARD VIEW -->
-        <section id="view-dashboard" class="space-y-12 md:space-y-20 animate-fade w-full overflow-hidden">
-            <!-- Institutional Hero -->
-            <div class="py-12 md:py-20 text-center max-w-4xl mx-auto space-y-6 md:space-y-8">
-                <span class="text-xs font-bold uppercase tracking-widest text-gray-500 border border-gray-200 px-3 py-1 rounded-full">Edition I</span>
-                <h1 class="text-5xl md:text-7xl font-bold serif text-[#0a0a0a] leading-[1.1] tracking-tight">
-                    The authoritative index of <span class="italic text-emerald-800">high-leverage</span> mental models.
-                </h1>
-                <p class="text-base md:text-xl text-gray-600 font-normal leading-relaxed max-w-2xl mx-auto">
-                    A rigorously structured directory of the world's most powerful paradigms, distilled into actionable frameworks for executive execution.
+        <section id="view-dashboard" class="animate-fade">
+            <div class="mb-12 md:mb-20 text-center max-w-3xl mx-auto">
+                <h1 class="text-4xl md:text-6xl font-bold serif leading-tight mb-6 text-[#0a0a0a] dark:text-white">Mental Models for <br/> <span class="italic text-emerald-800 dark:text-emerald-500">High Leverage</span></h1>
+                <p class="text-base md:text-lg text-gray-600 dark:text-gray-400 leading-relaxed mb-8">
+                    An execution-focused directory of the world's most powerful frameworks, distilled from top-tier literature.
                 </p>
                 <div class="pt-4 flex justify-center gap-4">
                     <button onclick="navTo('explorer')" class="bg-[#0a0a0a] text-white px-8 py-4 rounded-sm font-semibold uppercase tracking-widest text-xs md:text-sm hover:bg-gray-800 transition duration-300">Access The Directory</button>
@@ -105,8 +140,8 @@
             <div class="institutional-border border-l-0 border-r-0 border-b-0 pt-16">
                 <!-- Categories Header -->
                 <div class="mb-10 space-y-2">
-                    <h2 class="text-2xl font-bold serif text-[#0a0a0a]">Explore by Domain</h2>
-                    <p class="text-gray-500 text-xs font-semibold uppercase tracking-widest">Select an area of focus</p>
+                    <h2 class="text-2xl font-bold serif text-[#0a0a0a] dark:text-white">Explore by Domain</h2>
+                    <p class="text-gray-500 dark:text-gray-400 text-xs font-semibold uppercase tracking-widest">Select an area of focus</p>
                 </div>
 
                 <!-- Categories Grid -->
@@ -119,15 +154,15 @@
         <!-- EXPLORER VIEW -->
         <section id="view-explorer" class="hidden space-y-8 md:space-y-12 animate-fade w-full">
             <div class="flex flex-col gap-6 institutional-border border-l-0 border-r-0 border-t-0 pb-6 md:pb-8">
-                <div class="flex justify-between items-start">
+                <div class="mb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
                     <div class="max-w-2xl">
-                        <h2 class="text-3xl md:text-4xl font-bold serif">Concept Directory</h2>
-                        <p class="text-sm md:text-base text-gray-500 mt-2">Filter and explore the frameworks.</p>
+                        <h2 class="text-3xl md:text-4xl font-bold serif text-[#0a0a0a] dark:text-white">Concept Directory</h2>
+                        <p class="text-sm md:text-base text-gray-500 dark:text-gray-400 mt-2">Filter and explore the frameworks.</p>
                     </div>
                 </div>
                 
                 <!-- Filters -->
-                <div class="flex flex-col gap-6 w-full mt-4">
+                <div class="flex flex-col lg:flex-row gap-6 mb-12 items-start justify-between border-b border-gray-200 dark:border-gray-800 pb-8">
                     <!-- Library Filters -->
                     <div>
                         <div id="libraryFilters" class="flex flex-wrap gap-2">
@@ -149,7 +184,7 @@
                         <!-- Book Dropdown Filter -->
                         <div class="w-full lg:w-72 flex-shrink-0">
                             <div class="relative">
-                                <select id="bookSelect" onchange="filterBook()" class="w-full bg-white institutional-border rounded-sm px-4 py-2.5 text-xs md:text-sm font-semibold focus:ring-1 focus:ring-[#0a0a0a] outline-none cursor-pointer appearance-none">
+                                <select id="bookSelect" onchange="filterBook()" class="institutional-border bg-white dark:bg-darkCard dark:text-gray-200 px-4 py-2.5 text-xs font-bold uppercase tracking-widest text-gray-600 focus:outline-none focus:border-[#0a0a0a] dark:focus:border-white">
                                     <option value="all">Filter by Source Material</option>
                                     <!-- Injected via JS -->
                                 </select>
@@ -169,7 +204,7 @@
         <section id="view-admin" class="hidden space-y-12 md:space-y-16 animate-fade w-full pb-20">
             <div class="max-w-4xl mx-auto">
                 <div class="mb-8">
-                    <h2 class="text-3xl font-bold serif text-[#0a0a0a]">Studio Generator</h2>
+                    <h2 class="text-3xl font-bold serif text-[#0a0a0a] dark:text-white">Studio Generator</h2>
                     <p class="text-sm text-gray-500 mt-2">Generate 1080x1080 carousels for X and LinkedIn.</p>
                 </div>
                 
@@ -229,47 +264,35 @@
         </section>
     </main>
 
-    <!-- FULL SCREEN READER (Editorial Design) -->
-    <div id="reader-overlay" class="fixed inset-0 z-[100] hidden bg-white text-[#0a0a0a] overflow-y-auto reader-scrollbar w-full">
-        <!-- Reader Navigation Header -->
-        <div class="sticky top-0 z-50 bg-white/95 backdrop-blur-md institutional-border border-t-0 border-l-0 border-r-0 px-4 md:px-8 py-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div class="flex flex-col max-w-full">
-                <span id="reader-category" class="text-gray-500 font-bold uppercase text-[10px] tracking-widest">Category</span>
-                <h2 id="reader-title" class="text-sm md:text-base font-bold serif text-[#0a0a0a] truncate max-w-full md:max-w-md">Book Title</h2>
-            </div>
+    <!-- READER OVERLAY -->
+    <div id="reader-overlay" class="fixed inset-0 z-[100] hidden bg-white dark:bg-darkBg overflow-y-auto animate-fade transition-colors duration-300">
+        <div class="max-w-4xl mx-auto px-4 md:px-8 py-8 md:py-12 relative min-h-screen flex flex-col">
             
-            <!-- Action Buttons Container -->
-            <div class="flex flex-row items-center gap-2 md:gap-4 w-full md:w-auto justify-between md:justify-end overflow-x-auto pb-1 md:pb-0">
-                
-                <div class="flex items-center gap-2 border-r border-gray-200 pr-2 md:pr-4 flex-shrink-0">
-                    <button onclick="toggleSaved()" id="btn-saved" class="px-3 py-1.5 rounded-sm border border-gray-300 text-gray-600 font-semibold text-[10px] md:text-xs hover:bg-gray-50 transition">
-                        <span id="text-saved">Read Later</span>
-                    </button>
-                    <button onclick="toggleBookmark()" id="btn-bookmark" class="px-3 py-1.5 rounded-sm border border-gray-300 text-gray-600 font-semibold text-[10px] md:text-xs hover:bg-gray-50 transition">
-                        <span id="text-bookmark">Save to Arsenal</span>
-                    </button>
-                    <button onclick="toggleCompleted()" id="btn-completed" class="px-3 py-1.5 rounded-sm border border-gray-300 text-gray-600 font-semibold text-[10px] md:text-xs hover:bg-gray-50 transition">
-                        <span id="text-completed">Mark Mastered</span>
-                    </button>
+            <button onclick="closeReader()" class="absolute top-6 right-6 md:top-12 md:right-8 text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition flex items-center gap-2 group">
+                <span class="text-[10px] font-bold uppercase tracking-widest group-hover:text-[#0a0a0a] dark:group-hover:text-white">Close</span>
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            
+            <div class="mb-12 pt-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <span id="reader-category" class="text-[10px] font-bold uppercase tracking-widest text-emerald-800 dark:text-emerald-500 border border-emerald-200 dark:border-emerald-900 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5">Category</span>
+                    <span class="text-gray-300 dark:text-gray-700">|</span>
+                    <span id="reader-author" class="text-xs font-medium text-gray-500 dark:text-gray-400 italic">Author Name</span>
                 </div>
-                
-                <div class="flex items-center gap-2 flex-shrink-0">
-                    <button onclick="shareInsight()" id="btn-share" class="px-3 py-1.5 rounded-sm bg-[#0a0a0a] text-white font-semibold text-[10px] md:text-xs hover:bg-gray-800 transition flex items-center gap-2">
-                        Share Insight
-                    </button>
-                    
-                    <button onclick="closeReader()" id="reader-close-btn" class="text-gray-500 hover:text-black transition p-1">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
-                    </button>
-                </div>
+                <h1 id="reader-main-title" class="text-4xl md:text-6xl font-bold serif text-[#0a0a0a] dark:text-white leading-tight">Title</h1>
             </div>
-        </div>
 
-        <div class="max-w-3xl mx-auto px-4 md:px-8 py-12 md:py-20">
-            <!-- Concept Header Info -->
-            <div class="mb-12 space-y-4 animate-fade" id="reader-header-area">
-                <h1 id="reader-main-title" class="text-4xl md:text-5xl font-bold serif text-[#0a0a0a] leading-[1.1] tracking-tight">Concept Title</h1>
-                <p id="reader-subtitle" class="text-sm md:text-base text-gray-500 font-medium uppercase tracking-widest">Extracted from <span class="font-bold text-[#0a0a0a]" id="reader-author">Book</span></p>
+            <!-- Sticky Action Bar -->
+            <div class="sticky top-0 bg-white/90 dark:bg-darkBg/90 backdrop-blur-md py-4 border-y border-gray-100 dark:border-gray-800 mb-12 z-10 flex flex-wrap gap-2 md:gap-4 transition-colors duration-300">
+                <button onclick="toggleSaved()" id="btn-saved" class="px-3 py-1.5 rounded-sm border border-gray-300 text-gray-600 font-semibold text-[10px] md:text-xs hover:bg-gray-50 transition">
+                    <span id="text-saved">Read Later</span>
+                </button>
+                <button onclick="toggleBookmark()" id="btn-bookmark" class="px-3 py-1.5 rounded-sm border border-gray-300 text-gray-600 font-semibold text-[10px] md:text-xs hover:bg-gray-50 transition">
+                    <span id="text-bookmark">Save to Arsenal</span>
+                </button>
+                <button onclick="toggleCompleted()" id="btn-completed" class="px-3 py-1.5 rounded-sm border border-gray-300 text-gray-600 font-semibold text-[10px] md:text-xs hover:bg-gray-50 transition">
+                    <span id="text-completed">Mark Mastered</span>
+                </button>
             </div>
             
             <!-- Exportable Container (The One-Pager) -->
@@ -281,52 +304,55 @@
         </div>
     </div>
 
-    <!-- FULL SCREEN LOGIN MODAL (Lead Gen) -->
-    <div id="login-modal" class="fixed inset-0 z-[150] hidden bg-white flex flex-col justify-center items-center p-4">
-        <button onclick="closeLoginModal()" class="absolute top-8 right-8 text-gray-400 hover:text-black transition p-2">
-            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
-        </button>
-        <div class="max-w-md w-full space-y-8 animate-fade text-center">
-            <div class="w-16 h-16 bg-[#0a0a0a] text-white flex items-center justify-center font-serif font-bold text-3xl rounded-sm mx-auto shadow-xl">TC</div>
-            <h2 class="text-4xl font-bold serif text-[#0a0a0a] tracking-tight">Enter the Directory</h2>
-            <p class="text-gray-500 text-sm leading-relaxed">
-                Join our private list of executives and operators building high-leverage mental models. Enter your email to continue.
-            </p>
-            <form onsubmit="handleLogin(event)" class="space-y-4 pt-4">
-                <input type="email" id="login-email" required placeholder="name@company.com" class="w-full institutional-border rounded-sm px-4 py-4 text-sm font-semibold focus:outline-none focus:border-[#0a0a0a] focus:ring-1 focus:ring-[#0a0a0a] text-center">
-                <button type="submit" class="w-full bg-[#0a0a0a] text-white py-4 rounded-sm font-bold uppercase tracking-widest text-xs hover:bg-gray-800 transition shadow-lg">Access Frameworks</button>
-            </form>
-            <p class="text-xs text-gray-400">Your email is kept strictly confidential.</p>
+    <!-- LOGIN MODAL -->
+    <div id="login-modal" class="fixed inset-0 z-[200] hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-darkCard max-w-md w-full rounded-sm shadow-2xl p-8 relative animate-fade institutional-border">
+            <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black dark:hover:text-white transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <div class="text-center space-y-6">
+                <div class="w-12 h-12 bg-[#0a0a0a] dark:bg-white rounded-sm flex items-center justify-center mx-auto text-white dark:text-[#0a0a0a] font-serif font-bold text-2xl">TC</div>
+                <h3 class="text-2xl font-bold serif text-[#0a0a0a] dark:text-white">Enter the Directory</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Join the world's most focused library of high-leverage frameworks.</p>
+                
+                <form onsubmit="handleLogin(event)" class="space-y-4 pt-4">
+                    <div>
+                        <input type="email" id="login-email" required placeholder="Email Address" class="w-full institutional-border dark:bg-darkBg dark:text-white rounded-sm px-4 py-3 text-sm focus:outline-none focus:border-[#0a0a0a] dark:focus:border-white">
+                    </div>
+                    <button type="submit" class="w-full bg-[#0a0a0a] dark:bg-white text-white dark:text-[#0a0a0a] py-3 rounded-sm font-bold uppercase tracking-widest text-xs hover:bg-gray-800 dark:hover:bg-gray-200 transition">Continue</button>
+                </form>
+                <p class="text-[10px] text-gray-400 uppercase tracking-widest">No spam. Only high-signal insights.</p>
+            </div>
         </div>
     </div>
 
     <!-- FREEMIUM MODAL (Code & WhatsApp) -->
     <div id="freemium-modal" class="fixed inset-0 z-[200] hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white max-w-md w-full rounded-sm shadow-2xl p-8 relative animate-fade">
-            <button onclick="closeFreemiumModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black transition">
+        <div class="bg-white dark:bg-darkCard max-w-md w-full rounded-sm shadow-2xl p-8 relative animate-fade institutional-border">
+            <button onclick="closeFreemiumModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black dark:hover:text-white transition">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
             <div class="text-center space-y-6">
-                <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto text-gray-900">
+                <div class="w-12 h-12 bg-gray-100 dark:bg-darkBg rounded-full flex items-center justify-center mx-auto text-gray-900 dark:text-white">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                 </div>
-                <h3 class="text-2xl font-bold serif text-[#0a0a0a]">Unlock the Arsenal</h3>
+                <h3 class="text-2xl font-bold serif text-[#0a0a0a] dark:text-white">Unlock the Arsenal</h3>
                 
                 <!-- Option 1: Buy -->
                 <div class="pt-2">
-                    <a href="https://wa.me/917018168156?text=I%20want%20to%20buy%20premium" target="_blank" onclick="closeFreemiumModal()" class="block w-full bg-[#0a0a0a] text-white py-4 rounded-sm font-bold uppercase tracking-widest text-xs hover:bg-gray-800 transition shadow-lg text-center">Buy</a>
+                    <a href="https://wa.me/917018168156?text=I%20want%20to%20buy%20premium" target="_blank" onclick="closeFreemiumModal()" class="block w-full bg-[#0a0a0a] dark:bg-white text-white dark:text-[#0a0a0a] py-4 rounded-sm font-bold uppercase tracking-widest text-xs hover:bg-gray-800 dark:hover:bg-gray-200 transition shadow-lg text-center">Buy</a>
                     <p class="text-[10px] text-gray-400 mt-2 uppercase tracking-widest font-bold">One-time payment. Lifetime access.</p>
                 </div>
 
                 <div class="relative py-4">
-                    <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-200"></div></div>
-                    <div class="relative flex justify-center"><span class="bg-white px-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Or</span></div>
+                    <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-200 dark:border-gray-800"></div></div>
+                    <div class="relative flex justify-center"><span class="bg-white dark:bg-darkCard px-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Or</span></div>
                 </div>
 
                 <!-- Option 2: Enter Code -->
                 <div>
-                    <input type="password" id="modalSecretCodeInput" placeholder="Enter Access Code" class="w-full institutional-border rounded-sm px-4 py-3 text-sm font-semibold focus:outline-none focus:border-[#0a0a0a] mb-2 text-center placeholder-gray-300">
-                    <button onclick="checkAccessCodeModal()" id="codeSubmitBtn" class="w-full bg-gray-100 text-[#0a0a0a] border border-gray-300 py-3 rounded-sm font-bold uppercase tracking-widest text-xs hover:bg-gray-200 transition">Unlock Access</button>
+                    <input type="password" id="modalSecretCodeInput" placeholder="Enter Access Code" class="w-full institutional-border dark:bg-darkBg dark:text-white rounded-sm px-4 py-3 text-sm font-semibold focus:outline-none focus:border-[#0a0a0a] dark:focus:border-white mb-2 text-center placeholder-gray-300 dark:placeholder-gray-600">
+                    <button onclick="checkAccessCodeModal()" id="codeSubmitBtn" class="w-full bg-gray-100 dark:bg-darkBg text-[#0a0a0a] dark:text-white border border-gray-300 dark:border-gray-700 py-3 rounded-sm font-bold uppercase tracking-widest text-xs hover:bg-gray-200 dark:hover:bg-gray-800 transition">Unlock Access</button>
                 </div>
             </div>
         </div>
@@ -338,7 +364,7 @@
     </div>
 
     <!-- Scripts -->
-    <script src="data.js?v=2"></script>
-    <script src="script.js?v=2"></script>
+    <script src="data.js?v=3"></script>
+    <script src="script.js?v=3"></script>
 </body>
 </html>

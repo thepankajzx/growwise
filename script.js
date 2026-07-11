@@ -167,13 +167,25 @@ function toggleTheme() {
     }
 }
 
-function setPremiumFilter(isPremium) {
-    showPremiumOnly = isPremium;
-    
+function handleMembershipClick(wantsPremium) {
+    if (wantsPremium) {
+        if (hasPremium()) {
+            updateMembershipUI();
+        } else {
+            // Trigger upgrade flow
+            showLoginModal();
+        }
+    } else {
+        // Just update UI if they click free (though usually they just see it)
+        updateMembershipUI();
+    }
+}
+
+function updateMembershipUI() {
     const btnStandard = document.getElementById('toggle-standard');
     const btnPremium = document.getElementById('toggle-premium');
     
-    if (showPremiumOnly) {
+    if (hasPremium()) {
         btnPremium.classList.add('bg-white', 'dark:bg-darkCard', 'shadow-sm', 'text-[#0a0a0a]', 'dark:text-white');
         btnPremium.classList.remove('text-gray-500', 'dark:text-gray-400');
         
@@ -186,8 +198,6 @@ function setPremiumFilter(isPremium) {
         btnPremium.classList.remove('bg-white', 'dark:bg-darkCard', 'shadow-sm', 'text-[#0a0a0a]', 'dark:text-white');
         btnPremium.classList.add('text-gray-500', 'dark:text-gray-400');
     }
-    
-    renderExplorer();
 }
 
 function filterCategory(catId) {
@@ -197,13 +207,13 @@ function filterCategory(catId) {
     
     const pills = document.querySelectorAll('#filterPills button');
     pills.forEach(pill => {
-        pill.classList.remove('bg-[#0a0a0a]', 'dark:bg-white', 'text-white', 'dark:text-[#0a0a0a]', 'border-[#0a0a0a]', 'dark:border-white');
-        pill.classList.add('border-gray-300', 'dark:border-gray-700', 'text-gray-600', 'dark:text-gray-400');
+        pill.classList.remove('bg-[#0a0a0a]', 'dark:bg-white', 'text-white', 'dark:text-[#0a0a0a]', 'border-[#0a0a0a]', 'dark:border-white', 'border-transparent');
+        pill.classList.add('border-transparent', 'text-gray-600', 'dark:text-gray-400', 'hover:text-[#0a0a0a]', 'dark:hover:text-white');
     });
     
     const activePill = document.getElementById(`pill-${catId}`);
     if(activePill) {
-        activePill.classList.remove('border-gray-300', 'dark:border-gray-700', 'text-gray-600', 'dark:text-gray-400');
+        activePill.classList.remove('border-transparent', 'text-gray-600', 'dark:text-gray-400', 'hover:text-[#0a0a0a]', 'dark:hover:text-white');
         activePill.classList.add('bg-[#0a0a0a]', 'dark:bg-white', 'text-white', 'dark:text-[#0a0a0a]', 'border-[#0a0a0a]', 'dark:border-white');
     }
     
@@ -216,8 +226,8 @@ function filterBook() {
         currentCategoryFilter = 'all';
         const pills = document.querySelectorAll('#filterPills button');
         pills.forEach(pill => {
-            pill.classList.remove('bg-[#0a0a0a]', 'dark:bg-white', 'text-white', 'dark:text-[#0a0a0a]', 'border-[#0a0a0a]', 'dark:border-white');
-            pill.classList.add('border-gray-300', 'dark:border-gray-700', 'text-gray-600', 'dark:text-gray-400');
+            pill.classList.remove('bg-[#0a0a0a]', 'dark:bg-white', 'text-white', 'dark:text-[#0a0a0a]', 'border-[#0a0a0a]', 'dark:border-white', 'border-transparent');
+            pill.classList.add('border-transparent', 'text-gray-600', 'dark:text-gray-400', 'hover:text-[#0a0a0a]', 'dark:hover:text-white');
         });
         document.getElementById(`pill-all`).classList.add('bg-[#0a0a0a]', 'dark:bg-white', 'text-white', 'dark:text-[#0a0a0a]', 'border-[#0a0a0a]', 'dark:border-white');
     }
@@ -229,13 +239,13 @@ function filterLibrary(type) {
     
     const pills = document.querySelectorAll('#libraryFilters button');
     pills.forEach(pill => {
-        pill.classList.remove('bg-[#0a0a0a]', 'dark:bg-white', 'text-white', 'dark:text-[#0a0a0a]', 'border-[#0a0a0a]', 'dark:border-white');
-        pill.classList.add('border-gray-300', 'dark:border-gray-700', 'text-gray-600', 'dark:text-gray-400');
+        pill.classList.remove('bg-[#0a0a0a]', 'dark:bg-white', 'text-white', 'dark:text-[#0a0a0a]', 'border-[#0a0a0a]', 'dark:border-white', 'border-transparent');
+        pill.classList.add('border-transparent', 'text-gray-600', 'dark:text-gray-400', 'hover:text-[#0a0a0a]', 'dark:hover:text-white');
     });
     
     const activePill = document.getElementById(`lib-${type}`);
     if (activePill) {
-        activePill.classList.remove('border-gray-300', 'dark:border-gray-700', 'text-gray-600', 'dark:text-gray-400');
+        activePill.classList.remove('border-transparent', 'text-gray-600', 'dark:text-gray-400', 'hover:text-[#0a0a0a]', 'dark:hover:text-white');
         activePill.classList.add('bg-[#0a0a0a]', 'dark:bg-white', 'text-white', 'dark:text-[#0a0a0a]', 'border-[#0a0a0a]', 'dark:border-white');
     }
     
@@ -250,7 +260,7 @@ function resetToDashboard() {
     
     filterCategory('all');
     filterLibrary('all');
-    setPremiumFilter(false);
+    updateMembershipUI();
     closeReader();
 }
 
@@ -299,10 +309,7 @@ function renderExplorer() {
 
     let filtered = allConcepts;
     
-    // Premium Toggle Filter
-    if(showPremiumOnly) {
-        filtered = filtered.filter(c => c.concept.isPremium);
-    }
+    // Filter by membership logic removed (all concepts always visible)
 
     if (currentLibraryFilter === 'saved') {
         filtered = filtered.filter(c => savedItems.includes(`${c.bookId}-${c.conceptIndex}`));
@@ -343,9 +350,9 @@ function renderExplorer() {
         
         let statusIconsHtml = '';
         if (item.concept.isPremium) statusIconsHtml += `<span class="text-[9px] font-bold uppercase tracking-widest text-amber-700 dark:text-amber-500 bg-amber-100 dark:bg-amber-900/20 px-2 py-0.5 border border-amber-200 dark:border-amber-900">Premium</span>`;
-        if (isCompleted) statusIconsHtml += `<span class="text-[9px] font-bold uppercase tracking-widest text-emerald-700 dark:text-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 border border-emerald-100 dark:border-emerald-900">Mastered</span>`;
-        if (isBookmarked) statusIconsHtml += `<span class="text-[9px] font-bold uppercase tracking-widest text-[#0a0a0a] dark:text-white bg-gray-100 dark:bg-darkBg px-2 py-0.5 border border-gray-200 dark:border-gray-800">Arsenal</span>`;
-        if (isSaved) statusIconsHtml += `<span class="text-[9px] font-bold uppercase tracking-widest text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 px-2 py-0.5 border border-blue-100 dark:border-blue-900">Read Later</span>`;
+        if (isCompleted) statusIconsHtml += `<span class="text-[9px] font-bold uppercase tracking-widest text-emerald-700 dark:text-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 border border-emerald-100 dark:border-emerald-900">Completed</span>`;
+        if (isBookmarked) statusIconsHtml += `<span class="text-[9px] font-bold uppercase tracking-widest text-[#0a0a0a] dark:text-white bg-gray-100 dark:bg-darkBg px-2 py-0.5 border border-gray-200 dark:border-gray-800">Bookmarked</span>`;
+        if (isSaved) statusIconsHtml += `<span class="text-[9px] font-bold uppercase tracking-widest text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 px-2 py-0.5 border border-blue-100 dark:border-blue-900">Saved</span>`;
         if (isLocked) statusIconsHtml += `<svg class="w-3.5 h-3.5 text-gray-400 dark:text-gray-600 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>`;
 
         card.innerHTML = `
@@ -436,7 +443,7 @@ function updateActionButtonsState() {
         } else {
             btnSaved.classList.remove('bg-gray-100', 'border-[#0a0a0a]', 'text-[#0a0a0a]');
             btnSaved.classList.add('border-gray-300', 'text-gray-600', 'hover:bg-gray-50');
-            txtSaved.textContent = 'Read Later';
+            txtSaved.textContent = 'Save Later';
         }
     }
 
@@ -446,11 +453,11 @@ function updateActionButtonsState() {
         if (bookmarks.includes(conceptId)) {
             btnBookmark.classList.add('bg-gray-100', 'border-[#0a0a0a]', 'text-[#0a0a0a]');
             btnBookmark.classList.remove('border-gray-300', 'text-gray-600', 'hover:bg-gray-50');
-            txtBookmark.textContent = 'In Arsenal';
+            txtBookmark.textContent = 'Bookmarked';
         } else {
             btnBookmark.classList.remove('bg-gray-100', 'border-[#0a0a0a]', 'text-[#0a0a0a]');
             btnBookmark.classList.add('border-gray-300', 'text-gray-600', 'hover:bg-gray-50');
-            txtBookmark.textContent = 'Save to Arsenal';
+            txtBookmark.textContent = 'Bookmark';
         }
     }
     
@@ -460,11 +467,11 @@ function updateActionButtonsState() {
         if (completed.includes(conceptId)) {
             btnCompleted.classList.add('bg-emerald-50', 'border-emerald-800', 'text-emerald-800');
             btnCompleted.classList.remove('border-gray-300', 'text-gray-600', 'hover:bg-gray-50');
-            txtCompleted.textContent = 'Mastered';
+            txtCompleted.textContent = 'Completed';
         } else {
             btnCompleted.classList.remove('bg-emerald-50', 'border-emerald-800', 'text-emerald-800');
             btnCompleted.classList.add('border-gray-300', 'text-gray-600', 'hover:bg-gray-50');
-            txtCompleted.textContent = 'Mark Mastered';
+            txtCompleted.textContent = 'Mark Completed';
         }
     }
 }

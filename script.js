@@ -143,12 +143,16 @@ window.addEventListener('load', () => {
 });
 window.addEventListener('hashchange', () => {
     if(window.location.hash === '#admin') {
-        document.getElementById('btn-admin').classList.remove('hidden');
-        navTo('admin');
+        if(hasPremium()) {
+            document.getElementById('btn-admin').classList.remove('hidden');
+            navTo('admin');
+        } else {
+            navTo('explorer');
+        }
     }
     if(window.location.hash === '#master') {
         localStorage.setItem('tc_premium', 'true');
-        document.getElementById('btn-admin').classList.remove('hidden');
+        updateMembershipUI();
     }
 });
 
@@ -168,35 +172,50 @@ function toggleTheme() {
 }
 
 function handleMembershipClick(wantsPremium) {
-    if (wantsPremium) {
-        if (hasPremium()) {
-            updateMembershipUI();
-        } else {
-            // Trigger upgrade flow
-            showLoginModal();
-        }
-    } else {
-        // Just update UI if they click free (though usually they just see it)
-        updateMembershipUI();
+    if (wantsPremium && !hasPremium()) {
+        showLoginModal();
     }
 }
 
+function handleLogin(e) {
+    e.preventDefault();
+    // Simulate successful login
+    localStorage.setItem('tc_premium', 'true');
+    closeLoginModal();
+    updateMembershipUI();
+}
+
+function logout() {
+    localStorage.removeItem('tc_premium');
+    if (window.location.hash === '#admin') navTo('explorer');
+    updateMembershipUI();
+}
+
 function updateMembershipUI() {
-    const btnStandard = document.getElementById('toggle-standard');
-    const btnPremium = document.getElementById('toggle-premium');
+    const authContainer = document.getElementById('auth-container');
+    if (!authContainer) return;
     
     if (hasPremium()) {
-        btnPremium.classList.add('bg-white', 'dark:bg-darkCard', 'shadow-sm', 'text-[#0a0a0a]', 'dark:text-white');
-        btnPremium.classList.remove('text-gray-500', 'dark:text-gray-400');
-        
-        btnStandard.classList.remove('bg-white', 'dark:bg-darkCard', 'shadow-sm', 'text-[#0a0a0a]', 'dark:text-white');
-        btnStandard.classList.add('text-gray-500', 'dark:text-gray-400');
+        authContainer.innerHTML = `
+            <button onclick="logout()" class="flex items-center gap-1 bg-amber-100 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-900 px-3 py-1 rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-amber-700 dark:text-amber-500 transition hover:bg-amber-200 dark:hover:bg-amber-900/40" title="Click to Logout">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                Premium
+            </button>
+        `;
+        const adminBtn = document.getElementById('btn-admin');
+        if(adminBtn) adminBtn.classList.remove('hidden');
     } else {
-        btnStandard.classList.add('bg-white', 'dark:bg-darkCard', 'shadow-sm', 'text-[#0a0a0a]', 'dark:text-white');
-        btnStandard.classList.remove('text-gray-500', 'dark:text-gray-400');
-        
-        btnPremium.classList.remove('bg-white', 'dark:bg-darkCard', 'shadow-sm', 'text-[#0a0a0a]', 'dark:text-white');
-        btnPremium.classList.add('text-gray-500', 'dark:text-gray-400');
+        authContainer.innerHTML = `
+            <div class="flex items-center gap-1 bg-gray-100 dark:bg-darkBorder p-0.5 rounded-full border border-gray-200 dark:border-gray-800">
+                <button class="px-3 py-1 rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-widest bg-white dark:bg-darkCard shadow-sm text-[#0a0a0a] dark:text-white transition cursor-default">Free</button>
+                <button onclick="handleMembershipClick(true)" class="px-3 py-1 rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition flex items-center gap-1">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                    Premium
+                </button>
+            </div>
+        `;
+        const adminBtn = document.getElementById('btn-admin');
+        if(adminBtn) adminBtn.classList.add('hidden');
     }
 }
 
@@ -604,63 +623,72 @@ function closeReader() {
 // ADMIN CAROUSEL GENERATOR LOGIC
 // ----------------------------------------------------
 
-function renderAdminSidebar() {
-    const menu = document.getElementById('admin-sidebar-menu');
-    if (!menu) return;
+function populateAdminBooks() {
+    const domain = document.getElementById('admin-domain-select').value;
+    const bookSelect = document.getElementById('admin-book-select');
+    const conceptSelect = document.getElementById('admin-concept-select');
     
-    // Group books by category
-    const categories = {
-        'wealth': { title: 'Wealth', books: [] },
-        'self-improvement': { title: 'Self-Improvement', books: [] },
-        'business': { title: 'Business & Strategy', books: [] },
-        'productivity': { title: 'Productivity', books: [] }
-    };
+    conceptSelect.innerHTML = '<option value="">-- Select Source First --</option>';
+    conceptSelect.disabled = true;
     
-    booksData.forEach(book => {
-        if(categories[book.category]) {
-            categories[book.category].books.push(book);
-        }
-    });
-
-    let html = '';
-    
-    for (const [catId, catData] of Object.entries(categories)) {
-        if (catData.books.length === 0) continue;
-        
-        html += `
-            <div class="mb-4">
-                <h4 class="text-[10px] font-bold uppercase tracking-widest text-[#0a0a0a] dark:text-white bg-gray-100 dark:bg-darkCard border border-gray-200 dark:border-gray-800 px-3 py-2 rounded-sm shadow-sm">${catData.title}</h4>
-                <div class="mt-2 pl-3 space-y-3 border-l-2 border-gray-100 dark:border-gray-800 ml-3">
-        `;
-        
-        catData.books.forEach(book => {
-            html += `
-                <div>
-                    <h5 class="text-[11px] font-bold uppercase tracking-widest text-gray-700 dark:text-gray-300 mb-1 leading-relaxed">${book.title}</h5>
-                    <div class="space-y-0.5">
-            `;
-            
-            book.concepts.forEach((concept, index) => {
-                html += `
-                    <button onclick="selectConceptForCarousel('${book.id}', ${index})" class="block w-full text-left text-xs font-semibold text-gray-500 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white hover:bg-gray-50 dark:hover:bg-darkBorder px-2 py-1 rounded-sm transition">
-                        ${concept.title}
-                    </button>
-                `;
-            });
-            
-            html += `</div></div>`;
-        });
-        
-        html += `</div></div>`;
+    if (!domain) {
+        bookSelect.innerHTML = '<option value="">-- Select Domain First --</option>';
+        bookSelect.disabled = true;
+        return;
     }
     
-    menu.innerHTML = html;
+    const domainBooks = booksData.filter(b => b.category === domain);
+    
+    if (domainBooks.length === 0) {
+        bookSelect.innerHTML = '<option value="">No books in this domain</option>';
+        bookSelect.disabled = true;
+        return;
+    }
+    
+    let html = '<option value="">-- Select Book --</option>';
+    domainBooks.forEach(book => {
+        html += `<option value="${book.id}">${book.title}</option>`;
+    });
+    
+    bookSelect.innerHTML = html;
+    bookSelect.disabled = false;
 }
 
-function selectConceptForCarousel(bookId, conceptIndex) {
+function populateAdminConcepts() {
+    const bookId = document.getElementById('admin-book-select').value;
+    const conceptSelect = document.getElementById('admin-concept-select');
+    
+    if (!bookId) {
+        conceptSelect.innerHTML = '<option value="">-- Select Source First --</option>';
+        conceptSelect.disabled = true;
+        return;
+    }
+    
+    const book = booksData.find(b => b.id === bookId);
+    if (!book || !book.concepts || book.concepts.length === 0) {
+        conceptSelect.innerHTML = '<option value="">No concepts found</option>';
+        conceptSelect.disabled = true;
+        return;
+    }
+    
+    let html = '<option value="">-- Select Concept --</option>';
+    book.concepts.forEach((concept, index) => {
+        html += `<option value="${index}">${concept.title}</option>`;
+    });
+    
+    conceptSelect.innerHTML = html;
+    conceptSelect.disabled = false;
+}
+
+function selectConceptForCarouselFromDropdown() {
+    const bookId = document.getElementById('admin-book-select').value;
+    const conceptIndex = document.getElementById('admin-concept-select').value;
+    
+    if(!bookId || conceptIndex === "") return;
+    
     const book = booksData.find(b => b.id === bookId);
     if (!book) return;
-    const concept = book.concepts[conceptIndex];
+    const concept = book.concepts[parseInt(conceptIndex)];
     
     // Parse premise
     const sentences = concept.explanation.match(/[^.!?]+[.!?]+/g) || [concept.explanation];
@@ -677,16 +705,42 @@ function updateCarouselPreview() {
     const title = document.getElementById('cg-title').value;
     const content = document.getElementById('cg-content').value;
     const showNumber = document.getElementById('cg-show-number').checked;
+    const numberText = document.getElementById('cg-number').value;
+    const ratio = document.getElementById('cg-ratio').value;
+    
     const numberEl = document.getElementById('cg-preview-number');
+    const node = document.getElementById('carousel-export-node');
+    const wrapper = document.getElementById('cg-preview-wrapper');
 
     document.getElementById('cg-preview-title').textContent = title;
     document.getElementById('cg-preview-content').textContent = content;
+    numberEl.textContent = numberText;
     
     if (showNumber) {
         numberEl.classList.remove('hidden');
     } else {
         numberEl.classList.add('hidden');
     }
+    
+    // Handle ratios
+    let width = 1080;
+    let height = 1080;
+    let scale = 0.333333;
+
+    if (ratio === '1:1') {
+        width = 1080; height = 1080; scale = 0.333333;
+    } else if (ratio === '4:5') {
+        width = 1080; height = 1350; scale = 0.333333;
+    } else if (ratio === '16:9') {
+        width = 1920; height = 1080; scale = 0.1875;
+    }
+    
+    node.style.width = width + 'px';
+    node.style.height = height + 'px';
+    node.style.transform = `scale(${scale})`;
+    
+    wrapper.style.width = (width * scale) + 'px';
+    wrapper.style.height = (height * scale) + 'px';
 }
 
 async function downloadCarousel() {
@@ -731,11 +785,14 @@ async function downloadCarousel() {
 
 // Initialize
 window.onload = () => {
+    if(window.location.hash === '#master') {
+        localStorage.setItem('tc_premium', 'true');
+    }
+    updateMembershipUI();
     flattenData();
     initBookFilter();
     renderDashboard();
     renderExplorer();
-    renderAdminSidebar();
 };
 
 document.addEventListener('keydown', (e) => { 

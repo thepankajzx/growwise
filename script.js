@@ -604,14 +604,89 @@ function closeReader() {
 // ADMIN CAROUSEL GENERATOR LOGIC
 // ----------------------------------------------------
 
+function renderAdminSidebar() {
+    const menu = document.getElementById('admin-sidebar-menu');
+    if (!menu) return;
+    
+    // Group books by category
+    const categories = {
+        'wealth': { title: 'Wealth', books: [] },
+        'self-improvement': { title: 'Self-Improvement', books: [] },
+        'business': { title: 'Business & Strategy', books: [] },
+        'productivity': { title: 'Productivity', books: [] }
+    };
+    
+    booksData.forEach(book => {
+        if(categories[book.category]) {
+            categories[book.category].books.push(book);
+        }
+    });
+
+    let html = '';
+    
+    for (const [catId, catData] of Object.entries(categories)) {
+        if (catData.books.length === 0) continue;
+        
+        html += `
+            <div class="mb-4">
+                <h4 class="text-[10px] font-bold uppercase tracking-widest text-[#0a0a0a] dark:text-white bg-gray-100 dark:bg-darkCard border border-gray-200 dark:border-gray-800 px-3 py-2 rounded-sm shadow-sm">${catData.title}</h4>
+                <div class="mt-2 pl-3 space-y-3 border-l-2 border-gray-100 dark:border-gray-800 ml-3">
+        `;
+        
+        catData.books.forEach(book => {
+            html += `
+                <div>
+                    <h5 class="text-[11px] font-bold uppercase tracking-widest text-gray-700 dark:text-gray-300 mb-1 leading-relaxed">${book.title}</h5>
+                    <div class="space-y-0.5">
+            `;
+            
+            book.concepts.forEach((concept, index) => {
+                html += `
+                    <button onclick="selectConceptForCarousel('${book.id}', ${index})" class="block w-full text-left text-xs font-semibold text-gray-500 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white hover:bg-gray-50 dark:hover:bg-darkBorder px-2 py-1 rounded-sm transition">
+                        ${concept.title}
+                    </button>
+                `;
+            });
+            
+            html += `</div></div>`;
+        });
+        
+        html += `</div></div>`;
+    }
+    
+    menu.innerHTML = html;
+}
+
+function selectConceptForCarousel(bookId, conceptIndex) {
+    const book = booksData.find(b => b.id === bookId);
+    if (!book) return;
+    const concept = book.concepts[conceptIndex];
+    
+    // Parse premise
+    const sentences = concept.explanation.match(/[^.!?]+[.!?]+/g) || [concept.explanation];
+    let premise = sentences[0];
+    if (sentences.length > 1 && premise.length < 50) premise += sentences[1];
+    
+    document.getElementById('cg-title').value = concept.title;
+    document.getElementById('cg-content').value = premise.trim();
+    
+    updateCarouselPreview();
+}
+
 function updateCarouselPreview() {
     const title = document.getElementById('cg-title').value;
     const content = document.getElementById('cg-content').value;
-    const number = document.getElementById('cg-number').value;
+    const showNumber = document.getElementById('cg-show-number').checked;
+    const numberEl = document.getElementById('cg-preview-number');
 
     document.getElementById('cg-preview-title').textContent = title;
     document.getElementById('cg-preview-content').textContent = content;
-    document.getElementById('cg-preview-number').textContent = number;
+    
+    if (showNumber) {
+        numberEl.classList.remove('hidden');
+    } else {
+        numberEl.classList.add('hidden');
+    }
 }
 
 async function downloadCarousel() {
@@ -660,6 +735,7 @@ window.onload = () => {
     initBookFilter();
     renderDashboard();
     renderExplorer();
+    renderAdminSidebar();
 };
 
 document.addEventListener('keydown', (e) => { 

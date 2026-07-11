@@ -56,6 +56,11 @@
             color: var(--color-primary) !important;
             font-weight: 700;
         }
+        
+        .dark .nav-active {
+            border-bottom: 2px solid #ffffff;
+            color: #ffffff !important;
+        }
 
         .theme-wealth { --niche-base: #166534; }
         .theme-self-improvement { --niche-base: #312e81; }
@@ -201,60 +206,61 @@
         </section>
 
         <!-- ADMIN VIEW (CAROUSEL GENERATOR) -->
-        <section id="view-admin" class="hidden space-y-12 md:space-y-16 animate-fade max-w-7xl mx-auto pb-20">
-            <div class="max-w-4xl mx-auto">
-                <div class="mb-8">
-                    <h2 class="text-3xl font-bold serif text-[#0a0a0a] dark:text-white">Studio Generator</h2>
-                    <p class="text-sm text-gray-500 mt-2">Generate 1080x1080 carousels for X and LinkedIn.</p>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-                    <!-- Controls -->
-                    <div class="space-y-6">
-                        <div>
-                            <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Slide Title</label>
-                            <input type="text" id="cg-title" value="The Identity-Based Habit Loop" class="w-full institutional-border rounded-sm px-4 py-3 text-sm font-semibold focus:outline-none focus:border-[#0a0a0a]">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Slide Content (Core Premise / Mechanism)</label>
-                            <textarea id="cg-content" rows="6" class="w-full institutional-border rounded-sm px-4 py-3 text-sm font-semibold focus:outline-none focus:border-[#0a0a0a]">True behavior change is identity change. If you focus on who you want to become rather than what you want to achieve, your habits automatically align with your new self-image.</textarea>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Slide Number</label>
-                            <input type="text" id="cg-number" value="1/3" class="w-full institutional-border rounded-sm px-4 py-3 text-sm font-semibold focus:outline-none focus:border-[#0a0a0a]">
-                        </div>
-                        
-                        <button onclick="updateCarouselPreview()" class="w-full bg-gray-100 text-[#0a0a0a] border border-gray-300 py-3 rounded-sm font-bold uppercase tracking-widest text-xs hover:bg-gray-200 transition">Update Preview</button>
-                        <button onclick="downloadCarousel()" class="w-full bg-[#0a0a0a] text-white py-3 rounded-sm font-bold uppercase tracking-widest text-xs hover:bg-gray-800 transition shadow-lg">Download 1080x1080 PNG</button>
+        <section id="view-admin" class="hidden animate-fade max-w-[1400px] mx-auto pb-20 w-full">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold serif text-[#0a0a0a] dark:text-white">Studio Generator</h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Generate 1080x1080 carousels for X and LinkedIn.</p>
+            </div>
+            
+            <div class="flex flex-col lg:flex-row gap-8 w-full">
+                <!-- Sidebar Menu (Categories/Books) -->
+                <div class="w-full lg:w-1/4 space-y-4">
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4 border-b border-gray-200 dark:border-gray-800 pb-2">Select Concept</h3>
+                    <div id="admin-sidebar-menu" class="space-y-4 custom-scrollbar overflow-y-auto max-h-[70vh] pr-2">
+                        <!-- Filled by JS -->
                     </div>
+                </div>
 
-                    <!-- Preview Container -->
-                    <div class="flex justify-center items-start">
-                        <!-- We scale it down for preview, but when downloading we render full size -->
-                        <div style="width: 360px; height: 360px;" class="border border-gray-200 shadow-xl overflow-hidden relative">
-                            <!-- Actual 1080x1080 canvas scaled down via transform -->
-                            <div id="carousel-export-node" style="width: 1080px; height: 1080px; transform: scale(0.3333); transform-origin: top left;" class="bg-white p-24 flex flex-col justify-between relative">
-                                <!-- Top Bar -->
-                                <div class="flex justify-between items-center w-full">
-                                    <div class="flex items-center gap-4">
-                                        <div class="w-16 h-16 bg-[#0a0a0a] text-white flex items-center justify-center font-serif font-bold text-3xl rounded-sm">TC</div>
-                                        <span class="text-3xl font-bold tracking-tight text-[#0a0a0a] serif">Thinking<span class="italic text-emerald-800">Capital</span></span>
-                                    </div>
-                                    <span class="text-2xl font-bold uppercase tracking-widest text-gray-400" id="cg-preview-number">1/3</span>
-                                </div>
-                                
-                                <!-- Content -->
-                                <div class="flex-1 flex flex-col justify-center space-y-12 w-full pr-12">
-                                    <h1 class="text-[5.5rem] font-bold serif text-[#0a0a0a] leading-[1.1] tracking-tight" id="cg-preview-title">The Identity-Based Habit Loop</h1>
-                                    <div class="border-l-8 border-emerald-800 pl-12">
-                                        <p class="text-5xl text-gray-700 leading-relaxed font-medium" id="cg-preview-content">True behavior change is identity change. If you focus on who you want to become rather than what you want to achieve, your habits automatically align with your new self-image.</p>
-                                    </div>
-                                </div>
+                <!-- Center Controls -->
+                <div class="w-full lg:w-1/3 space-y-6 bg-white dark:bg-darkCard p-6 border border-gray-200 dark:border-gray-800 rounded-sm">
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">Post Data</h3>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-2">Slide Title</label>
+                        <input type="text" id="cg-title" value="The Identity-Based Habit Loop" class="w-full bg-transparent border border-gray-200 dark:border-gray-700 dark:text-white rounded-sm px-4 py-3 text-sm font-semibold focus:outline-none focus:border-[#0a0a0a] dark:focus:border-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-2">Slide Content (Core Premise / Mechanism)</label>
+                        <textarea id="cg-content" rows="8" class="w-full bg-transparent border border-gray-200 dark:border-gray-700 dark:text-white rounded-sm px-4 py-3 text-sm font-semibold focus:outline-none focus:border-[#0a0a0a] dark:focus:border-white">True behavior change is identity change. If you focus on who you want to become rather than what you want to achieve, your habits automatically align with your new self-image.</textarea>
+                    </div>
+                    
+                    <div class="flex items-center gap-2 mt-4">
+                        <input type="checkbox" id="cg-show-number" class="w-4 h-4 rounded border-gray-300 dark:border-gray-600 bg-transparent text-[#0a0a0a] dark:text-white focus:ring-[#0a0a0a] dark:focus:ring-white focus:ring-2">
+                        <label for="cg-show-number" class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">Show Slide Number (1/3)</label>
+                    </div>
+                    
+                    <button onclick="updateCarouselPreview()" class="w-full bg-gray-100 dark:bg-darkBg text-[#0a0a0a] dark:text-white border border-gray-300 dark:border-gray-700 py-3 rounded-sm font-bold uppercase tracking-widest text-xs hover:bg-gray-200 dark:hover:bg-gray-800 transition">Update Preview</button>
+                    <button onclick="downloadCarousel()" class="w-full bg-[#0a0a0a] dark:bg-white text-white dark:text-[#0a0a0a] py-3 rounded-sm font-bold uppercase tracking-widest text-xs hover:bg-gray-800 dark:hover:bg-gray-200 transition shadow-lg">Download 1080x1080 PNG</button>
+                </div>
 
-                                <!-- Footer -->
-                                <div class="w-full border-t-[3px] border-gray-100 pt-8 flex justify-between items-center text-3xl font-bold text-gray-400 uppercase tracking-widest">
-                                    <span>Swipe</span>
-                                    <span>thepankajzx.github.io/growwise</span>
+                <!-- Right Preview Container -->
+                <div class="w-full lg:w-[45%] flex justify-center items-start">
+                    <div style="width: 360px; height: 360px;" class="border border-gray-200 dark:border-gray-700 shadow-xl overflow-hidden relative">
+                        <!-- Canvas -->
+                        <div id="carousel-export-node" style="width: 1080px; height: 1080px; transform: scale(0.3333); transform-origin: top left;" class="bg-white p-24 flex flex-col relative">
+                            <!-- Top Bar -->
+                            <div class="flex justify-between items-center w-full mb-12">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-16 h-16 bg-[#0a0a0a] text-white flex items-center justify-center font-serif font-bold text-3xl rounded-sm">TC</div>
+                                    <span class="text-3xl font-bold tracking-tight text-[#0a0a0a] serif">Thinking<span class="italic text-emerald-800">Capital</span></span>
+                                </div>
+                                <span class="text-2xl font-bold uppercase tracking-widest text-gray-400 hidden" id="cg-preview-number">1/3</span>
+                            </div>
+                            
+                            <!-- Content -->
+                            <div class="flex-1 flex flex-col justify-center space-y-12 w-full pr-12 pb-12">
+                                <h1 class="text-[5.5rem] font-bold serif text-[#0a0a0a] leading-[1.1] tracking-tight" id="cg-preview-title">The Identity-Based Habit Loop</h1>
+                                <div class="border-l-8 border-emerald-800 pl-12">
+                                    <p class="text-5xl text-gray-700 leading-relaxed font-medium" id="cg-preview-content">True behavior change is identity change. If you focus on who you want to become rather than what you want to achieve, your habits automatically align with your new self-image.</p>
                                 </div>
                             </div>
                         </div>
@@ -266,7 +272,7 @@
 
     <!-- READER OVERLAY -->
     <div id="reader-overlay" class="fixed inset-0 z-[100] hidden bg-white dark:bg-darkBg overflow-y-auto animate-fade transition-colors duration-300">
-        <div class="max-w-4xl mx-auto px-4 md:px-8 py-8 md:py-12 relative min-h-screen flex flex-col">
+        <div class="w-full px-4 md:px-8 py-8 md:py-12 relative min-h-screen flex flex-col">
             
             <button onclick="closeReader()" class="absolute top-6 right-6 md:top-12 md:right-8 text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition flex items-center gap-2 group">
                 <span class="text-[10px] font-bold uppercase tracking-widest group-hover:text-[#0a0a0a] dark:group-hover:text-white">Close</span>
@@ -364,7 +370,7 @@
     </div>
 
     <!-- Scripts -->
-    <script src="data.js?v=5"></script>
-    <script src="script.js?v=5"></script>
+    <script src="data.js?v=6"></script>
+    <script src="script.js?v=6"></script>
 </body>
 </html>

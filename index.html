@@ -191,11 +191,23 @@
                             </div>
                         </div>
 
-                        <!-- Book Dropdown Filter -->
-                        <div class="w-full lg:w-72 flex-shrink-0">
-                            <div class="relative">
-                                <select id="bookSelect" onchange="filterBook()" class="border border-gray-200 dark:border-gray-800 bg-white dark:bg-darkCard dark:text-gray-200 px-4 py-2.5 text-xs font-bold uppercase tracking-widest text-gray-600 focus:outline-none focus:border-[#0a0a0a] dark:focus:border-white">
-                                    <option value="all">Filter by Source Material</option>
+                        <!-- Dropdown Filters -->
+                        <div class="w-full lg:w-auto flex flex-col sm:flex-row gap-4 flex-shrink-0">
+                            <!-- Niche Dropdown -->
+                            <div class="relative w-full sm:w-56">
+                                <select id="domainSelect" onchange="handleDomainDropdown()" class="w-full border border-gray-200 dark:border-gray-800 bg-white dark:bg-darkCard dark:text-gray-200 px-4 py-2.5 text-xs font-bold uppercase tracking-widest text-gray-600 focus:outline-none focus:border-[#0a0a0a] dark:focus:border-white">
+                                    <option value="all">Filter by Niche</option>
+                                    <option value="wealth">Wealth & Finance</option>
+                                    <option value="business">Business & Strategy</option>
+                                    <option value="productivity">Productivity</option>
+                                    <option value="self-improvement">Self-Improvement</option>
+                                </select>
+                            </div>
+
+                            <!-- Source Dropdown (Hidden initially or populated based on niche) -->
+                            <div class="relative w-full sm:w-64 hidden" id="sourceSelectWrapper">
+                                <select id="bookSelect" onchange="filterBook()" class="w-full border border-gray-200 dark:border-gray-800 bg-white dark:bg-darkCard dark:text-gray-200 px-4 py-2.5 text-xs font-bold uppercase tracking-widest text-gray-600 focus:outline-none focus:border-[#0a0a0a] dark:focus:border-white">
+                                    <option value="all">All Source Materials</option>
                                     <!-- Injected via JS -->
                                 </select>
                             </div>
@@ -432,7 +444,7 @@
     </div>
 
     <!-- Scripts -->
-    <script src="data.js?v=13"></script>
-    <script src="script.js?v=13"></script>
+    <script src="data.js?v=14"></script>
+    <script src="script.js?v=14"></script>
 </body>
 </html>

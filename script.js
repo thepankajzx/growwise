@@ -30,22 +30,30 @@ function flattenData() {
     });
 }
 
-function initBookFilter() {
+function updateSourceDropdown(domain) {
+    const wrapper = document.getElementById('sourceSelectWrapper');
     const select = document.getElementById('bookSelect');
-    select.innerHTML = '<option value="all">Filter by Source Material</option>';
     
-    booksData.forEach(cat => {
-        if (!cat.books || cat.books.length === 0) return;
-        
-        const optgroup = document.createElement('optgroup');
-        optgroup.label = cat.category;
-        cat.books.forEach(book => {
-            const opt = document.createElement('option');
-            opt.value = book.id;
-            opt.textContent = book.title;
-            optgroup.appendChild(opt);
-        });
-        select.appendChild(optgroup);
+    if (domain === 'all') {
+        wrapper.classList.add('hidden');
+        select.innerHTML = '<option value="all">All Source Materials</option>';
+        return;
+    }
+    
+    const cat = booksData.find(c => c.id === domain);
+    if (!cat || !cat.books || cat.books.length === 0) {
+        wrapper.classList.add('hidden');
+        select.innerHTML = '<option value="all">All Source Materials</option>';
+        return;
+    }
+    
+    wrapper.classList.remove('hidden');
+    select.innerHTML = '<option value="all">All Source Materials</option>';
+    cat.books.forEach(book => {
+        const opt = document.createElement('option');
+        opt.value = book.id;
+        opt.textContent = book.title;
+        select.appendChild(opt);
     });
 }
 
@@ -132,31 +140,32 @@ function navTo(view) {
     window.scrollTo(0, 0);
 }
 
-// Support hash routing on load
 window.addEventListener('load', () => {
     if(window.location.hash === '#admin') {
         document.getElementById('btn-admin').classList.remove('hidden');
         navTo('admin');
-    }
-    if(window.location.hash === '#master') {
+    } else if(window.location.hash === '#master') {
         localStorage.setItem('tc_premium', 'true');
         localStorage.setItem('tc_email', 'master@admin.com');
         document.getElementById('btn-admin').classList.remove('hidden');
+    } else {
+        document.getElementById('btn-admin').classList.add('hidden');
     }
 });
 window.addEventListener('hashchange', () => {
     if(window.location.hash === '#admin') {
-        if(hasPremium()) {
-            document.getElementById('btn-admin').classList.remove('hidden');
-            navTo('admin');
-        } else {
-            navTo('explorer');
-        }
-    }
-    if(window.location.hash === '#master') {
+        document.getElementById('btn-admin').classList.remove('hidden');
+        navTo('admin');
+    } else if(window.location.hash === '#master') {
         localStorage.setItem('tc_premium', 'true');
         localStorage.setItem('tc_email', 'master@admin.com');
+        document.getElementById('btn-admin').classList.remove('hidden');
         updateMembershipUI();
+    } else {
+        document.getElementById('btn-admin').classList.add('hidden');
+        if(!document.getElementById('view-admin').classList.contains('hidden')) {
+            navTo('explorer');
+        }
     }
 });
 
@@ -786,10 +795,10 @@ function updateCarouselPreview() {
         document.getElementById('btn-download-carousel').textContent = "Download 1080x1080 PNG";
     } else if (ratio === '4:5') {
         width = 1080; height = 1350; scale = 0.333333;
-        // Increase text sizing for portrait to fill the vertical space appropriately
-        document.getElementById('cg-preview-title').className = "text-[7.5rem] font-bold serif leading-[1.1] tracking-tight transition-all duration-300";
-        document.getElementById('cg-preview-content').className = "text-[3.5rem] text-gray-700 leading-snug font-medium transition-all duration-300 mt-10";
-        document.getElementById('cg-flex-container').className = "flex-1 flex flex-col justify-center space-y-20 w-full pr-12 pb-12 mt-12 transition-all duration-300 relative";
+        // Adjusted text sizing for portrait to leave room at top and bottom
+        document.getElementById('cg-preview-title').className = "text-[6.5rem] font-bold serif leading-[1.1] tracking-tight transition-all duration-300";
+        document.getElementById('cg-preview-content').className = "text-[3rem] text-gray-700 leading-snug font-medium transition-all duration-300 mt-8";
+        document.getElementById('cg-flex-container').className = "flex-1 flex flex-col justify-center space-y-16 w-full pr-12 pb-12 mt-12 transition-all duration-300 relative";
         
         tcLogo.className = "w-20 h-20 bg-[#0a0a0a] text-white flex items-center justify-center font-serif font-bold text-4xl rounded-sm transition-colors";
         brandName.className = "text-4xl font-bold tracking-tight text-[#0a0a0a] serif transition-colors";
@@ -892,7 +901,7 @@ window.onload = () => {
     }
     updateMembershipUI();
     flattenData();
-    initBookFilter();
+    updateSourceDropdown('all');
     renderDashboard();
     renderExplorer();
 };

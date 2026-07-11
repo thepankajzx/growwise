@@ -798,6 +798,8 @@ function updateCarouselPreview() {
     
     // Apply Dark Post theme if selected
     const darkPostMode = document.getElementById('cg-bw-mode').checked;
+    const brandItalic = document.getElementById('cg-brand-italic');
+    const contentBorder = document.getElementById('cg-content-border');
     
     // Default text colors for title and content (based on ratio)
     let titleClass = document.getElementById('cg-preview-title').className;

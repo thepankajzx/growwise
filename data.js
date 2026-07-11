@@ -1,5 +1,20 @@
 const booksData = [
     {
+        id: "wealth",
+        category: "Wealth & Finance",
+        books: []
+    },
+    {
+        id: "business",
+        category: "Business & Strategy",
+        books: []
+    },
+    {
+        id: "productivity",
+        category: "Productivity & Systems",
+        books: []
+    },
+    {
         id: "self-improvement",
         category: "Self-Improvement",
         books: [

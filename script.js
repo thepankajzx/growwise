@@ -81,17 +81,34 @@ function closeLoginModal() {
     document.getElementById('login-modal').classList.add('hidden');
 }
 
-function checkAccessCode(e) {
-    const val = e.target.value;
-    if(val === 'pankaj@') {
+function checkAccessCodeModal() {
+    const input = document.getElementById('modalSecretCodeInput');
+    const btn = document.getElementById('codeSubmitBtn');
+    
+    if(input.value === 'pankaj@') {
         localStorage.setItem('tc_premium', 'true');
-        e.target.value = 'ACCESS GRANTED';
-        e.target.classList.add('text-green-500');
+        btn.textContent = 'ACCESS GRANTED';
+        btn.classList.remove('bg-gray-100', 'text-[#0a0a0a]');
+        btn.classList.add('bg-emerald-600', 'text-white', 'border-emerald-600');
+        
         setTimeout(() => {
-            e.target.value = '';
-            e.target.classList.remove('text-green-500');
+            closeFreemiumModal();
+            setPremiumFilter(true); // Automatically switch them to premium view
+            
+            // Retry opening what they clicked
+            if(pendingConceptToOpen) {
+                openReader(pendingConceptToOpen.bookId, pendingConceptToOpen.conceptIndex, pendingConceptToOpen.globalIndex);
+                pendingConceptToOpen = null;
+            }
+        }, 1000);
+    } else {
+        input.value = '';
+        input.placeholder = 'Invalid Code';
+        input.classList.add('border-red-500');
+        setTimeout(() => {
+            input.placeholder = 'Enter Access Code';
+            input.classList.remove('border-red-500');
         }, 2000);
-        renderExplorer(); // re-render to remove lock icons
     }
 }
 
@@ -119,11 +136,19 @@ window.addEventListener('load', () => {
         document.getElementById('btn-admin').classList.remove('hidden');
         navTo('admin');
     }
+    if(window.location.hash === '#master') {
+        localStorage.setItem('tc_premium', 'true');
+        document.getElementById('btn-admin').classList.remove('hidden');
+    }
 });
 window.addEventListener('hashchange', () => {
     if(window.location.hash === '#admin') {
         document.getElementById('btn-admin').classList.remove('hidden');
         navTo('admin');
+    }
+    if(window.location.hash === '#master') {
+        localStorage.setItem('tc_premium', 'true');
+        document.getElementById('btn-admin').classList.remove('hidden');
     }
 });
 
@@ -213,19 +238,6 @@ function resetToDashboard() {
     filterLibrary('all');
     setPremiumFilter(false);
     closeReader();
-}
-
-function updateGlobalProgress() {
-    const completedItems = JSON.parse(localStorage.getItem('ka_completed') || '[]');
-    const total = allConcepts.length;
-    const mastered = completedItems.length;
-    const percentage = Math.min(100, Math.round((mastered / total) * 100));
-    
-    const fill = document.getElementById('global-progress-fill');
-    const text = document.getElementById('global-progress-text');
-    
-    if (fill) fill.style.width = `${percentage}%`;
-    if (text) text.textContent = `${mastered} / ${total} Mastered`;
 }
 
 function renderDashboard() {
@@ -470,7 +482,6 @@ function toggleCompleted() {
     else completed.push(conceptId);
     localStorage.setItem('ka_completed', JSON.stringify(completed));
     updateActionButtonsState();
-    updateGlobalProgress();
     renderExplorer();
 }
 
@@ -618,7 +629,6 @@ window.onload = () => {
     initBookFilter();
     renderDashboard();
     renderExplorer();
-    updateGlobalProgress();
 };
 
 document.addEventListener('keydown', (e) => { 

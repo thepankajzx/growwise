@@ -751,18 +751,35 @@ function updateCarouselPreview() {
         document.getElementById('cg-flex-container').className = "flex-1 flex flex-col justify-center space-y-16 w-full pr-12 pb-12 mt-8 transition-all duration-300";
     }
     
-    // Apply Black & White theme if selected
-    const bwMode = document.getElementById('cg-bw-mode').checked;
-    const brandItalic = document.getElementById('cg-brand-italic');
-    const contentBorder = document.getElementById('cg-content-border');
+    // Apply Dark Post theme if selected
+    const darkPostMode = document.getElementById('cg-bw-mode').checked;
+    const brandName = document.getElementById('cg-brand-name');
+    const tcLogo = document.getElementById('cg-tc-logo');
     
-    if (bwMode) {
-        brandItalic.className = "italic text-[#0a0a0a] transition-colors";
-        contentBorder.className = "border-l-8 border-[#0a0a0a] pl-12 transition-all duration-300";
-        document.getElementById('cg-preview-content').classList.replace('text-gray-700', 'text-[#0a0a0a]');
+    // Default text colors for title and content (based on ratio)
+    let titleClass = document.getElementById('cg-preview-title').className;
+    let contentClass = document.getElementById('cg-preview-content').className;
+    
+    if (darkPostMode) {
+        node.classList.replace('bg-white', 'bg-[#0a0a0a]');
+        
+        // Update Title Color
+        document.getElementById('cg-preview-title').className = titleClass.replace('text-[#0a0a0a]', 'text-white');
+        
+        // Update Content Color
+        document.getElementById('cg-preview-content').className = contentClass.replace('text-gray-700', 'text-gray-200');
+        
+        // Update Brand & Logo
+        brandName.classList.replace('text-[#0a0a0a]', 'text-white');
+        tcLogo.classList.replace('bg-[#0a0a0a]', 'bg-white');
+        tcLogo.classList.replace('text-white', 'text-[#0a0a0a]');
     } else {
-        brandItalic.className = "italic text-emerald-800 transition-colors";
-        contentBorder.className = "border-l-8 border-emerald-800 pl-12 transition-all duration-300";
+        node.classList.replace('bg-[#0a0a0a]', 'bg-white');
+        
+        // Brand & Logo remain default
+        brandName.classList.replace('text-white', 'text-[#0a0a0a]');
+        tcLogo.classList.replace('bg-white', 'bg-[#0a0a0a]');
+        tcLogo.classList.replace('text-[#0a0a0a]', 'text-white');
     }
     
     node.style.width = width + 'px';

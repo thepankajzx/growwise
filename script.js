@@ -764,23 +764,40 @@ function updateCarouselPreview() {
     let height = 1080;
     let scale = 0.333333;
 
+    const tcLogo = document.getElementById('cg-tc-logo');
+    const brandName = document.getElementById('cg-brand-name');
+    const swipeIndicator = document.getElementById('cg-swipe-indicator');
+    
+    // Toggle Swipe Indicator
+    if (document.getElementById('cg-show-swipe').checked) {
+        swipeIndicator.classList.remove('hidden');
+    } else {
+        swipeIndicator.classList.add('hidden');
+    }
+    
     if (ratio === '1:1') {
         width = 1080; height = 1080; scale = 0.333333;
         document.getElementById('cg-preview-title').className = "text-[6rem] font-bold serif leading-[1.1] tracking-tight transition-all duration-300";
         document.getElementById('cg-preview-content').className = "text-[3rem] text-gray-700 leading-snug font-medium transition-all duration-300 mt-6";
-        document.getElementById('cg-flex-container').className = "flex-1 flex flex-col justify-center space-y-12 w-full pr-12 pb-12 transition-all duration-300";
+        document.getElementById('cg-flex-container').className = "flex-1 flex flex-col justify-center space-y-12 w-full pr-12 pb-12 transition-all duration-300 relative";
+        
+        tcLogo.className = "w-16 h-16 bg-[#0a0a0a] text-white flex items-center justify-center font-serif font-bold text-3xl rounded-sm transition-colors";
+        brandName.className = "text-3xl font-bold tracking-tight text-[#0a0a0a] serif transition-colors";
+        document.getElementById('btn-download-carousel').textContent = "Download 1080x1080 PNG";
     } else if (ratio === '4:5') {
         width = 1080; height = 1350; scale = 0.333333;
         // Increase text sizing for portrait to fill the vertical space appropriately
         document.getElementById('cg-preview-title').className = "text-[7.5rem] font-bold serif leading-[1.1] tracking-tight transition-all duration-300";
         document.getElementById('cg-preview-content').className = "text-[3.5rem] text-gray-700 leading-snug font-medium transition-all duration-300 mt-10";
-        document.getElementById('cg-flex-container').className = "flex-1 flex flex-col justify-center space-y-20 w-full pr-12 pb-12 mt-12 transition-all duration-300";
+        document.getElementById('cg-flex-container').className = "flex-1 flex flex-col justify-center space-y-20 w-full pr-12 pb-12 mt-12 transition-all duration-300 relative";
+        
+        tcLogo.className = "w-20 h-20 bg-[#0a0a0a] text-white flex items-center justify-center font-serif font-bold text-4xl rounded-sm transition-colors";
+        brandName.className = "text-4xl font-bold tracking-tight text-[#0a0a0a] serif transition-colors";
+        document.getElementById('btn-download-carousel').textContent = "Download 1080x1350 PNG";
     }
     
     // Apply Dark Post theme if selected
     const darkPostMode = document.getElementById('cg-bw-mode').checked;
-    const brandName = document.getElementById('cg-brand-name');
-    const tcLogo = document.getElementById('cg-tc-logo');
     
     // Default text colors for title and content (based on ratio)
     let titleClass = document.getElementById('cg-preview-title').className;
@@ -824,13 +841,15 @@ function updateCarouselPreview() {
 }
 
 async function downloadCarousel() {
-    // Temporarily remove scaling for crisp 1080x1080 capture
+    // Temporarily remove scaling for crisp native capture
     const node = document.getElementById('carousel-export-node');
     const oldTransform = node.style.transform;
     node.style.transform = 'scale(1)';
     
     try {
         const isDark = document.documentElement.classList.contains('dark');
+        const darkPostMode = document.getElementById('cg-bw-mode').checked;
+        const bgColor = darkPostMode ? "#0a0a0a" : "#ffffff";
         
         // If dark mode is active, temporarily switch to light mode for the export
         if (isDark) {
@@ -838,8 +857,8 @@ async function downloadCarousel() {
         }
 
         const canvas = await html2canvas(node, {
-            scale: 1, // 1080x1080 native
-            backgroundColor: "#ffffff",
+            scale: 1, 
+            backgroundColor: bgColor,
             logging: false,
             useCORS: true
         });

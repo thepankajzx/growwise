@@ -283,10 +283,14 @@
                             <input type="checkbox" id="cg-bw-mode" onchange="updateCarouselPreview()" class="w-4 h-4 rounded border-gray-300 dark:border-gray-600 bg-transparent text-[#0a0a0a] dark:text-white focus:ring-[#0a0a0a] dark:focus:ring-white focus:ring-2">
                             <label for="cg-bw-mode" class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">Dark Post Mode</label>
                         </div>
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" id="cg-show-swipe" onchange="updateCarouselPreview()" class="w-4 h-4 rounded border-gray-300 dark:border-gray-600 bg-transparent text-[#0a0a0a] dark:text-white focus:ring-[#0a0a0a] dark:focus:ring-white focus:ring-2">
+                            <label for="cg-show-swipe" class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">Swipe Indicator</label>
+                        </div>
                     </div>
                     
                     <button onclick="updateCarouselPreview()" class="w-full bg-gray-100 dark:bg-darkBg text-[#0a0a0a] dark:text-white border border-gray-300 dark:border-gray-700 py-3 rounded-sm font-bold uppercase tracking-widest text-xs hover:bg-gray-200 dark:hover:bg-gray-800 transition">Update Preview</button>
-                    <button onclick="downloadCarousel()" class="w-full bg-[#0a0a0a] dark:bg-white text-white dark:text-[#0a0a0a] py-3 rounded-sm font-bold uppercase tracking-widest text-xs hover:bg-gray-800 dark:hover:bg-gray-200 transition shadow-lg">Download 1080x1080 PNG</button>
+                    <button onclick="downloadCarousel()" class="w-full bg-[#0a0a0a] dark:bg-white text-white dark:text-[#0a0a0a] py-3 rounded-sm font-bold uppercase tracking-widest text-xs hover:bg-gray-800 dark:hover:bg-gray-200 transition shadow-lg" id="btn-download-carousel">Download Image</button>
                 </div>
 
                 <!-- Right Preview Container -->
@@ -304,11 +308,17 @@
                             </div>
                             
                             <!-- Content -->
-                            <div id="cg-flex-container" class="flex-1 flex flex-col justify-center space-y-12 w-full pr-12 pb-12 transition-all duration-300">
+                            <div id="cg-flex-container" class="flex-1 flex flex-col justify-center space-y-12 w-full pr-12 pb-12 transition-all duration-300 relative">
                                 <h1 class="text-[5.5rem] font-bold serif text-[#0a0a0a] leading-[1.1] tracking-tight transition-all duration-300" id="cg-preview-title">The Identity-Based Habit Loop</h1>
                                 <div id="cg-content-border" class="border-l-8 border-emerald-800 pl-12 transition-all duration-300">
                                     <p class="text-[2.25rem] text-gray-700 leading-snug font-medium transition-all duration-300" id="cg-preview-content">True behavior change is identity change. If you focus on who you want to become rather than what you want to achieve, your habits automatically align with your new self-image.</p>
                                 </div>
+                            </div>
+                            
+                            <!-- Bottom Swipe Indicator -->
+                            <div id="cg-swipe-indicator" class="absolute bottom-16 right-24 hidden flex items-center gap-4 text-gray-400">
+                                <span class="text-3xl font-bold uppercase tracking-widest">Swipe</span>
+                                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                             </div>
                         </div>
                     </div>
@@ -422,7 +432,7 @@
     </div>
 
     <!-- Scripts -->
-    <script src="data.js?v=11"></script>
-    <script src="script.js?v=11"></script>
+    <script src="data.js?v=12"></script>
+    <script src="script.js?v=12"></script>
 </body>
 </html>

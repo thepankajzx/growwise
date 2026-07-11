@@ -35,6 +35,8 @@ function initBookFilter() {
     select.innerHTML = '<option value="all">Filter by Source Material</option>';
     
     booksData.forEach(cat => {
+        if (!cat.books || cat.books.length === 0) return;
+        
         const optgroup = document.createElement('optgroup');
         optgroup.label = cat.category;
         cat.books.forEach(book => {
@@ -648,16 +650,30 @@ function populateAdminBooks() {
         return;
     }
     
-    const domainBooks = booksData.filter(b => b.category === domain);
+    if (domain === 'all') {
+        bookSelect.innerHTML = '<option value="all">-- All Source Materials --</option>';
+        bookSelect.disabled = true;
+        
+        // Populate concepts with ALL concepts globally
+        let html = '<option value="">-- Select Concept --</option>';
+        allConcepts.forEach(c => {
+            html += `<option value="global-${c.globalIndex}">${c.bookTitle}: ${c.concept.title}</option>`;
+        });
+        conceptSelect.innerHTML = html;
+        conceptSelect.disabled = false;
+        return;
+    }
     
-    if (domainBooks.length === 0) {
+    const domainObj = booksData.find(b => b.id === domain);
+    
+    if (!domainObj || !domainObj.books || domainObj.books.length === 0) {
         bookSelect.innerHTML = '<option value="">No books in this domain</option>';
         bookSelect.disabled = true;
         return;
     }
     
     let html = '<option value="">-- Select Book --</option>';
-    domainBooks.forEach(book => {
+    domainObj.books.forEach(book => {
         html += `<option value="${book.id}">${book.title}</option>`;
     });
     
@@ -675,15 +691,15 @@ function populateAdminConcepts() {
         return;
     }
     
-    const book = booksData.find(b => b.id === bookId);
-    if (!book || !book.concepts || book.concepts.length === 0) {
+    const result = findBookById(bookId);
+    if (!result || !result.book || !result.book.concepts || result.book.concepts.length === 0) {
         conceptSelect.innerHTML = '<option value="">No concepts found</option>';
         conceptSelect.disabled = true;
         return;
     }
     
     let html = '<option value="">-- Select Concept --</option>';
-    book.concepts.forEach((concept, index) => {
+    result.book.concepts.forEach((concept, index) => {
         html += `<option value="${index}">${concept.title}</option>`;
     });
     
@@ -695,11 +711,21 @@ function selectConceptForCarouselFromDropdown() {
     const bookId = document.getElementById('admin-book-select').value;
     const conceptIndex = document.getElementById('admin-concept-select').value;
     
-    if(!bookId || conceptIndex === "") return;
+    const domain = document.getElementById('admin-domain-select').value;
+    let concept;
     
-    const book = booksData.find(b => b.id === bookId);
-    if (!book) return;
-    const concept = book.concepts[parseInt(conceptIndex)];
+    if (domain === 'all' && conceptIndex.startsWith('global-')) {
+        const globalIdx = parseInt(conceptIndex.replace('global-', ''));
+        const found = allConcepts.find(c => c.globalIndex === globalIdx);
+        if (!found) return;
+        concept = found.concept;
+    } else {
+        if(!bookId || conceptIndex === "") return;
+        
+        const result = findBookById(bookId);
+        if (!result) return;
+        concept = result.book.concepts[parseInt(conceptIndex)];
+    }
     
     // Parse premise
     const sentences = concept.explanation.match(/[^.!?]+[.!?]+/g) || [concept.explanation];
@@ -740,15 +766,15 @@ function updateCarouselPreview() {
 
     if (ratio === '1:1') {
         width = 1080; height = 1080; scale = 0.333333;
-        document.getElementById('cg-preview-title').className = "text-[5.5rem] font-bold serif text-[#0a0a0a] leading-[1.1] tracking-tight transition-all duration-300";
-        document.getElementById('cg-preview-content').className = "text-[2.25rem] text-gray-700 leading-snug font-medium transition-all duration-300";
+        document.getElementById('cg-preview-title').className = "text-[6rem] font-bold serif leading-[1.1] tracking-tight transition-all duration-300";
+        document.getElementById('cg-preview-content').className = "text-[3rem] text-gray-700 leading-snug font-medium transition-all duration-300 mt-6";
         document.getElementById('cg-flex-container').className = "flex-1 flex flex-col justify-center space-y-12 w-full pr-12 pb-12 transition-all duration-300";
     } else if (ratio === '4:5') {
         width = 1080; height = 1350; scale = 0.333333;
         // Increase text sizing for portrait to fill the vertical space appropriately
-        document.getElementById('cg-preview-title').className = "text-[6.5rem] font-bold serif text-[#0a0a0a] leading-[1.1] tracking-tight transition-all duration-300";
-        document.getElementById('cg-preview-content').className = "text-[2.75rem] text-gray-700 leading-snug font-medium transition-all duration-300";
-        document.getElementById('cg-flex-container').className = "flex-1 flex flex-col justify-center space-y-16 w-full pr-12 pb-12 mt-8 transition-all duration-300";
+        document.getElementById('cg-preview-title').className = "text-[7.5rem] font-bold serif leading-[1.1] tracking-tight transition-all duration-300";
+        document.getElementById('cg-preview-content').className = "text-[3.5rem] text-gray-700 leading-snug font-medium transition-all duration-300 mt-10";
+        document.getElementById('cg-flex-container').className = "flex-1 flex flex-col justify-center space-y-20 w-full pr-12 pb-12 mt-12 transition-all duration-300";
     }
     
     // Apply Dark Post theme if selected
@@ -764,20 +790,27 @@ function updateCarouselPreview() {
         node.classList.replace('bg-white', 'bg-[#0a0a0a]');
         
         // Update Title Color
-        document.getElementById('cg-preview-title').className = titleClass.replace('text-[#0a0a0a]', 'text-white');
+        document.getElementById('cg-preview-title').className = titleClass + " text-emerald-400";
         
         // Update Content Color
         document.getElementById('cg-preview-content').className = contentClass.replace('text-gray-700', 'text-gray-200');
         
         // Update Brand & Logo
         brandName.classList.replace('text-[#0a0a0a]', 'text-white');
+        brandItalic.className = "italic text-emerald-400 transition-colors";
+        contentBorder.className = "border-l-8 border-emerald-400 pl-12 transition-all duration-300";
         tcLogo.classList.replace('bg-[#0a0a0a]', 'bg-white');
         tcLogo.classList.replace('text-white', 'text-[#0a0a0a]');
     } else {
         node.classList.replace('bg-[#0a0a0a]', 'bg-white');
         
+        // Update Title Color
+        document.getElementById('cg-preview-title').className = titleClass + " text-emerald-800";
+        
         // Brand & Logo remain default
         brandName.classList.replace('text-white', 'text-[#0a0a0a]');
+        brandItalic.className = "italic text-emerald-800 transition-colors";
+        contentBorder.className = "border-l-8 border-emerald-800 pl-12 transition-all duration-300";
         tcLogo.classList.replace('bg-white', 'bg-[#0a0a0a]');
         tcLogo.classList.replace('text-[#0a0a0a]', 'text-white');
     }

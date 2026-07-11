@@ -101,8 +101,19 @@ function checkAccessCodeModal() {
         btn.classList.remove('bg-gray-100', 'text-[#0a0a0a]');
         btn.classList.add('bg-emerald-600', 'text-white', 'border-emerald-600');
         
+        // Confetti burst!
+        if (typeof confetti === 'function') {
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#059669', '#10b981', '#34d399', '#ffffff'] // Emerald tones
+            });
+        }
+        
         setTimeout(() => {
             closeFreemiumModal();
+            updateMembershipUI();
             setPremiumFilter(true); // Automatically switch them to premium view
             
             // Retry opening what they clicked
@@ -110,7 +121,7 @@ function checkAccessCodeModal() {
                 openReader(pendingConceptToOpen.bookId, pendingConceptToOpen.conceptIndex, pendingConceptToOpen.globalIndex);
                 pendingConceptToOpen = null;
             }
-        }, 1000);
+        }, 1500);
     } else {
         input.value = '';
         input.placeholder = 'Invalid Code';

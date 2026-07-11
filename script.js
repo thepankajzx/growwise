@@ -138,6 +138,7 @@ window.addEventListener('load', () => {
     }
     if(window.location.hash === '#master') {
         localStorage.setItem('tc_premium', 'true');
+        localStorage.setItem('tc_email', 'master@admin.com');
         document.getElementById('btn-admin').classList.remove('hidden');
     }
 });
@@ -152,6 +153,7 @@ window.addEventListener('hashchange', () => {
     }
     if(window.location.hash === '#master') {
         localStorage.setItem('tc_premium', 'true');
+        localStorage.setItem('tc_email', 'master@admin.com');
         updateMembershipUI();
     }
 });
@@ -787,6 +789,7 @@ async function downloadCarousel() {
 window.onload = () => {
     if(window.location.hash === '#master') {
         localStorage.setItem('tc_premium', 'true');
+        localStorage.setItem('tc_email', 'master@admin.com');
     }
     updateMembershipUI();
     flattenData();

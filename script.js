@@ -792,6 +792,7 @@ function updateCarouselPreview() {
         document.getElementById('cg-flex-container').className = "flex-1 flex flex-col justify-center space-y-12 w-full pr-12 pb-12 transition-all duration-300 relative";
         
         tcLogo.className = "w-16 h-16 bg-[#0a0a0a] text-white flex items-center justify-center font-serif font-bold text-3xl leading-none rounded-sm transition-colors";
+        tcLogo.innerHTML = '<span class="relative -top-[2px]">TC</span>';
         brandName.className = "text-3xl font-bold tracking-tight text-[#0a0a0a] serif leading-none transition-colors";
         document.getElementById('btn-download-carousel').textContent = "Download 1080x1080 PNG";
     } else if (ratio === '4:5') {
@@ -802,6 +803,7 @@ function updateCarouselPreview() {
         document.getElementById('cg-flex-container').className = "flex-1 flex flex-col justify-center space-y-16 w-full pr-12 pb-12 mt-12 transition-all duration-300 relative";
         
         tcLogo.className = "w-20 h-20 bg-[#0a0a0a] text-white flex items-center justify-center font-serif font-bold text-4xl leading-none rounded-sm transition-colors";
+        tcLogo.innerHTML = '<span class="relative -top-[3px]">TC</span>';
         brandName.className = "text-4xl font-bold tracking-tight text-[#0a0a0a] serif leading-none transition-colors";
         document.getElementById('btn-download-carousel').textContent = "Download 1080x1350 PNG";
     }

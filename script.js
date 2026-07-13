@@ -167,10 +167,39 @@ function navTo(view) {
     // Extra logic for profile view stats updates
     if (view === 'profile') {
         const completedItems = JSON.parse(localStorage.getItem('ka_completed') || '[]');
+        const savedItems = JSON.parse(localStorage.getItem('ka_saved') || '[]');
+        
+        const completedBooks = new Set();
+        let premiumConcepts = 0;
+        
+        completedItems.forEach(id => {
+            const parts = id.split('-');
+            if (parts.length >= 2) {
+                const conceptIdx = parseInt(parts.pop());
+                const bookId = parts.join('-');
+                completedBooks.add(bookId);
+                
+                const found = allConcepts.find(c => c.bookId === bookId && c.conceptIndex === conceptIdx);
+                if (found && found.concept.premium) {
+                    premiumConcepts++;
+                }
+            }
+        });
+        
         const countDisplay = document.getElementById('profile-concepts-count');
-        if (countDisplay) {
-            countDisplay.textContent = completedItems.length;
-        }
+        if (countDisplay) countDisplay.textContent = completedItems.length;
+        
+        const booksDisplay = document.getElementById('profile-books-count');
+        if (booksDisplay) booksDisplay.textContent = completedBooks.size;
+        
+        const premiumDisplay = document.getElementById('profile-premium-count');
+        if (premiumDisplay) premiumDisplay.textContent = premiumConcepts;
+        
+        const hoursDisplay = document.getElementById('profile-hours');
+        if (hoursDisplay) hoursDisplay.textContent = Math.round((completedItems.length * 5) / 60);
+        
+        const streakDisplay = document.getElementById('profile-streak');
+        if (streakDisplay) streakDisplay.textContent = completedItems.length > 0 ? "1 Day" : "0 Days";
     }
     
     window.scrollTo(0, 0);
@@ -761,54 +790,44 @@ function renderConceptDisplay() {
     if (steps.length === 1) steps = concept.approach.split(', ').filter(s => s.trim().length > 0);
     
     let checklistHtml = steps.map((step) => `
-        <li class="flex items-start"><svg class="w-6 h-6 text-green-500 mr-3 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> ${step}${step.endsWith('.') ? '' : '.'}</li>
+        <div class="flex items-start gap-4 p-4 hover:bg-gray-50 dark:hover:bg-darkBorder cursor-pointer transition border-b border-gray-100 dark:border-gray-800 last:border-0 group" onclick="toggleChecklist(this)">
+            <div class="w-5 h-5 border border-[#0a0a0a] dark:border-gray-500 flex items-center justify-center flex-shrink-0 mt-1 bg-white dark:bg-darkBg">
+                <svg class="w-3 h-3 text-transparent transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"></svg>
+            </div>
+            <span class="text-[#0a0a0a] dark:text-gray-300 text-base md:text-lg font-medium leading-relaxed transition-all">${step}${step.endsWith('.') ? '' : '.'}</span>
+        </div>
     `).join('');
 
     display.innerHTML = `
-        <article class="mb-12 sm:mb-16 animate-fade">
-            <div class="flex flex-wrap items-center gap-3 mb-6">
-                <span class="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-xs font-semibold tracking-widest uppercase rounded-full text-secondary">${book.category || 'Framework'}</span>
-                <span class="text-xs text-secondary flex items-center"><svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 5 Min Read</span>
-            </div>
+        <div class="space-y-12 animate-fade pt-4">
+            ${concept.premium ? '<div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-500 px-4 py-3 rounded-sm text-xs font-bold uppercase tracking-widest flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.956 11.956 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg> Premium Framework Unlocked</div>' : ''}
             
-            <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-medium leading-tight text-primary dark:text-white mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold font-serif text-[#0a0a0a] dark:text-white leading-tight mb-8">
                 ${concept.title}
             </h1>
-            
-            <div class="w-full bg-white dark:bg-darkCard border border-borderLight dark:border-gray-800 rounded-2xl p-6 sm:p-8 mb-10 premium-shadow">
-                <p class="font-sans text-sm font-medium text-secondary mb-3 uppercase tracking-wide">One-Line Summary</p>
-                <p class="font-serif text-xl sm:text-2xl italic text-primary dark:text-gray-200 leading-relaxed">${premise}</p>
-            </div>
-        </article>
 
-        <div class="space-y-10 font-serif text-lg sm:text-xl leading-relaxed text-gray-800 dark:text-gray-300 animate-fade" style="animation-delay: 0.1s;">
-            <h2 class="font-sans text-2xl sm:text-3xl font-semibold text-primary dark:text-white mt-16 mb-6 tracking-tight">Why It Matters</h2>
-            <p>${mechanism || "This framework operates intrinsically via the aforementioned premise."}</p>
-            
-            <div class="my-16 w-full bg-[#FDFBF7] dark:bg-darkCard border border-[#EAE3D1] dark:border-gray-800 rounded-3xl p-8 sm:p-10 premium-shadow transition-colors">
-                <div class="flex items-center mb-6">
-                    <svg class="w-6 h-6 text-accent mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
-                    <h3 class="font-sans text-lg sm:text-xl font-semibold text-primary dark:text-white">Think for 30 Seconds</h3>
-                </div>
-                <p class="font-serif text-lg sm:text-xl italic text-secondary mb-6">How does this concept apply to your current biggest bottleneck?</p>
-                <textarea class="w-full bg-white dark:bg-[#121212] border border-borderLight dark:border-gray-700 rounded-xl p-5 font-sans text-base focus:outline-none focus:ring-1 focus:ring-accent resize-none placeholder-gray-400" rows="3" placeholder="Jot down your reflection to lock in the learning..."></textarea>
+            <!-- 1. The Core Premise -->
+            <div class="border-l-4 border-emerald-800 dark:border-emerald-500 pl-6">
+                <h3 class="text-[10px] font-bold uppercase tracking-widest text-emerald-800 dark:text-emerald-500 mb-2">I. The Core Premise</h3>
+                <p class="text-2xl md:text-3xl font-bold font-serif text-[#0a0a0a] dark:text-white leading-snug">
+                    ${premise}
+                </p>
             </div>
 
-            <div class="my-16 w-full bg-white dark:bg-darkCard border-l-8 border-green-500 rounded-r-3xl p-8 sm:p-10 shadow-sm premium-shadow">
-                <h3 class="font-sans text-xs sm:text-sm uppercase tracking-widest font-bold text-green-600 mb-3">Try Today (Max 5 Mins)</h3>
-                <h4 class="font-sans text-2xl sm:text-3xl font-semibold text-primary dark:text-white mb-4">Actionable Steps</h4>
-                <ul class="font-sans text-base sm:text-lg space-y-4 text-primary dark:text-gray-300">
+            <!-- 2. The Mechanism -->
+            <div class="bg-gray-50 dark:bg-darkCard p-6 md:p-8 border border-gray-200 dark:border-gray-800">
+                <h3 class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">II. The Mechanism</h3>
+                <p class="text-[#0a0a0a] dark:text-gray-300 text-lg leading-relaxed">
+                    ${mechanism || "This framework operates intrinsically via the aforementioned premise."}
+                </p>
+            </div>
+
+            <!-- 3. Actionable Pivot -->
+            <div>
+                <h3 class="text-[10px] font-bold uppercase tracking-widest text-[#0a0a0a] dark:text-gray-400 mb-4 border-b border-gray-200 dark:border-gray-800 pb-2">III. Actionable Pivot</h3>
+                <div class="border border-gray-200 dark:border-gray-800 bg-white dark:bg-darkCard">
                     ${checklistHtml}
-                </ul>
-            </div>
-            
-            <div class="my-20 w-full bg-primary dark:bg-[#1A1A1A] rounded-3xl p-10 sm:p-16 text-center relative overflow-hidden premium-shadow group cursor-pointer" onclick="shareInsight()">
-                <div class="absolute -top-10 -right-10 w-48 h-48 bg-accent/10 rounded-full blur-3xl"></div>
-                <div class="absolute -bottom-10 -left-10 w-48 h-48 bg-accent/5 rounded-full blur-3xl"></div>
-                <span class="block font-sans text-xs sm:text-sm uppercase tracking-widest text-accent mb-8 relative z-10">Screenshot-Worthy Takeaway</span>
-                <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium leading-snug sm:leading-tight text-white relative z-10 max-w-4xl mx-auto">
-                    "${premise}"
-                </h2>
+                </div>
             </div>
         </div>
     `;

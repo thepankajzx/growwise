@@ -135,7 +135,7 @@
                 </div>
 
                 <!-- PREMIUM TOGGLE (DESKTOP) -->
-                <div id="auth-container" class="shrink-0 hidden md:block">
+                <div id="auth-container" class="shrink-0 hidden lg:block">
                     <div class="flex items-center gap-1 bg-gray-100 dark:bg-darkBorder p-0.5 rounded-full border border-gray-200 dark:border-gray-800 shrink-0">
                         <button id="toggle-standard" class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-white dark:bg-darkCard shadow-sm text-[#0a0a0a] dark:text-white transition cursor-default">Free</button>
                         <button onclick="requestPremiumAccess()" id="toggle-premium" class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition flex items-center gap-1">
@@ -167,7 +167,7 @@
                 </div>
 
                 <!-- MOBILE HAMBURGER MENU -->
-                <div class="shrink-0 relative md:hidden">
+                <div class="shrink-0 relative lg:hidden">
                     <button onclick="toggleMobileMenu()" class="text-gray-500 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition p-1 shrink-0">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
@@ -262,7 +262,7 @@
                         <div class="w-full lg:w-auto flex flex-col sm:flex-row gap-4 flex-shrink-0">
                             <!-- Niche Dropdown -->
                             <div class="relative w-full sm:w-56">
-                                <select id="domainSelect" onchange="handleDomainDropdown()" class="w-full border border-gray-200 dark:border-gray-800 bg-white dark:bg-darkCard dark:text-gray-200 px-4 py-2.5 text-xs font-bold uppercase tracking-widest text-gray-600 focus:outline-none focus:border-[#0a0a0a] dark:focus:border-white">
+                                <select id="domainSelect" onchange="handleDomainDropdown()" class="w-full border border-gray-200 dark:border-transparent bg-white dark:bg-darkCard dark:text-gray-200 px-4 py-2.5 text-xs font-bold uppercase tracking-widest text-gray-600 focus:outline-none focus:border-[#0a0a0a] dark:focus:border-white">
                                     <option value="all">Filter by Niche</option>
                                     <option value="wealth">Wealth & Finance</option>
                                     <option value="business">Business & Strategy</option>
@@ -273,7 +273,7 @@
 
                             <!-- Source Dropdown (Hidden initially or populated based on niche) -->
                             <div class="relative w-full sm:w-64 hidden" id="sourceSelectWrapper">
-                                <select id="bookSelect" onchange="filterBook()" class="w-full border border-gray-200 dark:border-gray-800 bg-white dark:bg-darkCard dark:text-gray-200 px-4 py-2.5 text-xs font-bold uppercase tracking-widest text-gray-600 focus:outline-none focus:border-[#0a0a0a] dark:focus:border-white">
+                                <select id="bookSelect" onchange="filterBook()" class="w-full border border-gray-200 dark:border-transparent bg-white dark:bg-darkCard dark:text-gray-200 px-4 py-2.5 text-xs font-bold uppercase tracking-widest text-gray-600 focus:outline-none focus:border-[#0a0a0a] dark:focus:border-white">
                                     <option value="all">All Source Materials</option>
                                     <!-- Injected via JS -->
                                 </select>
@@ -428,12 +428,6 @@
                 <!-- TOP HERO -->
                 <section class="w-full bg-white dark:bg-darkCard border border-borderLight dark:border-gray-800 rounded-[2rem] p-8 sm:p-12 premium-shadow flex flex-col md:flex-row items-center md:items-start justify-between gap-8 hover-card">
                     <div class="flex flex-col md:flex-row items-center md:items-start gap-8 text-center md:text-left">
-                        <div class="relative">
-                            <div class="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-gray-100 border-4 border-white dark:border-darkCard shadow-lg flex items-center justify-center overflow-hidden">
-                                <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Felix&backgroundColor=f8f9fa" alt="Profile" class="w-full h-full object-cover">
-                            </div>
-                            <div class="absolute bottom-1 right-1 w-8 h-8 bg-[#166534] rounded-full border-2 border-white dark:border-darkCard flex items-center justify-center" title="Premium Member">
-                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
                             </div>
                         </div>
                         <div>
@@ -478,19 +472,19 @@
                     <h3 class="font-sans text-xs uppercase tracking-widest font-semibold text-gray-500 mb-6 pl-2">Learning Overview</h3>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
                         <div class="bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 rounded-2xl p-6 hover-card">
-                            <p class="font-sans text-4xl font-medium text-[#0a0a0a] dark:text-white mb-2">12</p>
+                            <p class="font-sans text-4xl font-medium text-[#0a0a0a] dark:text-white mb-2" id="profile-books-count">0</p>
                             <p class="font-sans text-xs uppercase tracking-wide text-gray-500">Books Completed</p>
                         </div>
                         <div class="bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 rounded-2xl p-6 hover-card">
-                            <p class="font-sans text-4xl font-medium text-[#0a0a0a] dark:text-white mb-2" id="profile-concepts-count">48</p>
+                            <p class="font-sans text-4xl font-medium text-[#0a0a0a] dark:text-white mb-2" id="profile-concepts-count">0</p>
                             <p class="font-sans text-xs uppercase tracking-wide text-gray-500">Concepts Learned</p>
                         </div>
                         <div class="bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 rounded-2xl p-6 hover-card">
-                            <p class="font-sans text-4xl font-medium text-[#166534] mb-2">16</p>
+                            <p class="font-sans text-4xl font-medium text-[#166534] mb-2" id="profile-premium-count">0</p>
                             <p class="font-sans text-xs uppercase tracking-wide text-gray-500">Premium Frameworks</p>
                         </div>
                         <div class="bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 rounded-2xl p-6 hover-card">
-                            <p class="font-sans text-4xl font-medium text-[#0a0a0a] dark:text-white mb-2">34<span class="text-xl">h</span></p>
+                            <p class="font-sans text-4xl font-medium text-[#0a0a0a] dark:text-white mb-2"><span id="profile-hours">0</span><span class="text-xl">h</span></p>
                             <p class="font-sans text-xs uppercase tracking-wide text-gray-500">Reading Hours</p>
                         </div>
                     </div>
@@ -652,19 +646,19 @@
                     <span id="reader-author" class="font-medium text-xs sm:text-sm text-secondary tracking-wide uppercase truncate max-w-[150px] sm:max-w-xs">Atomic Habits</span>
                 </div>
                 
-                <div class="flex items-center space-x-1 sm:space-x-2 shrink-0">
-                    <button onclick="toggleTheme()" class="p-2 rounded-full text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-white transition">
-                        <svg class="w-4 h-4 sm:w-5 sm:h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                        <svg class="w-4 h-4 sm:w-5 sm:h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
+                    <button onclick="toggleTheme()" class="p-2.5 rounded-full text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-white transition">
+                        <svg class="w-5 h-5 sm:w-6 sm:h-6 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        <svg class="w-5 h-5 sm:w-6 sm:h-6 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
                     </button>
-                    <button onclick="shareInsight()" class="p-2 rounded-full text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-white transition" title="Share">
-                        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6.632l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+                    <button onclick="shareInsight()" class="p-2.5 rounded-full text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-white transition" title="Share">
+                        <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6.632l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
                     </button>
-                    <button onclick="toggleBookmark()" id="sidebar-btn-bookmark" class="p-2 rounded-full text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-white transition" title="Save to Arsenal">
-                        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                    <button onclick="toggleBookmark()" id="sidebar-btn-bookmark" class="p-2.5 rounded-full text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-white transition" title="Save to Arsenal">
+                        <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                     </button>
-                    <button onclick="toggleCompleted()" id="sidebar-btn-completed" class="p-2 rounded-full text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-white transition" title="Mark Completed">
-                        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <button onclick="toggleCompleted()" id="sidebar-btn-completed" class="p-2.5 rounded-full text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-white transition" title="Mark Completed">
+                        <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                     </button>
                 </div>
             </div>

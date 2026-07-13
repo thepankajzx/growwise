@@ -118,7 +118,7 @@
                         <line x1="18" y1="6" x2="6" y2="18"></line>
                     </svg>
                 </div>
-                <span class="text-sm md:text-xl font-bold tracking-tight text-[#0a0a0a] dark:text-white serif whitespace-nowrap">Last<span class="italic text-emerald-800 dark:text-emerald-500">Percent</span></span>
+                <span class="hidden md:inline text-sm md:text-xl font-bold tracking-tight text-[#0a0a0a] dark:text-white serif whitespace-nowrap">Last<span class="italic text-emerald-800 dark:text-emerald-500">Percent</span></span>
             </div>
             
             <!-- Navigation Right Side -->
@@ -130,7 +130,7 @@
                 </button>
 
                 <div class="flex flex-row items-center gap-2 md:gap-4 text-[10px] md:text-sm font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 shrink-0">
-                    <button onclick="navTo('explorer')" id="btn-explorer" class="hover:text-[#0a0a0a] dark:hover:text-white transition whitespace-nowrap">The Arsenal</button>
+                    <button onclick="navTo('explorer')" id="btn-explorer" class="hidden md:inline hover:text-[#0a0a0a] dark:hover:text-white transition whitespace-nowrap">The Arsenal</button>
                     <button onclick="navTo('admin')" id="btn-admin" class="hidden hover:text-[#0a0a0a] dark:hover:text-white transition whitespace-nowrap">Admin Studio</button>
                 </div>
 
@@ -167,7 +167,7 @@
                 </div>
 
                 <!-- MOBILE HAMBURGER MENU -->
-                <div class="shrink-0 relative lg:hidden">
+                <div class="shrink-0 relative md:hidden">
                     <button onclick="toggleMobileMenu()" class="text-gray-500 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition p-1 shrink-0">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
@@ -175,6 +175,9 @@
                     <!-- MOBILE DROPDOWN -->
                     <div id="mobile-menu-dropdown" class="absolute right-0 top-full mt-4 w-56 bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 shadow-xl rounded-sm hidden flex-col z-[100] p-4 text-left animate-fade">
                         
+                        <!-- The Arsenal Link -->
+                        <button onclick="navTo('explorer'); toggleMobileMenu()" class="w-full text-left text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition mb-4">The Arsenal</button>
+
                         <!-- Free/Premium Mobile -->
                         <div class="mb-4 flex items-center justify-center bg-gray-100 dark:bg-darkBorder p-1 rounded-full border border-gray-200 dark:border-gray-800">
                             <button id="mobile-toggle-standard" class="flex-1 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-white dark:bg-darkCard shadow-sm text-[#0a0a0a] dark:text-white transition cursor-default">Free</button>

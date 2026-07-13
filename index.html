@@ -232,19 +232,16 @@
         <!-- EXPLORER VIEW -->
         <section id="view-explorer" class="hidden space-y-8 md:space-y-12 animate-fade w-full">
             <div class="flex flex-col gap-6 pb-6 md:pb-8">
-                <div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-                    <div class="w-full">
-                        <h2 class="text-3xl md:text-4xl font-bold serif text-[#0a0a0a] dark:text-white">The Arsenal</h2>
-                        <p class="text-sm md:text-base text-gray-500 dark:text-gray-400 mt-2">Filter and explore all mental models.</p>
-                    </div>
+                <div class="mb-4">
+                    <h2 class="text-3xl md:text-4xl font-bold serif text-[#0a0a0a] dark:text-white">The Arsenal</h2>
+                    <p class="text-sm md:text-base text-gray-500 dark:text-gray-400 mt-2">Filter and explore all mental models.</p>
                 </div>
                 
-                <!-- Filters -->
-                <div class="flex flex-col lg:flex-row gap-6 mb-12 items-start justify-between pb-8 border-b border-gray-100 dark:border-gray-800">
+                <!-- Filters Row -->
+                <div class="flex flex-col lg:flex-row gap-6 mb-8 items-start lg:items-center justify-between pb-8 border-b border-gray-100 dark:border-gray-800 w-full">
                     
-                    <!-- LEFT SIDE: All Filter Pills -->
-                    <div class="flex flex-col gap-6 w-full lg:w-3/4">
-                        <!-- Library Filters -->
+                    <!-- LEFT SIDE: Library Filters -->
+                    <div class="w-full lg:w-auto flex-shrink-0">
                         <div id="libraryFilters" class="flex flex-wrap gap-2">
                             <button onclick="filterLibrary('all')" id="lib-all" class="px-4 py-1.5 rounded-sm text-[13px] sm:text-sm font-bold border border-[#0a0a0a] bg-[#0a0a0a] text-white transition">All Frameworks</button>
                             <button onclick="filterLibrary('saved')" id="lib-saved" class="px-4 py-1.5 rounded-sm text-[13px] sm:text-sm font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition flex items-center gap-1.5">
@@ -255,24 +252,28 @@
                                 <svg class="w-4 h-4 text-emerald-500" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd"/></svg>Completed
                             </button>
                         </div>
-                        
-                        <!-- Niche Filters -->
-                        <div id="filterPills" class="flex flex-wrap gap-2">
-                            <button onclick="filterCategory('all')" id="pill-all" class="px-4 py-1.5 rounded-full text-[13px] sm:text-sm font-bold border border-[#0a0a0a] bg-[#0a0a0a] text-white transition">All Domains</button>
-                            <button onclick="filterCategory('wealth')" id="pill-wealth" class="px-4 py-1.5 rounded-full text-[13px] sm:text-sm font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition">Wealth & Finance</button>
-                            <button onclick="filterCategory('business')" id="pill-business" class="px-4 py-1.5 rounded-full text-[13px] sm:text-sm font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition">Business & Strategy</button>
-                            <button onclick="filterCategory('productivity')" id="pill-productivity" class="px-4 py-1.5 rounded-full text-[13px] sm:text-sm font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition">Productivity</button>
-                            <button onclick="filterCategory('self-improvement')" id="pill-self-improvement" class="px-4 py-1.5 rounded-full text-[13px] sm:text-sm font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition">Self-Improvement</button>
-                        </div>
                     </div>
 
-                    <!-- RIGHT SIDE: Dropdown -->
-                    <div class="w-full lg:w-1/4 flex justify-start lg:justify-end">
-                        <div class="relative w-full sm:w-64" id="sourceSelectWrapper">
-                            <select id="bookSelect" onchange="filterBook()" class="w-full border border-gray-200 dark:border-gray-800 bg-white dark:bg-darkCard dark:text-gray-200 px-4 py-2.5 text-xs font-bold uppercase tracking-widest text-gray-600 focus:outline-none focus:border-[#0a0a0a] dark:focus:border-white shadow-sm rounded-sm cursor-pointer">
-                                <option value="all">All Source Materials</option>
+                    <!-- RIGHT SIDE: Niches + Dropdown -->
+                    <div class="w-full lg:w-auto flex flex-col md:flex-row items-start md:items-center justify-start lg:justify-end gap-4 overflow-x-auto pb-2 lg:pb-0 scrollbar-hide">
+                        <!-- Niche Filters -->
+                        <div id="filterPills" class="flex flex-nowrap md:flex-wrap gap-2 flex-shrink-0">
+                            <button onclick="filterCategory('all')" id="pill-all" class="px-4 py-1.5 rounded-full text-[13px] sm:text-sm font-bold border border-[#0a0a0a] bg-[#0a0a0a] text-white transition whitespace-nowrap">All Domains</button>
+                            <button onclick="filterCategory('wealth')" id="pill-wealth" class="px-4 py-1.5 rounded-full text-[13px] sm:text-sm font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition whitespace-nowrap">Wealth</button>
+                            <button onclick="filterCategory('business')" id="pill-business" class="px-4 py-1.5 rounded-full text-[13px] sm:text-sm font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition whitespace-nowrap">Business</button>
+                            <button onclick="filterCategory('productivity')" id="pill-productivity" class="px-4 py-1.5 rounded-full text-[13px] sm:text-sm font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition whitespace-nowrap">Productivity</button>
+                            <button onclick="filterCategory('self-improvement')" id="pill-self-improvement" class="px-4 py-1.5 rounded-full text-[13px] sm:text-sm font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition whitespace-nowrap">Growth</button>
+                        </div>
+
+                        <!-- Source Dropdown -->
+                        <div class="relative w-full md:w-48 flex-shrink-0" id="sourceSelectWrapper">
+                            <select id="bookSelect" onchange="filterBook()" class="w-full border border-gray-200 dark:border-gray-800 bg-white dark:bg-darkCard dark:text-gray-200 px-4 py-1.5 text-[13px] sm:text-sm font-bold uppercase tracking-widest text-gray-600 focus:outline-none focus:border-[#0a0a0a] dark:focus:border-white shadow-sm rounded-full cursor-pointer min-h-[34px] sm:min-h-[38px] appearance-none">
+                                <option value="all">All Sources</option>
                                 <!-- Injected via JS -->
                             </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -772,7 +773,7 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <!-- Scripts -->
-    <script src="data.js?v=28"></script>
-    <script src="script.js?v=28"></script>
+    <script src="data.js?v=29"></script>
+    <script src="script.js?v=29"></script>
 </body>
 </html>

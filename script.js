@@ -468,7 +468,7 @@ function filterLibrary(type) {
     }
 
     // Update ALL pill visuals
-    ['saved', 'bookmarked', 'save_later'].forEach(id => {
+    ['saved', 'completed', 'save_later'].forEach(id => {
         const pill = document.getElementById(`lib-${id}`);
         if (!pill) return;
         if (currentLibraryFilter.has(id)) {
@@ -559,7 +559,7 @@ function renderExplorer() {
             const id = `${c.bookId}-${c.conceptIndex}`;
             return (
                 (currentLibraryFilter.has('saved') && savedItems.includes(id)) ||
-                (currentLibraryFilter.has('bookmarked') && bookmarkedItems.includes(id)) ||
+                (currentLibraryFilter.has('completed') && completedItems.includes(id)) ||
                 (currentLibraryFilter.has('save_later') && saveLaterItems.includes(id))
             );
         });
@@ -695,18 +695,6 @@ function updateActionButtonsState() {
         }
     }
 
-    // Bookmark button
-    const sideBookmark = document.getElementById('sidebar-btn-bookmark');
-    if (sideBookmark) {
-        if (bookmarks.includes(conceptId)) {
-            sideBookmark.classList.add('text-blue-600', 'dark:text-blue-400');
-            sideBookmark.querySelector('svg').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" fill="currentColor" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>';
-        } else {
-            sideBookmark.classList.remove('text-blue-600', 'dark:text-blue-400');
-            sideBookmark.querySelector('svg').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>';
-        }
-    }
-
     // Save for Later button
     const sideSaveLater = document.getElementById('sidebar-btn-save_later');
     if (sideSaveLater) {
@@ -717,19 +705,19 @@ function updateActionButtonsState() {
         }
     }
 
-    // Completed button - clean verified tick (no circle/shield)
+    // Completed button - scalloped verified badge
     const sideCompleted = document.getElementById('sidebar-btn-completed');
-    const tickPath = 'M4.5 12.75l6 6 9-13.5';
+    const badgePath = 'M22.5 12l-2.03-2.33.25-3.08-3.04-.47-1.42-2.73-2.76 1.4-2.76-1.4-1.42 2.73-3.04.47.25 3.08L4.5 12l2.03 2.33-.25 3.08 3.04.47 1.42 2.73 2.76-1.4 2.76 1.4 1.42-2.73 3.04-.47-.25-3.08L22.5 12zm-12.75 4.5l-3.5-3.5 1.06-1.06 2.44 2.44 5.94-5.94 1.06 1.06-7 7z';
     
     if (sideCompleted) {
         if (completed.includes(conceptId)) {
-            sideCompleted.classList.add('bg-emerald-500', 'text-white');
+            sideCompleted.classList.add('text-emerald-500');
             sideCompleted.classList.remove('text-secondary', 'hover:bg-gray-100', 'dark:hover:bg-gray-800');
-            sideCompleted.querySelector('svg').innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="${tickPath}"></path>`;
+            sideCompleted.querySelector('svg').innerHTML = `<path d="${badgePath}"></path>`;
         } else {
-            sideCompleted.classList.remove('bg-emerald-500', 'text-white');
+            sideCompleted.classList.remove('text-emerald-500');
             sideCompleted.classList.add('text-secondary', 'hover:bg-gray-100', 'dark:hover:bg-gray-800');
-            sideCompleted.querySelector('svg').innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="${tickPath}"></path>`;
+            sideCompleted.querySelector('svg').innerHTML = `<path d="${badgePath}"></path>`;
         }
     }
 

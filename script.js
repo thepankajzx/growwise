@@ -528,45 +528,70 @@ function updateActionButtonsState() {
     const bookmarks = JSON.parse(localStorage.getItem('ka_bookmarks') || '[]');
     const completed = JSON.parse(localStorage.getItem('ka_completed') || '[]');
     
-    const btnSaved = document.getElementById('btn-saved');
-    const txtSaved = document.getElementById('text-saved');
-    if (btnSaved) {
+    // UPDATE SIDEBAR BUTTONS
+    const sideSaved = document.getElementById('sidebar-btn-saved');
+    const sideSavedTxt = document.getElementById('sidebar-text-saved');
+    if (sideSaved) {
         if (saved.includes(conceptId)) {
-            btnSaved.classList.add('bg-gray-100', 'border-[#0a0a0a]', 'text-[#0a0a0a]');
-            btnSaved.classList.remove('border-gray-300', 'text-gray-600', 'hover:bg-gray-50');
-            txtSaved.textContent = 'Saved';
+            sideSaved.classList.add('text-amber-600', 'dark:text-amber-500');
+            sideSavedTxt.textContent = 'Saved';
         } else {
-            btnSaved.classList.remove('bg-gray-100', 'border-[#0a0a0a]', 'text-[#0a0a0a]');
-            btnSaved.classList.add('border-gray-300', 'text-gray-600', 'hover:bg-gray-50');
-            txtSaved.textContent = 'Save Later';
+            sideSaved.classList.remove('text-amber-600', 'dark:text-amber-500');
+            sideSavedTxt.textContent = 'Read Later';
         }
     }
 
-    const btnBookmark = document.getElementById('btn-bookmark');
-    const txtBookmark = document.getElementById('text-bookmark');
-    if (btnBookmark) {
+    const sideBookmark = document.getElementById('sidebar-btn-bookmark');
+    const sideBookmarkTxt = document.getElementById('sidebar-text-bookmark');
+    if (sideBookmark) {
         if (bookmarks.includes(conceptId)) {
-            btnBookmark.classList.add('bg-gray-100', 'border-[#0a0a0a]', 'text-[#0a0a0a]');
-            btnBookmark.classList.remove('border-gray-300', 'text-gray-600', 'hover:bg-gray-50');
-            txtBookmark.textContent = 'Bookmarked';
+            sideBookmark.classList.add('text-blue-600', 'dark:text-blue-500');
+            sideBookmarkTxt.textContent = 'Bookmarked';
         } else {
-            btnBookmark.classList.remove('bg-gray-100', 'border-[#0a0a0a]', 'text-[#0a0a0a]');
-            btnBookmark.classList.add('border-gray-300', 'text-gray-600', 'hover:bg-gray-50');
-            txtBookmark.textContent = 'Bookmark';
+            sideBookmark.classList.remove('text-blue-600', 'dark:text-blue-500');
+            sideBookmarkTxt.textContent = 'Save to Arsenal';
         }
     }
     
-    const btnCompleted = document.getElementById('btn-completed');
-    const txtCompleted = document.getElementById('text-completed');
-    if (btnCompleted) {
+    const sideCompleted = document.getElementById('sidebar-btn-completed');
+    const sideCompletedTxt = document.getElementById('sidebar-text-completed');
+    const sideProgress = document.getElementById('sidebar-progress');
+    const sidePercent = document.getElementById('sidebar-percent');
+    if (sideCompleted) {
         if (completed.includes(conceptId)) {
-            btnCompleted.classList.add('bg-emerald-50', 'border-emerald-800', 'text-emerald-800');
-            btnCompleted.classList.remove('border-gray-300', 'text-gray-600', 'hover:bg-gray-50');
-            txtCompleted.textContent = 'Completed';
+            sideCompleted.classList.add('bg-emerald-50', 'dark:bg-emerald-900/20');
+            sideCompletedTxt.textContent = 'Mastered';
+            if(sideProgress) sideProgress.classList.add('text-emerald-500');
+            if(sidePercent) { sidePercent.textContent = '100%'; sidePercent.classList.add('text-emerald-600'); }
         } else {
-            btnCompleted.classList.remove('bg-emerald-50', 'border-emerald-800', 'text-emerald-800');
-            btnCompleted.classList.add('border-gray-300', 'text-gray-600', 'hover:bg-gray-50');
-            txtCompleted.textContent = 'Mark Completed';
+            sideCompleted.classList.remove('bg-emerald-50', 'dark:bg-emerald-900/20');
+            sideCompletedTxt.textContent = 'Mark Completed';
+            if(sideProgress) sideProgress.classList.remove('text-emerald-500');
+            if(sidePercent) { sidePercent.classList.remove('text-emerald-600'); }
+        }
+    }
+
+    // UPDATE MOBILE BUTTONS
+    const mobSaved = document.getElementById('mobile-btn-saved');
+    if (mobSaved) {
+        if (saved.includes(conceptId)) mobSaved.classList.add('text-amber-600');
+        else mobSaved.classList.remove('text-amber-600');
+    }
+
+    const mobBookmark = document.getElementById('mobile-btn-bookmark');
+    if (mobBookmark) {
+        if (bookmarks.includes(conceptId)) mobBookmark.classList.add('text-blue-600');
+        else mobBookmark.classList.remove('text-blue-600');
+    }
+
+    const mobCompleted = document.getElementById('mobile-btn-completed');
+    if (mobCompleted) {
+        if (completed.includes(conceptId)) {
+            mobCompleted.classList.add('bg-emerald-500', 'text-white');
+            mobCompleted.classList.remove('bg-accent/10', 'text-accent');
+        } else {
+            mobCompleted.classList.remove('bg-emerald-500', 'text-white');
+            mobCompleted.classList.add('bg-accent/10', 'text-accent');
         }
     }
 }
@@ -621,9 +646,7 @@ function renderConceptDisplay() {
     const display = document.getElementById('reader-display');
     const concept = book.concepts[currentConceptIndex];
     
-    document.getElementById('reader-main-title').textContent = concept.title;
     document.getElementById('reader-author').textContent = book.title;
-    document.getElementById('reader-title').textContent = concept.title;
 
     // Parse the One-Pager sections
     const sentences = concept.explanation.match(/[^.!?]+[.!?]+/g) || [concept.explanation];
@@ -636,40 +659,54 @@ function renderConceptDisplay() {
     if (steps.length === 1) steps = concept.approach.split(', ').filter(s => s.trim().length > 0);
     
     let checklistHtml = steps.map((step) => `
-        <div class="flex items-start gap-4 p-4 hover:bg-gray-50 dark:hover:bg-darkBorder cursor-pointer transition border-b border-gray-100 dark:border-gray-800 last:border-0 group" onclick="toggleChecklist(this)">
-            <div class="w-5 h-5 border border-[#0a0a0a] dark:border-gray-500 flex items-center justify-center flex-shrink-0 mt-1 bg-white dark:bg-darkBg">
-                <svg class="w-3 h-3 text-transparent transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"></svg>
-            </div>
-            <span class="text-[#0a0a0a] dark:text-gray-300 text-base md:text-lg font-medium leading-relaxed transition-all">${step}${step.endsWith('.') ? '' : '.'}</span>
-        </div>
+        <li class="flex items-start"><svg class="w-6 h-6 text-green-500 mr-3 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> ${step}${step.endsWith('.') ? '' : '.'}</li>
     `).join('');
 
     display.innerHTML = `
-        <div class="space-y-12 animate-fade">
-            ${concept.isPremium ? '<div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-500 px-4 py-3 rounded-sm text-xs font-bold uppercase tracking-widest flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.956 11.956 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg> Premium Framework Unlocked</div>' : ''}
+        <article class="mb-12 sm:mb-16 animate-fade">
+            <div class="flex flex-wrap items-center gap-3 mb-6">
+                <span class="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-xs font-semibold tracking-widest uppercase rounded-full text-secondary">${book.category || 'Framework'}</span>
+                <span class="text-xs text-secondary flex items-center"><svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 5 Min Read</span>
+            </div>
             
-            <!-- 1. The Core Premise -->
-            <div class="border-l-4 border-emerald-800 dark:border-emerald-500 pl-6">
-                <h3 class="text-[10px] font-bold uppercase tracking-widest text-emerald-800 dark:text-emerald-500 mb-2">I. The Core Premise</h3>
-                <p class="text-2xl md:text-3xl font-bold serif text-[#0a0a0a] dark:text-white leading-snug">
-                    ${premise}
-                </p>
+            <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-medium leading-tight text-primary dark:text-white mb-8">
+                ${concept.title}
+            </h1>
+            
+            <div class="w-full bg-white dark:bg-darkCard border border-borderLight dark:border-gray-800 rounded-2xl p-6 sm:p-8 mb-10 premium-shadow">
+                <p class="font-sans text-sm font-medium text-secondary mb-3 uppercase tracking-wide">One-Line Summary</p>
+                <p class="font-serif text-xl sm:text-2xl italic text-primary dark:text-gray-200 leading-relaxed">${premise}</p>
             </div>
+        </article>
 
-            <!-- 2. The Mechanism -->
-            <div class="bg-gray-50 dark:bg-darkCard p-6 md:p-8 border border-gray-200 dark:border-gray-800">
-                <h3 class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">II. The Mechanism</h3>
-                <p class="text-[#0a0a0a] dark:text-gray-300 text-lg leading-relaxed">
-                    ${mechanism || "This framework operates intrinsically via the aforementioned premise."}
-                </p>
-            </div>
-
-            <!-- 3. Actionable Pivot -->
-            <div>
-                <h3 class="text-[10px] font-bold uppercase tracking-widest text-[#0a0a0a] dark:text-gray-400 mb-4 border-b border-gray-200 dark:border-gray-800 pb-2">III. Actionable Pivot</h3>
-                <div class="border border-gray-200 dark:border-gray-800 bg-white dark:bg-darkCard">
-                    ${checklistHtml}
+        <div class="space-y-10 font-serif text-lg sm:text-xl leading-relaxed text-gray-800 dark:text-gray-300 animate-fade" style="animation-delay: 0.1s;">
+            <h2 class="font-sans text-2xl sm:text-3xl font-semibold text-primary dark:text-white mt-16 mb-6 tracking-tight">Why It Matters</h2>
+            <p>${mechanism || "This framework operates intrinsically via the aforementioned premise."}</p>
+            
+            <div class="my-16 w-full bg-[#FDFBF7] dark:bg-darkCard border border-[#EAE3D1] dark:border-gray-800 rounded-3xl p-8 sm:p-10 premium-shadow transition-colors">
+                <div class="flex items-center mb-6">
+                    <svg class="w-6 h-6 text-accent mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+                    <h3 class="font-sans text-lg sm:text-xl font-semibold text-primary dark:text-white">Think for 30 Seconds</h3>
                 </div>
+                <p class="font-serif text-lg sm:text-xl italic text-secondary mb-6">How does this concept apply to your current biggest bottleneck?</p>
+                <textarea class="w-full bg-white dark:bg-[#121212] border border-borderLight dark:border-gray-700 rounded-xl p-5 font-sans text-base focus:outline-none focus:ring-1 focus:ring-accent resize-none placeholder-gray-400" rows="3" placeholder="Jot down your reflection to lock in the learning..."></textarea>
+            </div>
+
+            <div class="my-16 w-full bg-white dark:bg-darkCard border-l-8 border-green-500 rounded-r-3xl p-8 sm:p-10 shadow-sm premium-shadow">
+                <h3 class="font-sans text-xs sm:text-sm uppercase tracking-widest font-bold text-green-600 mb-3">Try Today (Max 5 Mins)</h3>
+                <h4 class="font-sans text-2xl sm:text-3xl font-semibold text-primary dark:text-white mb-4">Actionable Steps</h4>
+                <ul class="font-sans text-base sm:text-lg space-y-4 text-primary dark:text-gray-300">
+                    ${checklistHtml}
+                </ul>
+            </div>
+            
+            <div class="my-20 w-full bg-primary dark:bg-[#1A1A1A] rounded-3xl p-10 sm:p-16 text-center relative overflow-hidden premium-shadow group cursor-pointer" onclick="shareInsight()">
+                <div class="absolute -top-10 -right-10 w-48 h-48 bg-accent/10 rounded-full blur-3xl"></div>
+                <div class="absolute -bottom-10 -left-10 w-48 h-48 bg-accent/5 rounded-full blur-3xl"></div>
+                <span class="block font-sans text-xs sm:text-sm uppercase tracking-widest text-accent mb-8 relative z-10">Screenshot-Worthy Takeaway</span>
+                <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium leading-snug sm:leading-tight text-white relative z-10 max-w-4xl mx-auto">
+                    "${premise}"
+                </h2>
             </div>
         </div>
     `;
@@ -824,6 +861,13 @@ function updateCarouselPreview() {
         numberEl.classList.add('hidden');
     }
     
+    const sourceEl = document.getElementById('cg-preview-source');
+    if (document.getElementById('cg-show-source') && document.getElementById('cg-show-source').checked) {
+        sourceEl.classList.remove('hidden');
+    } else {
+        sourceEl.classList.add('hidden');
+    }
+    
     // Handle ratios
     let width = 1080;
     let height = 1080;
@@ -846,8 +890,8 @@ function updateCarouselPreview() {
         document.getElementById('cg-preview-content').className = "text-[3rem] text-gray-700 leading-snug font-medium transition-all duration-300 mt-6";
         document.getElementById('cg-flex-container').className = "flex-1 flex flex-col justify-center space-y-12 w-full pr-12 pb-12 transition-all duration-300 relative";
         
-        tcLogo.className = "w-16 h-16 bg-[#0a0a0a] text-white flex items-center justify-center font-serif font-bold text-3xl leading-none rounded-sm transition-colors";
-        tcLogo.innerHTML = '<span class="relative -top-[2px]">TC</span>';
+        tcLogo.className = "w-14 h-14 bg-[#0a0a0a] text-white flex items-center justify-center font-serif font-bold text-3xl leading-none rounded-sm transition-colors";
+        tcLogo.innerHTML = '<span class="relative -top-[2px]">%</span>';
         brandName.className = "text-3xl font-bold tracking-tight text-[#0a0a0a] serif leading-none transition-colors";
         document.getElementById('btn-download-carousel').textContent = "Download 1080x1080 PNG";
     } else if (ratio === '4:5') {
@@ -885,8 +929,8 @@ function updateCarouselPreview() {
         brandName.classList.replace('text-[#0a0a0a]', 'text-white');
         brandItalic.className = "italic text-emerald-400 transition-colors";
         contentBorder.className = "border-l-8 border-emerald-400 pl-12 transition-all duration-300";
-        tcLogo.classList.replace('bg-[#0a0a0a]', 'bg-white');
-        tcLogo.classList.replace('text-white', 'text-[#0a0a0a]');
+        tcLogo.classList.remove('bg-[#0a0a0a]', 'text-white');
+        tcLogo.classList.add('bg-white', 'text-[#0a0a0a]');
     } else {
         node.classList.replace('bg-[#0a0a0a]', 'bg-white');
         

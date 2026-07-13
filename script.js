@@ -843,14 +843,15 @@ function renderConceptDisplay() {
         </div>
     `).join('');
 
-    display.innerHTML = `
-        <div class="space-y-12 animate-fade pt-4">
-            ${concept.premium ? '<div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-500 px-4 py-3 rounded-sm text-xs font-bold uppercase tracking-widest flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.956 11.956 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg> Premium Framework Unlocked</div>' : ''}
-            
-            <h1 class="text-4xl md:text-5xl font-bold font-serif text-[#0a0a0a] dark:text-white leading-tight mb-8">
-                ${concept.title}
-            </h1>
-
+    let mainContentHtml = '';
+    if (concept.markdown) {
+        mainContentHtml = `
+            <div class="prose prose-lg dark:prose-invert max-w-none prose-p:text-gray-600 dark:prose-p:text-gray-400 prose-headings:font-serif prose-pre:bg-gray-100 prose-pre:text-[#0a0a0a] dark:prose-pre:bg-darkCard dark:prose-pre:text-gray-300">
+                ${marked.parse(concept.markdown)}
+            </div>
+        `;
+    } else {
+        mainContentHtml = `
             <!-- 1. The Core Premise -->
             <div class="border-l-4 border-emerald-800 dark:border-emerald-500 pl-6">
                 <h3 class="text-[10px] font-bold uppercase tracking-widest text-emerald-800 dark:text-emerald-500 mb-2">I. The Core Premise</h3>
@@ -874,6 +875,18 @@ function renderConceptDisplay() {
                     ${checklistHtml}
                 </div>
             </div>
+        `;
+    }
+
+    display.innerHTML = `
+        <div class="space-y-12 animate-fade pt-4">
+            ${concept.premium || concept.isPremium ? '<div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-500 px-4 py-3 rounded-sm text-xs font-bold uppercase tracking-widest flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.956 11.956 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg> Premium Framework Unlocked</div>' : ''}
+            
+            <h1 class="text-4xl md:text-5xl font-bold font-serif text-[#0a0a0a] dark:text-white leading-tight mb-8">
+                ${concept.title}
+            </h1>
+
+            ${mainContentHtml}
         </div>
     `;
 }

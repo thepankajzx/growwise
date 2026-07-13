@@ -683,13 +683,15 @@ function updateActionButtonsState() {
     const completed = JSON.parse(localStorage.getItem('ka_completed') || '[]');
     const saveLater = JSON.parse(localStorage.getItem('ka_save_later') || '[]');
     
-    // Arsenal button (+ icon)
+    // Arsenal button (heart icon)
     const sideSaved = document.getElementById('sidebar-btn-saved');
     if (sideSaved) {
         if (saved.includes(conceptId)) {
-            sideSaved.classList.add('text-amber-600');
+            sideSaved.classList.add('text-red-500');
+            sideSaved.querySelector('svg').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" fill="currentColor" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>';
         } else {
-            sideSaved.classList.remove('text-amber-600');
+            sideSaved.classList.remove('text-red-500');
+            sideSaved.querySelector('svg').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" fill="none" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>';
         }
     }
 
@@ -715,19 +717,19 @@ function updateActionButtonsState() {
         }
     }
 
-    // Completed button - premium shield verified
+    // Completed button - clean verified tick (no circle/shield)
     const sideCompleted = document.getElementById('sidebar-btn-completed');
-    const shieldPath = 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.956 11.956 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z';
+    const tickPath = 'M4.5 12.75l6 6 9-13.5';
     
     if (sideCompleted) {
         if (completed.includes(conceptId)) {
             sideCompleted.classList.add('bg-emerald-500', 'text-white');
             sideCompleted.classList.remove('text-secondary', 'hover:bg-gray-100', 'dark:hover:bg-gray-800');
-            sideCompleted.querySelector('svg').innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" fill="currentColor" d="${shieldPath}"></path>`;
+            sideCompleted.querySelector('svg').innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="${tickPath}"></path>`;
         } else {
             sideCompleted.classList.remove('bg-emerald-500', 'text-white');
             sideCompleted.classList.add('text-secondary', 'hover:bg-gray-100', 'dark:hover:bg-gray-800');
-            sideCompleted.querySelector('svg').innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" fill="none" d="${shieldPath}"></path>`;
+            sideCompleted.querySelector('svg').innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="${tickPath}"></path>`;
         }
     }
 

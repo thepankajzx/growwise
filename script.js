@@ -1202,13 +1202,19 @@ window.onload = () => {
     renderDashboard();
     renderExplorer();
     
-    // Reader Progress Bar
+    // Reader Progress Bar & Text
     document.getElementById('reader-overlay').addEventListener('scroll', function() {
         const overlay = this;
         const progress = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        
         if(overlay.scrollHeight > overlay.clientHeight) {
-            const scrolled = (overlay.scrollTop / (overlay.scrollHeight - overlay.clientHeight)) * 100;
-            progress.style.width = scrolled + '%';
+            let scrolled = (overlay.scrollTop / (overlay.scrollHeight - overlay.clientHeight)) * 100;
+            // Cap it between 0 and 100
+            scrolled = Math.max(0, Math.min(100, scrolled));
+            
+            if (progress) progress.style.width = scrolled + '%';
+            if (progressText) progressText.textContent = Math.round(scrolled) + '%';
         }
     });
 

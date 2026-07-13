@@ -649,7 +649,13 @@
                     <button onclick="closeReader()" class="p-2 -ml-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition">
                         <svg class="w-5 h-5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                     </button>
-                    <span id="reader-author" class="font-medium text-xs sm:text-sm text-secondary tracking-wide uppercase truncate max-w-[150px] sm:max-w-xs">Atomic Habits</span>
+                    <div class="flex flex-col">
+                        <span id="reader-author" class="font-medium text-xs sm:text-sm text-secondary tracking-wide uppercase truncate max-w-[150px] sm:max-w-xs">Atomic Habits</span>
+                        <div class="flex items-center gap-2 mt-0.5">
+                            <span id="progress-text" class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">0%</span>
+                            <span class="text-[10px] text-gray-400">Read</span>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="flex items-center gap-1 sm:gap-2 shrink-0">
@@ -676,9 +682,9 @@
                     </button>
                 </div>
             </div>
-            <!-- Reading Progress Bar (scroll-based, thin green line) -->
-            <div class="h-[2px] w-full bg-gray-100 dark:bg-gray-900 absolute bottom-0 left-0">
-                <div id="progress-bar" class="h-[2px] bg-emerald-500 w-0 transition-none"></div>
+            <!-- Enhanced Reading Progress Bar with Glow -->
+            <div class="h-[3px] w-full bg-gray-100 dark:bg-gray-900 absolute bottom-0 left-0 overflow-hidden">
+                <div id="progress-bar" class="h-[3px] bg-emerald-500 w-0 transition-none shadow-[0_0_8px_rgba(16,185,129,0.8)] rounded-r-full"></div>
             </div>
         </header>        <!-- Fluid Main Layout -->
         <!-- Reader Content: Full width -->
@@ -759,7 +765,7 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <!-- Scripts -->
-    <script src="data.js?v=23"></script>
-    <script src="script.js?v=23"></script>
+    <script src="data.js?v=24"></script>
+    <script src="script.js?v=24"></script>
 </body>
 </html>

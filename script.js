@@ -147,7 +147,11 @@ function checkAccessCodeModal() {
 // NAVIGATION & UI
 // ----------------------------------------------------
 
-function navTo(view) {
+function navTo(view, updateHash = true) {
+    if (updateHash && window.location.hash !== `#${view}`) {
+        window.history.pushState(null, null, `#${view}`);
+    }
+
     document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
     document.getElementById(`view-${view}`).classList.remove('hidden');
     
@@ -1236,9 +1240,28 @@ window.onload = () => {
         }
         
         // Clean URL to prevent infinite re-opens if they refresh
-        window.history.replaceState({}, document.title, window.location.pathname);
+        window.history.replaceState({}, document.title, window.location.pathname + window.location.hash);
+    }
+    
+    // Initial routing based on hash
+    const initialHash = window.location.hash.replace('#', '');
+    const validViews = ['dashboard', 'explorer', 'admin', 'profile'];
+    if (validViews.includes(initialHash)) {
+        navTo(initialHash, false);
+    } else {
+        navTo('dashboard', false); // Default view
     }
 };
+
+window.addEventListener('hashchange', () => {
+    const newHash = window.location.hash.replace('#', '');
+    const validViews = ['dashboard', 'explorer', 'admin', 'profile'];
+    if (validViews.includes(newHash)) {
+        navTo(newHash, false);
+    } else {
+        navTo('dashboard', false);
+    }
+});
 
 document.addEventListener('keydown', (e) => { 
     if(e.key === 'Escape' && !document.getElementById('reader-overlay').classList.contains('hidden')) {

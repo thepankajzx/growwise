@@ -380,8 +380,6 @@ function updateMembershipUI() {
 
     if (!authContainer) return;
     
-    authContainer.style.display = 'flex';
-    
     if (hasPremium()) {
         authContainer.innerHTML = `
             <button class="flex items-center gap-1 bg-amber-100 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-900 px-3 py-1 rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-amber-700 dark:text-amber-500 cursor-default">

@@ -457,13 +457,28 @@ function filterBook() {
 }
 
 function filterLibrary(type) {
+    // Toggle off if clicking the already-active filter
+    if (currentLibraryFilter === type) {
+        type = 'all';
+    }
     currentLibraryFilter = type;
+
+    // Reset ALL pills to inactive state first
+    ['saved', 'bookmarked', 'completed', 'all'].forEach(id => {
+        const pill = document.getElementById(`lib-${id}`);
+        if (pill) {
+            pill.classList.remove('bg-[#0a0a0a]', 'dark:bg-white', 'text-white', 'dark:text-[#0a0a0a]', 'border-[#0a0a0a]', 'dark:border-white');
+            pill.classList.add('border-transparent', 'text-gray-600', 'dark:text-gray-400', 'hover:text-[#0a0a0a]', 'dark:hover:text-white');
+        }
+    });
+
+    // Apply active state to selected pill
     const activePill = document.getElementById(`lib-${type}`);
     if (activePill) {
         activePill.classList.remove('border-transparent', 'text-gray-600', 'dark:text-gray-400', 'hover:text-[#0a0a0a]', 'dark:hover:text-white');
         activePill.classList.add('bg-[#0a0a0a]', 'dark:bg-white', 'text-white', 'dark:text-[#0a0a0a]', 'border-[#0a0a0a]', 'dark:border-white');
     }
-    
+
     renderExplorer();
 }
 

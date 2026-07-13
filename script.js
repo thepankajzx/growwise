@@ -468,7 +468,7 @@ function filterLibrary(type) {
     }
 
     // Update ALL pill visuals
-    ['saved', 'bookmarked', 'completed'].forEach(id => {
+    ['saved', 'bookmarked', 'save_later'].forEach(id => {
         const pill = document.getElementById(`lib-${id}`);
         if (!pill) return;
         if (currentLibraryFilter.has(id)) {
@@ -551,6 +551,8 @@ function renderExplorer() {
     
     // Filter by membership logic removed (all concepts always visible)
 
+    const saveLaterItems = JSON.parse(localStorage.getItem('ka_save_later') || '[]');
+
     // Apply active library filters with OR logic
     if (currentLibraryFilter.size > 0) {
         filtered = filtered.filter(c => {
@@ -558,7 +560,7 @@ function renderExplorer() {
             return (
                 (currentLibraryFilter.has('saved') && savedItems.includes(id)) ||
                 (currentLibraryFilter.has('bookmarked') && bookmarkedItems.includes(id)) ||
-                (currentLibraryFilter.has('completed') && completedItems.includes(id))
+                (currentLibraryFilter.has('save_later') && saveLaterItems.includes(id))
             );
         });
     }
@@ -676,11 +678,12 @@ function openReader(bookId, conceptIndex, globalIndex) {
 
 function updateActionButtonsState() {
     const conceptId = `${currentBookId}-${currentConceptIndex}`;
-    
     const saved = JSON.parse(localStorage.getItem('ka_saved') || '[]');
     const bookmarks = JSON.parse(localStorage.getItem('ka_bookmarks') || '[]');
     const completed = JSON.parse(localStorage.getItem('ka_completed') || '[]');
+    const saveLater = JSON.parse(localStorage.getItem('ka_save_later') || '[]');
     
+    // Arsenal button (+ icon)
     const sideSaved = document.getElementById('sidebar-btn-saved');
     if (sideSaved) {
         if (saved.includes(conceptId)) {
@@ -690,10 +693,10 @@ function updateActionButtonsState() {
         }
     }
 
+    // Bookmark button
     const sideBookmark = document.getElementById('sidebar-btn-bookmark');
     if (sideBookmark) {
         if (bookmarks.includes(conceptId)) {
-            // Show filled bookmark in blue
             sideBookmark.classList.add('text-blue-600', 'dark:text-blue-400');
             sideBookmark.querySelector('svg').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" fill="currentColor" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>';
         } else {
@@ -701,20 +704,30 @@ function updateActionButtonsState() {
             sideBookmark.querySelector('svg').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>';
         }
     }
-    
+
+    // Save for Later button
+    const sideSaveLater = document.getElementById('sidebar-btn-save_later');
+    if (sideSaveLater) {
+        if (saveLater.includes(conceptId)) {
+            sideSaveLater.classList.add('text-purple-600', 'dark:text-purple-400');
+        } else {
+            sideSaveLater.classList.remove('text-purple-600', 'dark:text-purple-400');
+        }
+    }
+
+    // Completed button - premium shield verified
     const sideCompleted = document.getElementById('sidebar-btn-completed');
+    const shieldPath = 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.956 11.956 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z';
     
     if (sideCompleted) {
         if (completed.includes(conceptId)) {
-            // Green verified look: green background, white icon
             sideCompleted.classList.add('bg-emerald-500', 'text-white');
             sideCompleted.classList.remove('text-secondary', 'hover:bg-gray-100', 'dark:hover:bg-gray-800');
-            sideCompleted.querySelector('svg').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" fill="none" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>';
+            sideCompleted.querySelector('svg').innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" fill="currentColor" d="${shieldPath}"></path>`;
         } else {
-            // Reset to default grey
             sideCompleted.classList.remove('bg-emerald-500', 'text-white');
             sideCompleted.classList.add('text-secondary', 'hover:bg-gray-100', 'dark:hover:bg-gray-800');
-            sideCompleted.querySelector('svg').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>';
+            sideCompleted.querySelector('svg').innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" fill="none" d="${shieldPath}"></path>`;
         }
     }
 
@@ -781,6 +794,20 @@ function toggleCompleted() {
     if (completed.includes(conceptId)) completed = completed.filter(id => id !== conceptId);
     else completed.push(conceptId);
     localStorage.setItem('ka_completed', JSON.stringify(completed));
+    updateActionButtonsState();
+    renderExplorer();
+}
+
+function toggleSaveLater() {
+    if (!isLoggedIn()) {
+        showLoginModal();
+        return;
+    }
+    const conceptId = `${currentBookId}-${currentConceptIndex}`;
+    let saveLater = JSON.parse(localStorage.getItem('ka_save_later') || '[]');
+    if (saveLater.includes(conceptId)) saveLater = saveLater.filter(id => id !== conceptId);
+    else saveLater.push(conceptId);
+    localStorage.setItem('ka_save_later', JSON.stringify(saveLater));
     updateActionButtonsState();
     renderExplorer();
 }

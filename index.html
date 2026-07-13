@@ -239,9 +239,9 @@
                     <div>
                         <div id="libraryFilters" class="flex flex-wrap gap-2">
                             <button onclick="filterLibrary('all')" id="lib-all" class="px-4 py-1.5 rounded-sm text-[13px] sm:text-sm font-bold border border-[#0a0a0a] bg-[#0a0a0a] text-white transition">All Frameworks</button>
-                            <button onclick="filterLibrary('saved')" id="lib-saved" class="px-4 py-1.5 rounded-sm text-[13px] sm:text-sm font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition">Saved (Read Later)</button>
-                            <button onclick="filterLibrary('bookmarked')" id="lib-bookmarked" class="px-4 py-1.5 rounded-sm text-[13px] sm:text-sm font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition">My Arsenal (Favourites)</button>
-                            <button onclick="filterLibrary('completed')" id="lib-completed" class="px-4 py-1.5 rounded-sm text-[13px] sm:text-sm font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition">Mastered</button>
+                            <button onclick="filterLibrary('saved')" id="lib-saved" class="px-4 py-1.5 rounded-sm text-[13px] sm:text-sm font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition">My Arsenal</button>
+                            <button onclick="filterLibrary('bookmarked')" id="lib-bookmarked" class="px-4 py-1.5 rounded-sm text-[13px] sm:text-sm font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition">Bookmark</button>
+                            <button onclick="filterLibrary('save_later')" id="lib-save_later" class="px-4 py-1.5 rounded-sm text-[13px] sm:text-sm font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition">Save for Later</button>
                         </div>
                     </div>
 
@@ -642,22 +642,31 @@
                     <span id="reader-author" class="font-medium text-xs sm:text-sm text-secondary tracking-wide uppercase truncate max-w-[150px] sm:max-w-xs">Atomic Habits</span>
                 </div>
                 
-                <div class="flex items-center space-x-1 sm:space-x-2 shrink-0">
+                <div class="flex items-center space-x-0.5 sm:space-x-1 shrink-0">
+                    <!-- Theme -->
                     <button onclick="toggleTheme()" class="p-2 rounded-full text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-white transition" title="Toggle Theme">
                         <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                         <svg class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
                     </button>
+                    <!-- Share -->
                     <button onclick="shareInsight()" class="p-2 rounded-full text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-white transition" title="Share">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6.632l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
                     </button>
+                    <!-- Add to My Arsenal -->
+                    <button onclick="toggleSaved()" id="sidebar-btn-saved" class="p-2 rounded-full text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-white transition" title="Add to My Arsenal">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    </button>
+                    <!-- Bookmark -->
                     <button onclick="toggleBookmark()" id="sidebar-btn-bookmark" class="p-2 rounded-full text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-white transition" title="Bookmark">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>
                     </button>
-                    <button onclick="toggleSaved()" id="sidebar-btn-saved" class="p-2 rounded-full text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-white transition" title="Save for Later">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    <!-- Save for Later -->
+                    <button onclick="toggleSaveLater()" id="sidebar-btn-save_later" class="p-2 rounded-full text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-white transition" title="Save for Later">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </button>
-                    <button onclick="toggleCompleted()" id="sidebar-btn-completed" class="p-2 rounded-full text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 transition" title="Mark Completed">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <!-- Mark Mastered (Premium Shield Verified) -->
+                    <button onclick="toggleCompleted()" id="sidebar-btn-completed" class="p-2 rounded-full text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 transition" title="Mark as Mastered">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.956 11.956 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                     </button>
                 </div>
             </div>
@@ -666,10 +675,9 @@
                 <div id="progress-bar" class="h-[2px] bg-emerald-500 w-0 transition-none"></div>
             </div>
         </header>        <!-- Fluid Main Layout -->
-        <div class="w-full mx-auto px-4 sm:px-8 lg:px-12 xl:px-20 pt-8 pb-32 flex flex-col justify-center items-center">
-            
-            <!-- Center Content -->
-            <main class="w-full max-w-3xl editorial-text" id="reader-display">
+        <!-- Reader Content: Full width -->
+        <div class="w-full px-4 sm:px-6 lg:px-10 xl:px-16 pt-8 pb-32">
+            <main class="w-full editorial-text" id="reader-display">
                 <!-- Content will be injected here by JS -->
             </main>
         </div>

@@ -663,7 +663,7 @@
                     </div>
                 </div>
                 
-                <div class="flex items-center gap-1 sm:gap-2 shrink-0">
+                <div class="hidden sm:flex items-center gap-1 sm:gap-2 shrink-0">
                     <!-- Theme -->
                     <button onclick="toggleTheme()" class="p-1.5 sm:p-2 rounded-full text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-white transition" title="Toggle Theme">
                         <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
@@ -692,11 +692,26 @@
                 <div id="progress-bar" class="h-[3px] bg-emerald-500 w-0 transition-none shadow-[0_0_8px_rgba(16,185,129,0.8)] rounded-r-full"></div>
             </div>
         </header>        <!-- Fluid Main Layout -->
-        <!-- Reader Content: Full width -->
-        <div class="w-full px-4 sm:px-6 lg:px-10 xl:px-16 pt-8 pb-32">
-            <main class="w-full editorial-text" id="reader-display">
+        <div class="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-10 xl:px-16 pt-8 pb-32">
+            <main class="w-full flex flex-col space-y-12 component-driven" id="reader-display">
                 <!-- Content will be injected here by JS -->
             </main>
+        </div>
+
+        <!-- Sticky Mobile Bottom Toolbar -->
+        <div class="fixed bottom-0 left-0 w-full bg-white/95 dark:bg-[#121212]/95 backdrop-blur-md border-t border-borderLight dark:border-gray-800 p-3 flex sm:hidden justify-around items-center z-50">
+            <button onclick="shareInsight()" class="flex flex-col items-center gap-1.5 text-gray-500 hover:text-[#0a0a0a] dark:hover:text-white transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6.632l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+                <span class="text-[9px] uppercase font-bold tracking-widest">Share</span>
+            </button>
+            <button onclick="toggleSaved()" id="mobile-btn-saved" class="flex flex-col items-center gap-1.5 text-gray-500 hover:text-red-500 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                <span class="text-[9px] uppercase font-bold tracking-widest">Arsenal</span>
+            </button>
+            <button onclick="toggleCompleted()" id="mobile-btn-completed" class="flex flex-col items-center gap-1.5 text-gray-500 hover:text-emerald-500 transition">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd"/></svg>
+                <span class="text-[9px] uppercase font-bold tracking-widest">Done</span>
+            </button>
         </div>
     </div>
 
@@ -770,7 +785,7 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <!-- Scripts -->
-    <script src="data.js?v=27"></script>
-    <script src="script.js?v=27"></script>
+    <script src="data.js?v=28"></script>
+    <script src="script.js?v=28"></script>
 </body>
 </html>

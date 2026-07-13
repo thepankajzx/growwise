@@ -821,84 +821,274 @@ function toggleChecklist(el) {
     }
 }
 
+function parseConceptToComponents(markdown, conceptId) {
+    let html = '';
+    const normalized = markdown.replace(/\r\n/g, '\n');
+    const blocks = normalized.split('\n\n');
+    let currentHeading = '';
+    let currentContent = [];
+
+    const flushBlock = () => {
+        if (!currentHeading && currentContent.length === 0) return;
+        
+        const contentStr = currentContent.join('\n\n').trim();
+        let rawHeading = currentHeading.replace(/\*\*/g, '').trim();
+
+        if (rawHeading === 'Visual First:') {
+            html += renderVisualCard(contentStr);
+        } else if (rawHeading === 'Simple Explanation:') {
+            html += renderExplanationCard('Simple Explanation', contentStr);
+        } else if (rawHeading === 'Why It Matters:') {
+            html += renderExplanationCard('Why It Matters', contentStr);
+        } else if (rawHeading === 'Real-Life Example:') {
+            html += renderExampleCard(contentStr);
+        } else if (rawHeading === 'Common Mistake:') {
+            html += renderWarningCard(contentStr);
+        } else if (rawHeading === 'Reflection Question:') {
+            html += renderReflectionCard(contentStr, conceptId);
+        } else if (rawHeading.startsWith('Try This Today')) {
+            html += renderActionCard(rawHeading, contentStr, conceptId);
+        } else if (rawHeading === 'Mental Model:') {
+            html += renderMemoryCard('Mental Model', contentStr);
+        } else if (rawHeading === 'Key Takeaway:') {
+            html += renderTakeawayCard(contentStr);
+        } else {
+            if (currentHeading) {
+                currentContent.unshift(currentHeading);
+            }
+            if (currentContent.length > 0) {
+                const joined = currentContent.join('\n\n');
+                const parsed = marked.parse ? marked.parse(joined) : marked(joined);
+                html += `
+                    <div class="mb-12 prose prose-lg dark:prose-invert max-w-none prose-p:text-gray-600 dark:prose-p:text-gray-400 prose-headings:font-serif prose-headings:text-[#0a0a0a] dark:prose-headings:text-white prose-hr:border-gray-200 dark:prose-hr:border-gray-800 prose-table:w-full prose-li:text-gray-600 dark:prose-li:text-gray-400">
+                        ${parsed}
+                    </div>
+                `;
+            }
+        }
+        
+        currentHeading = '';
+        currentContent = [];
+    };
+
+    blocks.forEach(block => {
+        const match = block.match(/^(\*\*[^*]+:\*\*)\s*(.*)$/s);
+        const headingMatch = block.match(/^(#{1,6})\s+(.*)$/s);
+        
+        if (match) {
+            flushBlock();
+            currentHeading = match[1]; 
+            if (match[2].trim()) {
+                currentContent.push(match[2].trim());
+            }
+        } else if (headingMatch) {
+            flushBlock();
+            currentHeading = '';
+            currentContent.push(block);
+        } else {
+            currentContent.push(block);
+        }
+    });
+    flushBlock();
+
+    return html;
+}
+
+function renderVisualCard(content) {
+    const codeMatch = content.match(/```([\s\S]*?)```/);
+    const code = codeMatch ? codeMatch[1].trim() : '';
+    const captionText = content.replace(/```[\s\S]*?```/, '').trim();
+    
+    let parsedCaption = captionText;
+    if (typeof marked !== 'undefined') {
+        parsedCaption = marked.parseInline ? marked.parseInline(captionText) : captionText;
+    }
+
+    return `
+    <div class="w-full bg-[#0a0a0a] dark:bg-[#111] border border-[#0a0a0a] dark:border-gray-800 rounded-[2rem] overflow-hidden shadow-2xl relative mb-16 group">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-emerald-900"></div>
+        <div class="p-8 sm:p-12 overflow-x-auto scrollbar-hide">
+            <pre class="text-emerald-400 dark:text-emerald-500 font-mono text-[10px] sm:text-xs md:text-sm leading-loose tracking-widest">${code}</pre>
+        </div>
+        ${captionText ? `<div class="bg-[#111] dark:bg-[#1a1a1a] border-t border-gray-800 p-6 sm:px-12 text-sm text-gray-400 italic">
+            ${parsedCaption}
+        </div>` : ''}
+    </div>
+    `;
+}
+
+function renderExplanationCard(title, content) {
+    return `
+    <div class="mb-12">
+        <h3 class="text-[10px] font-bold uppercase tracking-widest text-emerald-800 dark:text-emerald-500 mb-4">${title}</h3>
+        <p class="text-2xl md:text-3xl font-serif text-[#0a0a0a] dark:text-gray-100 leading-snug">
+            ${content}
+        </p>
+    </div>
+    `;
+}
+
+function renderExampleCard(content) {
+    return `
+    <div class="bg-gray-50 dark:bg-[#151515] p-8 md:p-10 border border-borderLight dark:border-gray-800 rounded-3xl mb-12 relative overflow-hidden">
+        <div class="absolute left-0 top-0 bottom-0 w-1 bg-[#0a0a0a] dark:bg-gray-500"></div>
+        <h3 class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4 pl-2">Real-Life Example</h3>
+        <p class="text-lg md:text-xl text-[#0a0a0a] dark:text-gray-300 leading-relaxed font-serif pl-2">
+            ${content}
+        </p>
+    </div>
+    `;
+}
+
+function renderWarningCard(content) {
+    return `
+    <div class="bg-red-50/50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/30 rounded-3xl p-6 md:p-8 mb-12 flex items-start gap-4">
+        <div class="text-red-500 mt-1 shrink-0">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+        </div>
+        <div>
+            <h3 class="text-[10px] font-bold uppercase tracking-widest text-red-700 dark:text-red-400 mb-2">Common Mistake</h3>
+            <p class="text-base md:text-lg text-red-900 dark:text-red-300 leading-relaxed">
+                ${content}
+            </p>
+        </div>
+    </div>
+    `;
+}
+
+function renderReflectionCard(content, id) {
+    const savedText = localStorage.getItem(`reflection_${id}`) || '';
+    return `
+    <div class="bg-white dark:bg-darkCard border border-borderLight dark:border-gray-800 rounded-[2rem] p-8 md:p-10 mb-12 premium-shadow">
+        <h3 class="text-[10px] font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-4 flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            Reflection
+        </h3>
+        <p class="text-xl md:text-2xl font-serif text-[#0a0a0a] dark:text-white leading-snug mb-6">
+            ${content}
+        </p>
+        <textarea id="reflection_input_${id}" class="w-full bg-gray-50 dark:bg-darkBg border border-borderLight dark:border-gray-800 rounded-xl p-6 text-sm md:text-base text-[#0a0a0a] dark:text-gray-300 focus:outline-none focus:border-[#0a0a0a] dark:focus:border-emerald-500 transition-colors resize-y min-h-[120px]" placeholder="Type your thoughts here...">${savedText}</textarea>
+        <div class="flex justify-end mt-4">
+            <button onclick="saveReflection('${id}')" class="bg-[#0a0a0a] dark:bg-white text-white dark:text-[#0a0a0a] px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gray-800 dark:hover:bg-gray-200 transition shadow-lg">Save Note</button>
+        </div>
+    </div>
+    `;
+}
+
+function saveReflection(id) {
+    const val = document.getElementById(`reflection_input_${id}`).value;
+    localStorage.setItem(`reflection_${id}`, val);
+    const toast = document.getElementById('toast');
+    if (toast) {
+        toast.innerHTML = 'Note saved securely.';
+        toast.classList.remove('opacity-0');
+        setTimeout(() => toast.classList.add('opacity-0'), 2000);
+    }
+}
+
+function renderActionCard(title, content, id) {
+    const safeTitle = title.replace(/\s+/g, '_');
+    const isChecked = localStorage.getItem(`action_${id}_${safeTitle}`) === 'true';
+    const opacityState = isChecked ? 'opacity-50 line-through' : '';
+    const iconState = isChecked ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>' : '';
+    
+    return `
+    <div class="border border-borderLight dark:border-gray-800 rounded-3xl mb-12 bg-white dark:bg-darkCard group cursor-pointer transition hover:border-[#0a0a0a] dark:hover:border-gray-500 premium-shadow" onclick="toggleActionItem('${id}', '${safeTitle}', this)">
+        <div class="p-6 md:p-8 flex items-start gap-4 transition-all duration-300 ${opacityState}" id="action_container_${id}_${safeTitle}">
+            <div class="w-6 h-6 rounded-full border-2 border-[#0a0a0a] dark:border-gray-500 flex items-center justify-center flex-shrink-0 mt-1 transition-colors ${isChecked ? 'bg-[#0a0a0a] dark:bg-emerald-500 border-transparent' : 'bg-transparent'}">
+                <svg class="w-4 h-4 text-white dark:text-[#0a0a0a] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">${iconState}</svg>
+            </div>
+            <div>
+                <h3 class="text-[10px] font-bold uppercase tracking-widest text-[#0a0a0a] dark:text-gray-400 mb-2">${title}</h3>
+                <p class="text-base md:text-lg text-gray-600 dark:text-gray-300 leading-relaxed">${content}</p>
+            </div>
+        </div>
+    </div>
+    `;
+}
+
+function toggleActionItem(id, safeTitle, el) {
+    const container = document.getElementById(`action_container_${id}_${safeTitle}`);
+    const icon = container.querySelector('svg');
+    const box = container.querySelector('.w-6');
+    const isChecked = localStorage.getItem(`action_${id}_${safeTitle}`) === 'true';
+    
+    if (isChecked) {
+        localStorage.setItem(`action_${id}_${safeTitle}`, 'false');
+        container.classList.remove('opacity-50', 'line-through');
+        icon.innerHTML = '';
+        box.classList.remove('bg-[#0a0a0a]', 'dark:bg-emerald-500', 'border-transparent');
+        box.classList.add('bg-transparent');
+    } else {
+        localStorage.setItem(`action_${id}_${safeTitle}`, 'true');
+        container.classList.add('opacity-50', 'line-through');
+        icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>';
+        box.classList.remove('bg-transparent');
+        box.classList.add('bg-[#0a0a0a]', 'dark:bg-emerald-500', 'border-transparent');
+    }
+}
+
+function renderMemoryCard(title, content) {
+    return `
+    <div class="mb-12 mt-16">
+        <h3 class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">${title}</h3>
+        <div class="p-8 sm:p-12 bg-[#0a0a0a] dark:bg-black text-white rounded-[2rem] premium-shadow border border-[#0a0a0a] dark:border-gray-800 relative overflow-hidden">
+            <div class="absolute -right-20 -top-20 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl"></div>
+            <p class="text-xl md:text-2xl font-medium leading-relaxed font-serif relative z-10 italic text-center">
+                "${content.replace(/\*/g, '')}"
+            </p>
+        </div>
+    </div>
+    `;
+}
+
+function renderTakeawayCard(content) {
+    return `
+    <div class="mb-16 mt-24">
+        <div class="border-t border-borderLight dark:border-gray-800 pt-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+            <div>
+                <h3 class="text-[10px] font-bold uppercase tracking-widest text-[#0a0a0a] dark:text-gray-400 mb-4">Key Takeaway</h3>
+                <p class="text-2xl md:text-4xl font-serif text-[#0a0a0a] dark:text-white leading-tight font-medium max-w-3xl">
+                    ${content.replace(/\*/g, '')}
+                </p>
+            </div>
+            <button onclick="navigator.clipboard.writeText('${content.replace(/\*/g, '').replace(/'/g, "\\'")}'); const t=document.getElementById('toast'); if(t){t.innerHTML='Copied to clipboard'; t.classList.remove('opacity-0'); setTimeout(()=>t.classList.add('opacity-0'),2000);}" class="shrink-0 w-14 h-14 flex items-center justify-center border border-borderLight dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-darkCard transition text-[#0a0a0a] dark:text-white rounded-full shadow-sm hover:shadow-md">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+            </button>
+        </div>
+    </div>
+    `;
+}
+
 function renderConceptDisplay() {
     const book = findBookById(currentBookId).book;
     const display = document.getElementById('reader-display');
     const concept = book.concepts[currentConceptIndex];
+    const conceptId = `${currentBookId}-${currentConceptIndex}`;
     
     document.getElementById('reader-author').textContent = book.title;
 
-    // Parse the One-Pager sections
-    let premise = '';
-    let mechanism = '';
-    let checklistHtml = '';
-
-    if (!concept.markdown) {
+    let mainContentHtml = '';
+    if (concept.markdown) {
+        mainContentHtml = parseConceptToComponents(concept.markdown, conceptId);
+    } else {
         const sentences = concept.explanation.match(/[^.!?]+[.!?]+/g) || [concept.explanation];
-        premise = sentences[0] || '';
+        let premise = sentences[0] || '';
         if (sentences.length > 1 && premise.length < 50) premise += sentences[1];
-        
-        mechanism = concept.explanation.replace(premise, '').trim();
-        
+        let mechanism = concept.explanation.replace(premise, '').trim();
         let steps = concept.approach.split('. ').filter(s => s.trim().length > 0);
         if (steps.length === 1) steps = concept.approach.split(', ').filter(s => s.trim().length > 0);
         
-        checklistHtml = steps.map((step) => `
-            <div class="flex items-start gap-4 p-4 hover:bg-gray-50 dark:hover:bg-darkBorder cursor-pointer transition border-b border-gray-100 dark:border-gray-800 last:border-0 group" onclick="toggleChecklist(this)">
-                <div class="w-5 h-5 border border-[#0a0a0a] dark:border-gray-500 flex items-center justify-center flex-shrink-0 mt-1 bg-white dark:bg-darkBg">
-                    <svg class="w-3 h-3 text-transparent transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"></svg>
-                </div>
-                <span class="text-[#0a0a0a] dark:text-gray-300 text-base md:text-lg font-medium leading-relaxed transition-all">${step}${step.endsWith('.') ? '' : '.'}</span>
-            </div>
-        `).join('');
-    }
-
-    let mainContentHtml = '';
-    if (concept.markdown) {
-        let parsedHtml = '';
-        if (typeof marked !== 'undefined') {
-            parsedHtml = marked.parse ? marked.parse(concept.markdown) : marked(concept.markdown);
-        } else {
-            parsedHtml = '<p class="text-red-500">Error: Markdown renderer failed to load.</p>';
-        }
-        mainContentHtml = `
-            <div class="prose prose-lg dark:prose-invert max-w-none prose-p:text-gray-600 dark:prose-p:text-gray-400 prose-headings:font-serif prose-pre:bg-gray-100 prose-pre:text-[#0a0a0a] dark:prose-pre:bg-darkCard dark:prose-pre:text-gray-300">
-                ${parsedHtml}
-            </div>
-        `;
-    } else {
-        mainContentHtml = `
-            <!-- 1. The Core Premise -->
-            <div class="border-l-4 border-emerald-800 dark:border-emerald-500 pl-6">
-                <h3 class="text-[10px] font-bold uppercase tracking-widest text-emerald-800 dark:text-emerald-500 mb-2">I. The Core Premise</h3>
-                <p class="text-2xl md:text-3xl font-bold font-serif text-[#0a0a0a] dark:text-white leading-snug">
-                    ${premise}
-                </p>
-            </div>
-
-            <!-- 2. The Mechanism -->
-            <div class="bg-gray-50 dark:bg-darkCard p-6 md:p-8 border border-gray-200 dark:border-gray-800">
-                <h3 class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">II. The Mechanism</h3>
-                <p class="text-[#0a0a0a] dark:text-gray-300 text-lg leading-relaxed">
-                    ${mechanism || "This framework operates intrinsically via the aforementioned premise."}
-                </p>
-            </div>
-
-            <!-- 3. Actionable Pivot -->
-            <div>
-                <h3 class="text-[10px] font-bold uppercase tracking-widest text-[#0a0a0a] dark:text-gray-400 mb-4 border-b border-gray-200 dark:border-gray-800 pb-2">III. Actionable Pivot</h3>
-                <div class="border border-gray-200 dark:border-gray-800 bg-white dark:bg-darkCard">
-                    ${checklistHtml}
-                </div>
-            </div>
-        `;
+        mainContentHtml = renderExplanationCard('The Core Premise', premise) + 
+                          renderExplanationCard('The Mechanism', mechanism) + 
+                          renderActionCard('Actionable Pivot', steps.join('<br>'), conceptId);
     }
 
     display.innerHTML = `
-        <div class="space-y-12 animate-fade pt-4">
-            ${concept.premium || concept.isPremium ? '<div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-500 px-4 py-3 rounded-sm text-xs font-bold uppercase tracking-widest flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.956 11.956 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg> Premium Framework Unlocked</div>' : ''}
+        <div class="animate-fade pt-4 md:pt-12">
+            ${concept.premium || concept.isPremium ? '<div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-500 px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 mb-12 inline-flex shadow-sm"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.956 11.956 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg> Premium Framework Unlocked</div>' : ''}
             
-            <h1 class="text-4xl md:text-5xl font-bold font-serif text-[#0a0a0a] dark:text-white leading-tight mb-8">
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold font-serif text-[#0a0a0a] dark:text-white leading-[1.1] tracking-tight mb-20 text-balance">
                 ${concept.title}
             </h1>
 

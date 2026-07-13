@@ -664,6 +664,11 @@ function openReader(bookId, conceptIndex, globalIndex) {
     
     document.body.style.overflow = 'hidden'; 
     overlay.classList.remove('hidden');
+    overlay.scrollTop = 0;
+    
+    // Reset progress bar
+    const progressBar = document.getElementById('progress-bar');
+    if (progressBar) progressBar.style.width = '0%';
     
     updateActionButtonsState();
     renderConceptDisplay();
@@ -676,58 +681,40 @@ function updateActionButtonsState() {
     const bookmarks = JSON.parse(localStorage.getItem('ka_bookmarks') || '[]');
     const completed = JSON.parse(localStorage.getItem('ka_completed') || '[]');
     
-    // UPDATE SIDEBAR BUTTONS
     const sideSaved = document.getElementById('sidebar-btn-saved');
-    const sideSavedTxt = document.getElementById('sidebar-text-saved');
     if (sideSaved) {
         if (saved.includes(conceptId)) {
-            sideSaved.classList.add('text-amber-600', 'dark:text-amber-500');
-            sideSavedTxt.textContent = 'Saved';
+            sideSaved.classList.add('text-amber-600');
         } else {
-            sideSaved.classList.remove('text-amber-600', 'dark:text-amber-500');
-            sideSavedTxt.textContent = 'Read Later';
+            sideSaved.classList.remove('text-amber-600');
         }
     }
 
     const sideBookmark = document.getElementById('sidebar-btn-bookmark');
-    const sideBookmarkTxt = document.getElementById('sidebar-text-bookmark');
     if (sideBookmark) {
         if (bookmarks.includes(conceptId)) {
-            sideBookmark.classList.add('text-blue-600', 'dark:text-blue-500');
-            sideBookmarkTxt.textContent = 'Bookmarked';
+            // Show filled bookmark in blue
+            sideBookmark.classList.add('text-blue-600', 'dark:text-blue-400');
+            sideBookmark.querySelector('svg').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" fill="currentColor" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>';
         } else {
-            sideBookmark.classList.remove('text-blue-600', 'dark:text-blue-500');
-            sideBookmarkTxt.textContent = 'Save to Arsenal';
+            sideBookmark.classList.remove('text-blue-600', 'dark:text-blue-400');
+            sideBookmark.querySelector('svg').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>';
         }
     }
     
     const sideCompleted = document.getElementById('sidebar-btn-completed');
-    const sideCompletedTxt = document.getElementById('sidebar-text-completed');
-    const sideProgress = document.getElementById('sidebar-progress');
-    const sidePercent = document.getElementById('sidebar-percent');
-    const progressBar = document.getElementById('progress-bar');
     
     if (sideCompleted) {
         if (completed.includes(conceptId)) {
-            sideCompleted.classList.add('bg-emerald-50', 'dark:bg-emerald-900/20');
-            if (sideCompletedTxt) sideCompletedTxt.textContent = 'Mastered';
-            if (sideProgress) sideProgress.classList.add('text-emerald-500');
-            if (sidePercent) { sidePercent.textContent = '100%'; sidePercent.classList.add('text-emerald-600'); }
-            if (progressBar) {
-                progressBar.style.width = '100%';
-                progressBar.classList.add('bg-emerald-500');
-                progressBar.classList.remove('bg-accent');
-            }
+            // Green verified look: green background, white icon
+            sideCompleted.classList.add('bg-emerald-500', 'text-white');
+            sideCompleted.classList.remove('text-secondary', 'hover:bg-gray-100', 'dark:hover:bg-gray-800');
+            sideCompleted.querySelector('svg').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" fill="none" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>';
         } else {
-            sideCompleted.classList.remove('bg-emerald-50', 'dark:bg-emerald-900/20');
-            if (sideCompletedTxt) sideCompletedTxt.textContent = 'Mark Completed';
-            if (sideProgress) sideProgress.classList.remove('text-emerald-500');
-            if (sidePercent) { sidePercent.classList.remove('text-emerald-600'); }
-            if (progressBar) {
-                progressBar.style.width = '0%';
-                progressBar.classList.remove('bg-emerald-500');
-                progressBar.classList.add('bg-accent');
-            }
+            // Reset to default grey
+            sideCompleted.classList.remove('bg-emerald-500', 'text-white');
+            sideCompleted.classList.add('text-secondary', 'hover:bg-gray-100', 'dark:hover:bg-gray-800');
+            sideCompleted.querySelector('svg').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>';
         }
     }
 

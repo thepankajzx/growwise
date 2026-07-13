@@ -122,19 +122,18 @@
             </div>
             
             <!-- Navigation Right Side -->
-            <div class="flex flex-row items-center gap-2 md:gap-4 shrink-0">
-                <!-- Theme Toggle -->
+            <div class="flex flex-row items-center gap-3 md:gap-4 shrink-0">
+                <!-- Theme Toggle (all screens) -->
                 <button onclick="toggleTheme()" class="text-gray-500 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition p-1 shrink-0">
                     <svg id="theme-icon-light" class="w-4 h-4 md:w-5 md:h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                     <svg id="theme-icon-dark" class="w-4 h-4 md:w-5 md:h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
                 </button>
 
-                <div class="flex flex-row items-center gap-2 md:gap-4 text-[10px] md:text-sm font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 shrink-0">
-                    <button onclick="navTo('explorer')" id="btn-explorer" class="hidden md:inline hover:text-[#0a0a0a] dark:hover:text-white transition whitespace-nowrap">The Arsenal</button>
-                    <button onclick="navTo('admin')" id="btn-admin" class="hidden hover:text-[#0a0a0a] dark:hover:text-white transition whitespace-nowrap">Admin Studio</button>
-                </div>
+                <!-- The Arsenal (all screens) -->
+                <button onclick="navTo('explorer')" id="btn-explorer" class="text-[10px] md:text-sm font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition whitespace-nowrap">The Arsenal</button>
+                <button onclick="navTo('admin')" id="btn-admin" class="hidden text-[10px] md:text-sm font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition whitespace-nowrap">Admin Studio</button>
 
-                <!-- PREMIUM TOGGLE (DESKTOP) -->
+                <!-- PREMIUM TOGGLE (DESKTOP only) -->
                 <div id="auth-container" class="shrink-0 hidden lg:block">
                     <div class="flex items-center gap-1 bg-gray-100 dark:bg-darkBorder p-0.5 rounded-full border border-gray-200 dark:border-gray-800 shrink-0">
                         <button id="toggle-standard" class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-white dark:bg-darkCard shadow-sm text-[#0a0a0a] dark:text-white transition cursor-default">Free</button>
@@ -152,7 +151,6 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
                     </button>
-                    <!-- PROFILE DROPDOWN (Will be replaced by Profile View soon, but keep for fallback) -->
                     <div id="profile-dropdown" class="absolute right-0 top-full mt-4 w-56 bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 shadow-xl rounded-sm hidden flex-col z-[100] p-4 text-left cursor-default animate-fade">
                         <div class="mb-4">
                             <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-1">Signed in as</p>
@@ -166,7 +164,7 @@
                     </div>
                 </div>
 
-                <!-- MOBILE HAMBURGER MENU -->
+                <!-- MOBILE HAMBURGER MENU (mobile only) -->
                 <div class="shrink-0 relative md:hidden">
                     <button onclick="toggleMobileMenu()" class="text-gray-500 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition p-1 shrink-0">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
@@ -174,11 +172,8 @@
                     
                     <!-- MOBILE DROPDOWN -->
                     <div id="mobile-menu-dropdown" class="absolute right-0 top-full mt-4 w-56 bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 shadow-xl rounded-sm hidden flex-col z-[100] p-4 text-left animate-fade">
-                        
-                        <!-- The Arsenal Link -->
-                        <button onclick="navTo('explorer'); toggleMobileMenu()" class="w-full text-left text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition mb-4">The Arsenal</button>
 
-                        <!-- Free/Premium Mobile -->
+                        <!-- Free/Premium Mobile (only in menu) -->
                         <div class="mb-4 flex items-center justify-center bg-gray-100 dark:bg-darkBorder p-1 rounded-full border border-gray-200 dark:border-gray-800">
                             <button id="mobile-toggle-standard" class="flex-1 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-white dark:bg-darkCard shadow-sm text-[#0a0a0a] dark:text-white transition cursor-default">Free</button>
                             <button onclick="requestPremiumAccess()" id="mobile-toggle-premium" class="flex-1 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition flex items-center justify-center gap-1">

@@ -154,6 +154,15 @@ function navTo(view) {
     document.querySelectorAll('nav button').forEach(b => b.classList.remove('nav-active'));
     document.getElementById(`btn-${view}`).classList.add('nav-active');
     
+    const footer = document.getElementById('main-footer');
+    if (footer) {
+        if (view === 'dashboard') {
+            footer.classList.remove('hidden');
+        } else {
+            footer.classList.add('hidden');
+        }
+    }
+    
     window.scrollTo(0, 0);
 }
 

@@ -381,7 +381,7 @@
     </main>
 
     <!-- PREMIUM FOOTER (FLUID / STRETCHED) -->
-    <footer class="w-full bg-[#FAFAF8] dark:bg-[#0A0A0A] pt-16 sm:pt-24 pb-12 transition-colors duration-300 border-t border-borderLight dark:border-darkBorder">
+    <footer id="main-footer" class="w-full bg-[#FAFAF8] dark:bg-[#0A0A0A] pt-16 sm:pt-24 pb-12 transition-colors duration-300 border-t border-borderLight dark:border-darkBorder">
         <div class="w-full mx-auto px-6 sm:px-10 lg:px-16 xl:px-24">
             
             <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-y-8 md:gap-y-16 lg:gap-8">
@@ -469,9 +469,9 @@
     </footer>
 
     <!-- READER OVERLAY -->
-    <div id="reader-overlay" class="fixed inset-0 z-[100] bg-bgLight dark:bg-[#121212] hidden overflow-y-auto animate-fade transition-colors duration-300">
+    <div id="reader-overlay" class="fixed inset-0 z-[100] bg-white dark:bg-[#121212] hidden overflow-y-auto animate-fade transition-colors duration-300">
         <!-- Fluid Sticky Header -->
-        <header class="fixed top-0 w-full bg-bgLight/90 dark:bg-[#121212]/90 backdrop-blur-md border-b border-borderLight dark:border-gray-800 z-50 transition-colors duration-300">
+        <header class="fixed top-0 w-full bg-white/90 dark:bg-[#121212]/90 backdrop-blur-md border-b border-borderLight dark:border-gray-800 z-50 transition-colors duration-300">
             <div class="w-full mx-auto px-4 sm:px-8 lg:px-12 xl:px-20 h-16 flex items-center justify-between">
                 <div class="flex items-center space-x-3 sm:space-x-4">
                     <button onclick="closeReader()" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition">
@@ -546,7 +546,7 @@
         </div>
 
         <!-- Bottom Toolbar (Mobile & Tablet Only) -->
-        <div class="lg:hidden fixed bottom-0 w-full bg-bgLight/90 dark:bg-[#121212]/90 backdrop-blur-md border-t border-borderLight dark:border-gray-800 pb-safe z-50">
+        <div class="lg:hidden fixed bottom-0 w-full bg-white/90 dark:bg-[#121212]/90 backdrop-blur-md border-t border-borderLight dark:border-gray-800 pb-safe z-50">
             <div class="flex justify-around items-center p-4">
                 <button onclick="toggleSaved()" id="mobile-btn-saved" class="flex flex-col items-center text-secondary hover:text-primary dark:hover:text-white transition">
                     <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>

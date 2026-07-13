@@ -123,7 +123,7 @@
             </div>
             
             <!-- Navigation Right Side -->
-            <div class="flex flex-row items-center gap-1 md:gap-4 shrink-0">
+            <div class="flex flex-row items-center justify-end gap-2 sm:gap-3 md:gap-4 shrink-0 ml-auto">
                 <!-- Theme Toggle (all screens) -->
                 <button onclick="toggleTheme()" class="text-gray-500 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition p-1 shrink-0">
                     <svg id="theme-icon-light" class="w-4 h-4 md:w-5 md:h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
@@ -132,7 +132,12 @@
 
                 <!-- The Arsenal (all screens) -->
                 <button onclick="navTo('explorer')" id="btn-explorer" class="text-[10px] md:text-sm font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition whitespace-nowrap">The Arsenal</button>
-                <button onclick="navTo('admin')" id="btn-admin" class="hidden text-[10px] md:text-sm font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition whitespace-nowrap">Admin Studio</button>
+                <button onclick="navTo('admin')" id="btn-admin" class="hidden items-center text-gray-500 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition whitespace-nowrap">
+                    <!-- Mobile Star -->
+                    <svg class="w-4 h-4 md:hidden" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <!-- Desktop Text -->
+                    <span class="hidden md:inline text-[10px] md:text-sm font-bold uppercase tracking-widest">Admin Studio</span>
+                </button>
 
                 <!-- PREMIUM TOGGLE (DESKTOP only) -->
                 <div id="auth-container" class="shrink-0 hidden">

@@ -48,7 +48,7 @@
             border: 1px solid var(--color-border);
         }
         .dark .institutional-border {
-            border: 1px solid #2d2d2d;
+            border-color: transparent;
         }
 
         .nav-active {
@@ -80,6 +80,18 @@
             to { opacity: 1; transform: translateY(0); }
         }
         .animate-fade { animation: fadeIn 0.4s ease-out forwards; }
+        
+        .premium-shadow {
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03);
+        }
+        .hover-card {
+            transition: all 0.3s ease;
+        }
+        .hover-card:hover {
+            transform: translateY(-2px);
+            border-color: #166534;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+        }
         
     </style>
 </head>
@@ -122,25 +134,25 @@
                     <button onclick="navTo('admin')" id="btn-admin" class="hidden hover:text-[#0a0a0a] dark:hover:text-white transition whitespace-nowrap">Admin Studio</button>
                 </div>
 
-                <!-- PREMIUM TOGGLE -->
-                <div id="auth-container" class="shrink-0">
+                <!-- PREMIUM TOGGLE (DESKTOP) -->
+                <div id="auth-container" class="shrink-0 hidden md:block">
                     <div class="flex items-center gap-1 bg-gray-100 dark:bg-darkBorder p-0.5 rounded-full border border-gray-200 dark:border-gray-800 shrink-0">
-                        <button id="toggle-standard" class="px-2 md:px-3 py-1 rounded-full text-[8px] md:text-[10px] font-bold uppercase tracking-widest bg-white dark:bg-darkCard shadow-sm text-[#0a0a0a] dark:text-white transition cursor-default">Free</button>
-                        <button onclick="requestPremiumAccess()" id="toggle-premium" class="px-2 md:px-3 py-1 rounded-full text-[8px] md:text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition flex items-center gap-1">
+                        <button id="toggle-standard" class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-white dark:bg-darkCard shadow-sm text-[#0a0a0a] dark:text-white transition cursor-default">Free</button>
+                        <button onclick="requestPremiumAccess()" id="toggle-premium" class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition flex items-center gap-1">
                             <svg class="w-3 h-3 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                             Premium
                         </button>
                     </div>
                 </div>
 
-                <!-- PROFILE (SHOWN WHEN LOGGED IN) -->
-                <div class="shrink-0 relative">
-                    <button onclick="toggleProfileDropdown()" id="btn-profile" class="hidden text-gray-500 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition whitespace-nowrap">
-                        <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <!-- PROFILE (DESKTOP, SHOWN WHEN LOGGED IN) -->
+                <div class="shrink-0 relative hidden md:block" id="desktop-profile-wrapper">
+                    <button onclick="navTo('profile')" id="btn-profile" class="hidden text-gray-500 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition whitespace-nowrap">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
                     </button>
-                    <!-- PROFILE DROPDOWN -->
+                    <!-- PROFILE DROPDOWN (Will be replaced by Profile View soon, but keep for fallback) -->
                     <div id="profile-dropdown" class="absolute right-0 top-full mt-4 w-56 bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 shadow-xl rounded-sm hidden flex-col z-[100] p-4 text-left cursor-default animate-fade">
                         <div class="mb-4">
                             <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-1">Signed in as</p>
@@ -150,8 +162,34 @@
                             <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-1">Phone Number</p>
                             <p class="text-xs font-semibold text-gray-500 dark:text-gray-400">Not provided</p>
                         </div>
-                        <div class="border-t border-gray-100 dark:border-gray-800 pt-4 flex flex-col gap-2">
-                            <button onclick="logout()" class="w-full text-left text-[11px] font-bold uppercase tracking-widest text-red-500 hover:text-red-600 transition">Log Out</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MOBILE HAMBURGER MENU -->
+                <div class="shrink-0 relative md:hidden">
+                    <button onclick="toggleMobileMenu()" class="text-gray-500 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition p-1 shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    </button>
+                    
+                    <!-- MOBILE DROPDOWN -->
+                    <div id="mobile-menu-dropdown" class="absolute right-0 top-full mt-4 w-56 bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 shadow-xl rounded-sm hidden flex-col z-[100] p-4 text-left animate-fade">
+                        
+                        <!-- Free/Premium Mobile -->
+                        <div class="mb-4 flex items-center justify-center bg-gray-100 dark:bg-darkBorder p-1 rounded-full border border-gray-200 dark:border-gray-800">
+                            <button id="mobile-toggle-standard" class="flex-1 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-white dark:bg-darkCard shadow-sm text-[#0a0a0a] dark:text-white transition cursor-default">Free</button>
+                            <button onclick="requestPremiumAccess()" id="mobile-toggle-premium" class="flex-1 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition flex items-center justify-center gap-1">
+                                Premium
+                            </button>
+                        </div>
+
+                        <!-- Profile Section Mobile (Shows if logged in) -->
+                        <div id="mobile-profile-section" class="hidden flex-col gap-2 pt-2 border-t border-gray-100 dark:border-gray-800">
+                            <button onclick="navTo('profile'); toggleMobileMenu()" class="w-full text-left text-xs font-bold text-[#0a0a0a] dark:text-white hover:opacity-70 transition flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                My Profile
+                            </button>
+                            <button onclick="logout()" class="w-full text-left text-[11px] font-bold uppercase tracking-widest text-red-500 hover:text-red-600 transition mt-2">Log Out</button>
                         </div>
                     </div>
                 </div>
@@ -381,6 +419,137 @@
                 </div>
             </div>
         </section>
+
+    <!-- PROFILE VIEW -->
+    <section id="view-profile" class="hidden animate-fade w-full pb-32">
+        <div class="w-full mx-auto px-4 md:px-8 xl:px-20 pt-8 flex flex-col xl:flex-row gap-12">
+            <!-- MAIN COLUMN (Learning Identity) -->
+            <div class="w-full flex-1 space-y-12">
+                <!-- TOP HERO -->
+                <section class="w-full bg-white dark:bg-darkCard border border-borderLight dark:border-gray-800 rounded-[2rem] p-8 sm:p-12 premium-shadow flex flex-col md:flex-row items-center md:items-start justify-between gap-8 hover-card">
+                    <div class="flex flex-col md:flex-row items-center md:items-start gap-8 text-center md:text-left">
+                        <div class="relative">
+                            <div class="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-gray-100 border-4 border-white dark:border-darkCard shadow-lg flex items-center justify-center overflow-hidden">
+                                <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Felix&backgroundColor=f8f9fa" alt="Profile" class="w-full h-full object-cover">
+                            </div>
+                            <div class="absolute bottom-1 right-1 w-8 h-8 bg-[#166534] rounded-full border-2 border-white dark:border-darkCard flex items-center justify-center" title="Premium Member">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                            </div>
+                        </div>
+                        <div>
+                            <h1 class="font-serif text-3xl sm:text-4xl font-medium text-primary dark:text-white mb-2" id="profile-name">Alex Mitchell</h1>
+                            <div class="flex flex-wrap items-center justify-center md:justify-start gap-3 text-xs uppercase tracking-widest font-semibold mb-6">
+                                <span class="text-[#166534]">Premium Member</span>
+                                <span class="text-secondary dark:text-gray-500">&bull;</span>
+                                <span class="text-secondary">Since 2026</span>
+                                <span class="text-secondary dark:text-gray-500">&bull;</span>
+                                <span class="text-secondary flex items-center"><svg class="w-3.5 h-3.5 mr-1 text-orange-500" fill="currentColor" viewBox="0 0 24 24"><path d="M17.5 12.5c0 2.5-2.5 5-5.5 5s-5.5-2.5-5.5-5 2.5-5 5.5-5 5.5 2.5 5.5 5z"></path><path d="M12 2C7.58 2 4 5.58 4 10c0 4.42 8 12 8 12s8-7.58 8-12c0-4.42-3.58-8-8-8zm0 18S5 13.58 5 10c0-3.87 3.13-7 7-7s7 3.13 7 7c0 3.58-7 10-7 10z"></path></svg> 14 Day Streak</span>
+                            </div>
+                            <p class="font-serif text-xl sm:text-2xl italic text-primary dark:text-gray-300 max-w-lg leading-relaxed">
+                                "Small improvements become extraordinary results."
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION 2: CURRENT PROGRESS -->
+                <section class="w-full bg-[#0a0a0a] dark:bg-black border border-[#0a0a0a] dark:border-gray-800 rounded-[2rem] p-8 sm:p-10 premium-shadow text-white group cursor-pointer overflow-hidden relative">
+                    <div class="absolute -right-20 -top-20 w-64 h-64 bg-[#166534]/20 rounded-full blur-3xl"></div>
+                    <p class="font-sans text-xs uppercase tracking-widest font-bold text-[#166534] mb-6 relative z-10">Continue Reading</p>
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 relative z-10">
+                        <div>
+                            <h2 class="font-serif text-3xl font-medium mb-2">Atomic Habits</h2>
+                            <p class="font-sans text-sm text-gray-400 mb-6">Current Concept: The 1% Better Framework</p>
+                            <div class="flex items-center gap-4">
+                                <div class="w-48 sm:w-64 h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                                    <div class="h-full bg-[#166534] w-[65%] rounded-full"></div>
+                                </div>
+                                <span class="font-sans text-xs font-medium text-gray-400">65% • 8 Min Left</span>
+                            </div>
+                        </div>
+                        <button class="px-6 py-3 bg-white text-[#0a0a0a] rounded-full text-sm font-semibold hover:bg-gray-100 transition shadow-lg">
+                            Resume Learning
+                        </button>
+                    </div>
+                </section>
+
+                <!-- SECTION 1: LEARNING OVERVIEW -->
+                <section>
+                    <h3 class="font-sans text-xs uppercase tracking-widest font-semibold text-gray-500 mb-6 pl-2">Learning Overview</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+                        <div class="bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 rounded-2xl p-6 hover-card">
+                            <p class="font-sans text-4xl font-medium text-[#0a0a0a] dark:text-white mb-2">12</p>
+                            <p class="font-sans text-xs uppercase tracking-wide text-gray-500">Books Completed</p>
+                        </div>
+                        <div class="bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 rounded-2xl p-6 hover-card">
+                            <p class="font-sans text-4xl font-medium text-[#0a0a0a] dark:text-white mb-2" id="profile-concepts-count">48</p>
+                            <p class="font-sans text-xs uppercase tracking-wide text-gray-500">Concepts Learned</p>
+                        </div>
+                        <div class="bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 rounded-2xl p-6 hover-card">
+                            <p class="font-sans text-4xl font-medium text-[#166534] mb-2">16</p>
+                            <p class="font-sans text-xs uppercase tracking-wide text-gray-500">Premium Frameworks</p>
+                        </div>
+                        <div class="bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 rounded-2xl p-6 hover-card">
+                            <p class="font-sans text-4xl font-medium text-[#0a0a0a] dark:text-white mb-2">34<span class="text-xl">h</span></p>
+                            <p class="font-sans text-xs uppercase tracking-wide text-gray-500">Reading Hours</p>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <section>
+                        <h3 class="font-sans text-xs uppercase tracking-widest font-semibold text-gray-500 mb-6 pl-2">Execution Stats</h3>
+                        <div class="bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 rounded-3xl p-8 hover-card flex flex-col justify-between h-[232px]">
+                            <div class="flex items-end justify-between border-b border-gray-200 dark:border-gray-800 pb-6 mb-6">
+                                <div>
+                                    <p class="font-sans text-xs uppercase tracking-wide text-gray-500 mb-1">Execution Score</p>
+                                    <p class="font-serif text-5xl font-medium text-[#166534]">92<span class="text-2xl text-gray-500">/100</span></p>
+                                </div>
+                                <svg class="w-10 h-10 text-[#166534]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                            </div>
+                            <div class="flex justify-between text-sm font-medium">
+                                <span class="text-gray-500">Action Plans Completed</span>
+                                <span class="text-[#0a0a0a] dark:text-white">24</span>
+                            </div>
+                            <div class="flex justify-between text-sm font-medium mt-3">
+                                <span class="text-gray-500">Frameworks Applied</span>
+                                <span class="text-[#0a0a0a] dark:text-white">18</span>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- RIGHT SIDEBAR -->
+            <aside class="w-full xl:w-[320px] shrink-0 space-y-8 xl:sticky xl:top-28 self-start">
+                <div class="bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 rounded-3xl p-8 text-center premium-shadow hover-card">
+                    <h3 class="font-sans text-[10px] uppercase tracking-widest font-bold text-gray-500 mb-6">Learning Score</h3>
+                    <div class="relative w-40 h-40 mx-auto mb-6">
+                        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                            <path class="text-gray-100 dark:text-gray-800" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="2"/>
+                            <path class="text-[#166534] transition-all duration-1000 ease-out" stroke-dasharray="75, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                        </svg>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center">
+                            <span class="font-serif text-4xl font-medium text-[#0a0a0a] dark:text-white">75</span>
+                            <span class="text-[10px] uppercase font-bold text-gray-500 mt-1">Top 10%</span>
+                        </div>
+                    </div>
+                    <p class="font-sans text-sm text-gray-500">You are executing better than <span class="font-semibold text-[#0a0a0a] dark:text-white">90%</span> of readers.</p>
+                </div>
+
+                <div class="bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 rounded-3xl p-8 premium-shadow flex items-center justify-between hover-card">
+                    <div>
+                        <h3 class="font-sans text-[10px] uppercase tracking-widest font-bold text-gray-500 mb-1">Current Streak</h3>
+                        <p class="font-serif text-2xl font-medium text-[#0a0a0a] dark:text-white">14 Days</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-full bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-900 flex items-center justify-center">
+                        <svg class="w-6 h-6 text-orange-500" fill="currentColor" viewBox="0 0 24 24"><path d="M17.5 12.5c0 2.5-2.5 5-5.5 5s-5.5-2.5-5.5-5 2.5-5 5.5-5 5.5 2.5 5.5 5z"></path><path d="M12 2C7.58 2 4 5.58 4 10c0 4.42 8 12 8 12s8-7.58 8-12c0-4.42-3.58-8-8-8zm0 18S5 13.58 5 10c0-3.87 3.13-7 7-7s7 3.13 7 7c0 3.58-7 10-7 10z"></path></svg>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </section>
+    
     </main>
 
     <!-- PREMIUM FOOTER (FLUID / STRETCHED) -->
@@ -473,100 +642,43 @@
 
     <!-- READER OVERLAY -->
     <div id="reader-overlay" class="fixed inset-0 z-[100] bg-white dark:bg-[#121212] hidden overflow-y-auto animate-fade transition-colors duration-300">
-        <!-- Fluid Sticky Header -->
-        <header class="fixed top-0 w-full bg-white/90 dark:bg-[#121212]/90 backdrop-blur-md border-b border-borderLight dark:border-gray-800 z-50 transition-colors duration-300">
+        <!-- Sticky Header with Progress Bar -->
+        <header class="sticky top-0 w-full bg-white/90 dark:bg-[#121212]/90 backdrop-blur-md border-b border-borderLight dark:border-gray-800 z-50 transition-colors duration-300">
             <div class="w-full mx-auto px-4 sm:px-8 lg:px-12 xl:px-20 h-16 flex items-center justify-between">
-                <div class="flex items-center space-x-3 sm:space-x-4">
-                    <button onclick="closeReader()" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition">
+                <div class="flex items-center space-x-3 sm:space-x-4 shrink-0">
+                    <button onclick="closeReader()" class="p-2 -ml-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition">
                         <svg class="w-5 h-5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                     </button>
-                    <span id="reader-author" class="font-medium text-xs sm:text-sm text-secondary tracking-wide uppercase truncate max-w-[150px] sm:max-w-none">Atomic Habits</span>
+                    <span id="reader-author" class="font-medium text-xs sm:text-sm text-secondary tracking-wide uppercase truncate max-w-[150px] sm:max-w-xs">Atomic Habits</span>
                 </div>
                 
-                <div class="flex items-center space-x-2 sm:space-x-4">
-                    <button onclick="shareInsight()" class="p-2 text-secondary hover:text-primary dark:hover:text-white transition">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6.632l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+                <div class="flex items-center space-x-1 sm:space-x-2 shrink-0">
+                    <button onclick="toggleTheme()" class="p-2 rounded-full text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-white transition">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
                     </button>
-                    <button onclick="toggleTheme()" class="p-2 text-secondary hover:text-primary dark:hover:text-white transition hidden sm:block">
-                        <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                        <svg class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                    <button onclick="shareInsight()" class="p-2 rounded-full text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-white transition" title="Share">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6.632l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+                    </button>
+                    <button onclick="toggleBookmark()" id="sidebar-btn-bookmark" class="p-2 rounded-full text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-white transition" title="Save to Arsenal">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                    </button>
+                    <button onclick="toggleCompleted()" id="sidebar-btn-completed" class="p-2 rounded-full text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-white transition" title="Mark Completed">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </button>
                 </div>
             </div>
             <!-- Reading Progress Bar -->
-            <div class="h-0.5 w-full bg-gray-200 dark:bg-gray-800">
-                <div id="progress-bar" class="h-0.5 bg-accent w-0 transition-all duration-150"></div>
+            <div class="h-0.5 w-full bg-gray-200 dark:bg-gray-800 absolute bottom-0 left-0">
+                <div id="progress-bar" class="h-0.5 bg-accent w-0 transition-none"></div>
             </div>
-        </header>
-
-        <!-- Fluid Main Layout -->
-        <div class="w-full mx-auto px-4 sm:px-8 lg:px-12 xl:px-20 pt-28 pb-32 flex flex-col lg:flex-row gap-10 xl:gap-16 justify-between">
+        </header>        <!-- Fluid Main Layout -->
+        <div class="w-full mx-auto px-4 sm:px-8 lg:px-12 xl:px-20 pt-8 pb-32 flex flex-col justify-center items-center">
             
             <!-- Center Content -->
-            <main class="w-full flex-1 2xl:max-w-6xl editorial-text" id="reader-display">
+            <main class="w-full max-w-3xl editorial-text" id="reader-display">
                 <!-- Content will be injected here by JS -->
             </main>
-
-            <!-- Right Sidebar (COMPACTED & FADED FOR FOCUS) -->
-            <aside class="hidden lg:flex flex-col w-56 xl:w-60 shrink-0 sticky top-28 self-start space-y-5 font-sans opacity-60 hover:opacity-100 transition-opacity duration-300">
-                
-                <!-- Compact Progress Ring -->
-                <div class="flex items-center space-x-4 bg-white/80 dark:bg-darkCard/80 backdrop-blur-md p-4 rounded-xl border border-borderLight dark:border-gray-800 shadow-sm cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition" onclick="toggleCompleted()" id="sidebar-btn-completed">
-                    <div class="relative w-10 h-10 shrink-0">
-                        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-                            <path class="text-gray-200 dark:text-gray-800" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="2.5"/>
-                            <path id="sidebar-progress" class="text-accent transition-all duration-300" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="2.5"/>
-                        </svg>
-                        <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center text-[10px] font-bold text-primary dark:text-white" id="sidebar-percent">0%</div>
-                    </div>
-                    <div>
-                        <p class="font-semibold text-sm text-primary dark:text-white" id="sidebar-text-completed">Mark Completed</p>
-                    </div>
-                </div>
-
-                <!-- Compact Tools List -->
-                <nav class="space-y-1.5 text-sm font-medium text-secondary bg-white/80 dark:bg-darkCard/80 backdrop-blur-md p-3 rounded-xl border border-borderLight dark:border-gray-800 shadow-sm">
-                    <button onclick="toggleSaved()" id="sidebar-btn-saved" class="w-full flex items-center p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-white transition">
-                        <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg> <span id="sidebar-text-saved">Read Later</span>
-                    </button>
-                    <button onclick="toggleBookmark()" id="sidebar-btn-bookmark" class="w-full flex items-center p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-white transition">
-                        <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg> <span id="sidebar-text-bookmark">Save to Arsenal</span>
-                    </button>
-                    <button onclick="shareInsight()" class="w-full flex items-center p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-white transition">
-                        <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6.632l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg> Share
-                    </button>
-                </nav>
-
-                <!-- Compact Typography Controls -->
-                <div class="bg-white/80 dark:bg-darkCard/80 backdrop-blur-md p-3.5 rounded-xl border border-borderLight dark:border-gray-800 shadow-sm">
-                    <p class="text-[10px] font-bold uppercase text-secondary mb-3 tracking-widest text-center">Typography</p>
-                    <div class="flex space-x-2">
-                        <button class="flex-1 py-1.5 bg-gray-50 dark:bg-[#121212] border border-borderLight dark:border-gray-700 rounded-lg hover:border-gray-400 text-sm font-serif transition">A-</button>
-                        <button class="flex-1 py-1.5 bg-gray-50 dark:bg-[#121212] border border-borderLight dark:border-gray-700 rounded-lg hover:border-gray-400 text-base font-serif transition">A+</button>
-                    </div>
-                </div>
-            </aside>
-        </div>
-
-        <!-- Bottom Toolbar (Mobile & Tablet Only) -->
-        <div class="lg:hidden fixed bottom-0 w-full bg-white/90 dark:bg-[#121212]/90 backdrop-blur-md border-t border-borderLight dark:border-gray-800 pb-safe z-50">
-            <div class="flex justify-around items-center p-4">
-                <button onclick="toggleSaved()" id="mobile-btn-saved" class="flex flex-col items-center text-secondary hover:text-primary dark:hover:text-white transition">
-                    <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>
-                </button>
-                <button onclick="toggleBookmark()" id="mobile-btn-bookmark" class="flex flex-col items-center text-secondary hover:text-primary dark:hover:text-white transition">
-                    <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                </button>
-                <button onclick="toggleCompleted()" id="mobile-btn-completed" class="flex flex-col items-center text-primary dark:text-white bg-accent/10 dark:bg-accent/20 p-3 rounded-full transform -translate-y-6 shadow-lg border border-accent/20 transition hover:scale-105">
-                    <svg class="w-7 h-7 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                </button>
-                <button onclick="shareInsight()" class="flex flex-col items-center text-secondary hover:text-primary dark:hover:text-white transition">
-                    <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6.632l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
-                </button>
-                <button onclick="toggleTheme()" class="flex flex-col items-center text-secondary hover:text-primary dark:hover:text-white transition">
-                    <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
-                </button>
-            </div>
         </div>
     </div>
 
@@ -640,7 +752,7 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <!-- Scripts -->
-    <script src="data.js?v=21"></script>
-    <script src="script.js?v=21"></script>
+    <script src="data.js?v=22"></script>
+    <script src="script.js?v=22"></script>
 </body>
 </html>

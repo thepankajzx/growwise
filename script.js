@@ -152,7 +152,8 @@ function navTo(view) {
     document.getElementById(`view-${view}`).classList.remove('hidden');
     
     document.querySelectorAll('nav button').forEach(b => b.classList.remove('nav-active'));
-    document.getElementById(`btn-${view}`).classList.add('nav-active');
+    const btn = document.getElementById(`btn-${view}`);
+    if (btn) btn.classList.add('nav-active');
     
     const footer = document.getElementById('main-footer');
     if (footer) {
@@ -160,6 +161,15 @@ function navTo(view) {
             footer.classList.remove('hidden');
         } else {
             footer.classList.add('hidden');
+        }
+    }
+    
+    // Extra logic for profile view stats updates
+    if (view === 'profile') {
+        const completedItems = JSON.parse(localStorage.getItem('ka_completed') || '[]');
+        const countDisplay = document.getElementById('profile-concepts-count');
+        if (countDisplay) {
+            countDisplay.textContent = completedItems.length;
         }
     }
     
@@ -212,6 +222,14 @@ function toggleProfileDropdown() {
     }
 }
 
+function toggleMobileMenu() {
+    const dropdown = document.getElementById('mobile-menu-dropdown');
+    if (dropdown) {
+        dropdown.classList.toggle('hidden');
+        dropdown.classList.toggle('flex');
+    }
+}
+
 function requestPremiumAccess() {
     if (!isLoggedIn()) {
         showLoginModal();
@@ -256,20 +274,74 @@ function logout() {
 }
 
 function updateMembershipUI() {
-    const authContainer = document.getElementById('auth-container');
-    const btnProfile = document.getElementById('btn-profile');
-    const adminBtn = document.getElementById('btn-admin');
-    
     const email = localStorage.getItem('tc_email');
-    const role = localStorage.getItem('tlp_role');
+    const premium = hasPremium();
+    
+    // Desktop UI
+    const profileBtn = document.getElementById('btn-profile');
+    const profileEmail = document.getElementById('profile-email-display');
+    const togglePremiumBtn = document.getElementById('toggle-premium');
+    const toggleStandardBtn = document.getElementById('toggle-standard');
+    
+    // Mobile UI
+    const mobileProfileSection = document.getElementById('mobile-profile-section');
+    const mobileTogglePremiumBtn = document.getElementById('mobile-toggle-premium');
+    const mobileToggleStandardBtn = document.getElementById('mobile-toggle-standard');
     
     if (email) {
-        if(btnProfile) btnProfile.classList.remove('hidden');
-        const emailDisplay = document.getElementById('profile-email-display');
-        if(emailDisplay) emailDisplay.textContent = email;
+        if(profileBtn) profileBtn.classList.remove('hidden');
+        if(profileEmail) profileEmail.textContent = email;
+        if(mobileProfileSection) {
+            mobileProfileSection.classList.remove('hidden');
+            mobileProfileSection.classList.add('flex');
+        }
     } else {
-        if(btnProfile) btnProfile.classList.add('hidden');
+        if(profileBtn) profileBtn.classList.add('hidden');
+        if(mobileProfileSection) {
+            mobileProfileSection.classList.add('hidden');
+            mobileProfileSection.classList.remove('flex');
+        }
     }
+    
+    if (premium) {
+        if(togglePremiumBtn) {
+            togglePremiumBtn.classList.add('bg-white', 'dark:bg-darkCard', 'text-[#0a0a0a]', 'dark:text-white', 'shadow-sm');
+            togglePremiumBtn.classList.remove('text-gray-500', 'dark:text-gray-400', 'hover:text-[#0a0a0a]', 'dark:hover:text-white');
+        }
+        if(toggleStandardBtn) {
+            toggleStandardBtn.classList.remove('bg-white', 'dark:bg-darkCard', 'shadow-sm', 'text-[#0a0a0a]', 'dark:text-white');
+            toggleStandardBtn.classList.add('text-gray-500', 'dark:text-gray-400');
+        }
+        if(mobileTogglePremiumBtn) {
+            mobileTogglePremiumBtn.classList.add('bg-white', 'dark:bg-darkCard', 'text-[#0a0a0a]', 'dark:text-white', 'shadow-sm');
+            mobileTogglePremiumBtn.classList.remove('text-gray-500', 'dark:text-gray-400', 'hover:text-[#0a0a0a]', 'dark:hover:text-white');
+        }
+        if(mobileToggleStandardBtn) {
+            mobileToggleStandardBtn.classList.remove('bg-white', 'dark:bg-darkCard', 'shadow-sm', 'text-[#0a0a0a]', 'dark:text-white');
+            mobileToggleStandardBtn.classList.add('text-gray-500', 'dark:text-gray-400');
+        }
+    } else {
+        if(togglePremiumBtn) {
+            togglePremiumBtn.classList.remove('bg-white', 'dark:bg-darkCard', 'text-[#0a0a0a]', 'dark:text-white', 'shadow-sm');
+            togglePremiumBtn.classList.add('text-gray-500', 'dark:text-gray-400', 'hover:text-[#0a0a0a]', 'dark:hover:text-white');
+        }
+        if(toggleStandardBtn) {
+            toggleStandardBtn.classList.add('bg-white', 'dark:bg-darkCard', 'shadow-sm', 'text-[#0a0a0a]', 'dark:text-white');
+            toggleStandardBtn.classList.remove('text-gray-500', 'dark:text-gray-400');
+        }
+        if(mobileTogglePremiumBtn) {
+            mobileTogglePremiumBtn.classList.remove('bg-white', 'dark:bg-darkCard', 'text-[#0a0a0a]', 'dark:text-white', 'shadow-sm');
+            mobileTogglePremiumBtn.classList.add('text-gray-500', 'dark:text-gray-400', 'hover:text-[#0a0a0a]', 'dark:hover:text-white');
+        }
+        if(mobileToggleStandardBtn) {
+            mobileToggleStandardBtn.classList.add('bg-white', 'dark:bg-darkCard', 'shadow-sm', 'text-[#0a0a0a]', 'dark:text-white');
+            mobileToggleStandardBtn.classList.remove('text-gray-500', 'dark:text-gray-400');
+        }
+    }
+
+    const authContainer = document.getElementById('auth-container');
+    const adminBtn = document.getElementById('btn-admin');
+    const role = localStorage.getItem('tlp_role');
     
     if (role === 'admin') {
         if(adminBtn) adminBtn.classList.remove('hidden');
@@ -384,7 +456,7 @@ function renderDashboard() {
 
     booksData.forEach(cat => {
         const card = document.createElement('div');
-        card.className = `group bg-white dark:bg-darkCard p-8 border border-gray-200 dark:border-gray-800 cursor-pointer hover:border-[#0a0a0a] dark:hover:border-gray-400 transition-all duration-300 theme-${cat.id}`;
+        card.className = `group bg-white dark:bg-darkCard p-8 border border-gray-200 dark:border-transparent cursor-pointer hover:border-[#0a0a0a] dark:hover:border-gray-600 transition-all duration-300 theme-${cat.id}`;
         card.onclick = () => {
             navTo('explorer');
             filterCategory(cat.id);
@@ -752,7 +824,11 @@ function shareInsight() {
     const sentences = concept.explanation.match(/[^.!?]+[.!?]+/g) || [concept.explanation];
     let premise = sentences[0];
     
-    const textToShare = `💡 ${concept.title}\n\n"${premise.trim()}"\n\nRead the full execution framework at: https://thepankajzx.github.io/growwise/`;
+    // Create shareable link
+    const baseUrl = window.location.href.split('?')[0].split('#')[0];
+    const shareUrl = `${baseUrl}?concept=${book.id}-${currentConceptIndex}`;
+    
+    const textToShare = `💡 ${concept.title}\n\n"${premise.trim()}"\n\nRead the full execution framework at: ${shareUrl}`;
     
     navigator.clipboard.writeText(textToShare).then(() => {
         const toast = document.getElementById('toast');
@@ -1036,6 +1112,37 @@ window.onload = () => {
     updateSourceDropdown('all');
     renderDashboard();
     renderExplorer();
+    
+    // Reader Progress Bar
+    document.getElementById('reader-overlay').addEventListener('scroll', function() {
+        const overlay = this;
+        const progress = document.getElementById('progress-bar');
+        if(overlay.scrollHeight > overlay.clientHeight) {
+            const scrolled = (overlay.scrollTop / (overlay.scrollHeight - overlay.clientHeight)) * 100;
+            progress.style.width = scrolled + '%';
+        }
+    });
+
+    // Check for shared concept in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const sharedConcept = urlParams.get('concept');
+    if (sharedConcept) {
+        // Concept ID format: "bookId-conceptIndex"
+        const parts = sharedConcept.split('-');
+        if (parts.length >= 2) {
+            const conceptIndex = parseInt(parts.pop());
+            const bookId = parts.join('-');
+            
+            // Find global index
+            const item = allConcepts.find(c => c.bookId === bookId && c.conceptIndex === conceptIndex);
+            if (item) {
+                openReader(bookId, conceptIndex, item.globalIndex);
+            }
+        }
+        
+        // Clean URL to prevent infinite re-opens if they refresh
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
 };
 
 document.addEventListener('keydown', (e) => { 

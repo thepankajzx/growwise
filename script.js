@@ -825,23 +825,29 @@ function renderConceptDisplay() {
     document.getElementById('reader-author').textContent = book.title;
 
     // Parse the One-Pager sections
-    const sentences = concept.explanation.match(/[^.!?]+[.!?]+/g) || [concept.explanation];
-    let premise = sentences[0];
-    if (sentences.length > 1 && premise.length < 50) premise += sentences[1];
-    
-    const mechanism = concept.explanation.replace(premise, '').trim();
-    
-    let steps = concept.approach.split('. ').filter(s => s.trim().length > 0);
-    if (steps.length === 1) steps = concept.approach.split(', ').filter(s => s.trim().length > 0);
-    
-    let checklistHtml = steps.map((step) => `
-        <div class="flex items-start gap-4 p-4 hover:bg-gray-50 dark:hover:bg-darkBorder cursor-pointer transition border-b border-gray-100 dark:border-gray-800 last:border-0 group" onclick="toggleChecklist(this)">
-            <div class="w-5 h-5 border border-[#0a0a0a] dark:border-gray-500 flex items-center justify-center flex-shrink-0 mt-1 bg-white dark:bg-darkBg">
-                <svg class="w-3 h-3 text-transparent transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"></svg>
+    let premise = '';
+    let mechanism = '';
+    let checklistHtml = '';
+
+    if (!concept.markdown) {
+        const sentences = concept.explanation.match(/[^.!?]+[.!?]+/g) || [concept.explanation];
+        premise = sentences[0] || '';
+        if (sentences.length > 1 && premise.length < 50) premise += sentences[1];
+        
+        mechanism = concept.explanation.replace(premise, '').trim();
+        
+        let steps = concept.approach.split('. ').filter(s => s.trim().length > 0);
+        if (steps.length === 1) steps = concept.approach.split(', ').filter(s => s.trim().length > 0);
+        
+        checklistHtml = steps.map((step) => `
+            <div class="flex items-start gap-4 p-4 hover:bg-gray-50 dark:hover:bg-darkBorder cursor-pointer transition border-b border-gray-100 dark:border-gray-800 last:border-0 group" onclick="toggleChecklist(this)">
+                <div class="w-5 h-5 border border-[#0a0a0a] dark:border-gray-500 flex items-center justify-center flex-shrink-0 mt-1 bg-white dark:bg-darkBg">
+                    <svg class="w-3 h-3 text-transparent transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"></svg>
+                </div>
+                <span class="text-[#0a0a0a] dark:text-gray-300 text-base md:text-lg font-medium leading-relaxed transition-all">${step}${step.endsWith('.') ? '' : '.'}</span>
             </div>
-            <span class="text-[#0a0a0a] dark:text-gray-300 text-base md:text-lg font-medium leading-relaxed transition-all">${step}${step.endsWith('.') ? '' : '.'}</span>
-        </div>
-    `).join('');
+        `).join('');
+    }
 
     let mainContentHtml = '';
     if (concept.markdown) {

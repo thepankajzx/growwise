@@ -240,9 +240,11 @@
                 </div>
                 
                 <!-- Filters -->
-                <div class="flex flex-col lg:flex-row gap-6 mb-12 items-start justify-between pb-8">
-                    <!-- Library Filters -->
-                    <div>
+                <div class="flex flex-col lg:flex-row gap-6 mb-12 items-start justify-between pb-8 border-b border-gray-100 dark:border-gray-800">
+                    
+                    <!-- LEFT SIDE: All Filter Pills -->
+                    <div class="flex flex-col gap-6 w-full lg:w-3/4">
+                        <!-- Library Filters -->
                         <div id="libraryFilters" class="flex flex-wrap gap-2">
                             <button onclick="filterLibrary('all')" id="lib-all" class="px-4 py-1.5 rounded-sm text-[13px] sm:text-sm font-bold border border-[#0a0a0a] bg-[#0a0a0a] text-white transition">All Frameworks</button>
                             <button onclick="filterLibrary('saved')" id="lib-saved" class="px-4 py-1.5 rounded-sm text-[13px] sm:text-sm font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition flex items-center gap-1.5">
@@ -253,39 +255,24 @@
                                 <svg class="w-4 h-4 text-emerald-500" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd"/></svg>Completed
                             </button>
                         </div>
+                        
+                        <!-- Niche Filters -->
+                        <div id="filterPills" class="flex flex-wrap gap-2">
+                            <button onclick="filterCategory('all')" id="pill-all" class="px-4 py-1.5 rounded-full text-[13px] sm:text-sm font-bold border border-[#0a0a0a] bg-[#0a0a0a] text-white transition">All Domains</button>
+                            <button onclick="filterCategory('wealth')" id="pill-wealth" class="px-4 py-1.5 rounded-full text-[13px] sm:text-sm font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition">Wealth & Finance</button>
+                            <button onclick="filterCategory('business')" id="pill-business" class="px-4 py-1.5 rounded-full text-[13px] sm:text-sm font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition">Business & Strategy</button>
+                            <button onclick="filterCategory('productivity')" id="pill-productivity" class="px-4 py-1.5 rounded-full text-[13px] sm:text-sm font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition">Productivity</button>
+                            <button onclick="filterCategory('self-improvement')" id="pill-self-improvement" class="px-4 py-1.5 rounded-full text-[13px] sm:text-sm font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition">Self-Improvement</button>
+                        </div>
                     </div>
 
-                    <div class="flex flex-col lg:flex-row gap-6 justify-between items-start lg:items-end w-full pt-6">
-                        <div class="w-full">
-                            <div id="filterPills" class="flex flex-wrap gap-2">
-                                <button onclick="filterCategory('all')" id="pill-all" class="px-4 py-1.5 rounded-full text-[13px] sm:text-sm font-bold border border-[#0a0a0a] bg-[#0a0a0a] text-white transition">All Domains</button>
-                                <button onclick="filterCategory('wealth')" id="pill-wealth" class="px-4 py-1.5 rounded-full text-[13px] sm:text-sm font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition">Wealth & Finance</button>
-                                <button onclick="filterCategory('business')" id="pill-business" class="px-4 py-1.5 rounded-full text-[13px] sm:text-sm font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition">Business & Strategy</button>
-                                <button onclick="filterCategory('productivity')" id="pill-productivity" class="px-4 py-1.5 rounded-full text-[13px] sm:text-sm font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition">Productivity</button>
-                                <button onclick="filterCategory('self-improvement')" id="pill-self-improvement" class="px-4 py-1.5 rounded-full text-[13px] sm:text-sm font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition">Self-Improvement</button>
-                            </div>
-                        </div>
-
-                        <!-- Dropdown Filters -->
-                        <div class="w-full lg:w-auto flex flex-col sm:flex-row gap-4 flex-shrink-0">
-                            <!-- Niche Dropdown -->
-                            <div class="relative w-full sm:w-56">
-                                <select id="domainSelect" onchange="handleDomainDropdown()" class="w-full border border-gray-200 dark:border-transparent bg-white dark:bg-darkCard dark:text-gray-200 px-4 py-2.5 text-xs font-bold uppercase tracking-widest text-gray-600 focus:outline-none focus:border-[#0a0a0a] dark:focus:border-white">
-                                    <option value="all">Filter by Niche</option>
-                                    <option value="wealth">Wealth & Finance</option>
-                                    <option value="business">Business & Strategy</option>
-                                    <option value="productivity">Productivity</option>
-                                    <option value="self-improvement">Self-Improvement</option>
-                                </select>
-                            </div>
-
-                            <!-- Source Dropdown (Hidden initially or populated based on niche) -->
-                            <div class="relative w-full sm:w-64 hidden" id="sourceSelectWrapper">
-                                <select id="bookSelect" onchange="filterBook()" class="w-full border border-gray-200 dark:border-transparent bg-white dark:bg-darkCard dark:text-gray-200 px-4 py-2.5 text-xs font-bold uppercase tracking-widest text-gray-600 focus:outline-none focus:border-[#0a0a0a] dark:focus:border-white">
-                                    <option value="all">All Source Materials</option>
-                                    <!-- Injected via JS -->
-                                </select>
-                            </div>
+                    <!-- RIGHT SIDE: Dropdown -->
+                    <div class="w-full lg:w-1/4 flex justify-start lg:justify-end">
+                        <div class="relative w-full sm:w-64" id="sourceSelectWrapper">
+                            <select id="bookSelect" onchange="filterBook()" class="w-full border border-gray-200 dark:border-gray-800 bg-white dark:bg-darkCard dark:text-gray-200 px-4 py-2.5 text-xs font-bold uppercase tracking-widest text-gray-600 focus:outline-none focus:border-[#0a0a0a] dark:focus:border-white shadow-sm rounded-sm cursor-pointer">
+                                <option value="all">All Source Materials</option>
+                                <!-- Injected via JS -->
+                            </select>
                         </div>
                     </div>
                 </div>

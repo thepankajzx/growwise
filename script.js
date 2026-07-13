@@ -44,27 +44,30 @@ function updateSourceDropdown(domain) {
     }
     const select = document.getElementById('bookSelect');
     
+    if (wrapper) wrapper.classList.remove('hidden');
+    
     if (domain === 'all') {
-        wrapper.classList.add('hidden');
-        select.innerHTML = '<option value="all">All Source Materials</option>';
+        let optionsHTML = '<option value="all">All Source Materials</option>';
+        booksData.forEach(cat => {
+            cat.books.forEach(book => {
+                optionsHTML += `<option value="${book.id}">${book.title}</option>`;
+            });
+        });
+        select.innerHTML = optionsHTML;
         return;
     }
     
     const cat = booksData.find(c => c.id === domain);
     if (!cat || !cat.books || cat.books.length === 0) {
-        wrapper.classList.add('hidden');
         select.innerHTML = '<option value="all">All Source Materials</option>';
         return;
     }
     
-    wrapper.classList.remove('hidden');
-    select.innerHTML = '<option value="all">All Source Materials</option>';
+    let optionsHTML = '<option value="all">All Source Materials</option>';
     cat.books.forEach(book => {
-        const opt = document.createElement('option');
-        opt.value = book.id;
-        opt.textContent = book.title;
-        select.appendChild(opt);
+        optionsHTML += `<option value="${book.id}">${book.title}</option>`;
     });
+    select.innerHTML = optionsHTML;
 }
 
 // ----------------------------------------------------
@@ -419,38 +422,32 @@ function filterCategory(catId) {
         activePill.classList.remove('border-transparent', 'text-gray-600', 'dark:text-gray-400', 'hover:text-[#0a0a0a]', 'dark:hover:text-white');
         activePill.classList.add('bg-[#0a0a0a]', 'dark:bg-white', 'text-white', 'dark:text-[#0a0a0a]', 'border-[#0a0a0a]', 'dark:border-white');
     }
-    
-    const domainSelect = document.getElementById('domainSelect');
-    if (domainSelect) domainSelect.value = catId;
 
     const sourceSelectWrapper = document.getElementById('sourceSelectWrapper');
     const bookSelect = document.getElementById('bookSelect');
     
-    if (catId === 'all') {
-        if (sourceSelectWrapper) sourceSelectWrapper.classList.add('hidden');
-    } else {
-        if (sourceSelectWrapper) sourceSelectWrapper.classList.remove('hidden');
-        if (bookSelect) {
-            let optionsHTML = '<option value="all">All Concepts</option>';
+    if (sourceSelectWrapper) sourceSelectWrapper.classList.remove('hidden');
+    if (bookSelect) {
+        let optionsHTML = '<option value="all">All Source Materials</option>';
+        if (catId === 'all') {
+            booksData.forEach(cat => {
+                cat.books.forEach(book => {
+                    optionsHTML += `<option value="${book.id}">${book.title}</option>`;
+                });
+            });
+        } else {
             const categoryData = booksData.find(c => c.id === catId);
             if (categoryData) {
                 categoryData.books.forEach(book => {
                     optionsHTML += `<option value="${book.id}">${book.title}</option>`;
                 });
             }
-            bookSelect.innerHTML = optionsHTML;
-            bookSelect.value = 'all';
         }
+        bookSelect.innerHTML = optionsHTML;
+        bookSelect.value = 'all';
     }
     
     renderExplorer();
-}
-
-function handleDomainDropdown() {
-    const domainSelect = document.getElementById('domainSelect');
-    if (domainSelect) {
-        filterCategory(domainSelect.value);
-    }
 }
 
 function filterBook() {

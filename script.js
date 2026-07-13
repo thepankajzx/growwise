@@ -32,6 +32,16 @@ function flattenData() {
 
 function updateSourceDropdown(domain) {
     const wrapper = document.getElementById('sourceSelectWrapper');
+    let logoElement = document.getElementById('cg-tc-logo');
+    if (logoElement) {
+        logoElement.innerHTML = `
+            <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="8" cy="8" r="1.5" fill="currentColor"></circle>
+                <circle cx="16" cy="16" r="1.5" fill="currentColor"></circle>
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+            </svg>
+        `;
+    }
     const select = document.getElementById('bookSelect');
     
     if (domain === 'all') {
@@ -513,7 +523,6 @@ function openReader(bookId, conceptIndex, globalIndex) {
     
     const overlay = document.getElementById('reader-overlay');
     
-    document.getElementById('reader-category').textContent = cat.category;
     document.body.style.overflow = 'hidden'; 
     overlay.classList.remove('hidden');
     
@@ -597,6 +606,10 @@ function updateActionButtonsState() {
 }
 
 function toggleSaved() {
+    if (!isLoggedIn()) {
+        showLoginModal();
+        return;
+    }
     const conceptId = `${currentBookId}-${currentConceptIndex}`;
     let saved = JSON.parse(localStorage.getItem('ka_saved') || '[]');
     if (saved.includes(conceptId)) saved = saved.filter(id => id !== conceptId);
@@ -607,6 +620,10 @@ function toggleSaved() {
 }
 
 function toggleBookmark() {
+    if (!isLoggedIn()) {
+        showLoginModal();
+        return;
+    }
     const conceptId = `${currentBookId}-${currentConceptIndex}`;
     let bookmarks = JSON.parse(localStorage.getItem('ka_bookmarks') || '[]');
     if (bookmarks.includes(conceptId)) bookmarks = bookmarks.filter(id => id !== conceptId);
@@ -617,6 +634,10 @@ function toggleBookmark() {
 }
 
 function toggleCompleted() {
+    if (!isLoggedIn()) {
+        showLoginModal();
+        return;
+    }
     const conceptId = `${currentBookId}-${currentConceptIndex}`;
     let completed = JSON.parse(localStorage.getItem('ka_completed') || '[]');
     if (completed.includes(conceptId)) completed = completed.filter(id => id !== conceptId);
@@ -713,6 +734,10 @@ function renderConceptDisplay() {
 }
 
 function shareInsight() {
+    if (!isLoggedIn()) {
+        showLoginModal();
+        return;
+    }
     const book = findBookById(currentBookId).book;
     const concept = book.concepts[currentConceptIndex];
     const sentences = concept.explanation.match(/[^.!?]+[.!?]+/g) || [concept.explanation];

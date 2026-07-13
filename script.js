@@ -2,7 +2,7 @@
 let allConcepts = [];
 let currentCategoryFilter = 'all';
 let currentBookFilter = 'all';
-let currentLibraryFilter = 'all'; 
+let currentLibraryFilter = new Set(); // multi-select: set of active filters
 let showPremiumOnly = false;
 
 let currentBookId = null;
@@ -455,26 +455,41 @@ function filterBook() {
 }
 
 function filterLibrary(type) {
-    // Toggle off if clicking the already-active filter
-    if (currentLibraryFilter === type) {
-        type = 'all';
+    if (type === 'all') {
+        // 'All' clears everything
+        currentLibraryFilter.clear();
+    } else {
+        // Toggle this filter in/out of active set
+        if (currentLibraryFilter.has(type)) {
+            currentLibraryFilter.delete(type);
+        } else {
+            currentLibraryFilter.add(type);
+        }
     }
-    currentLibraryFilter = type;
 
-    // Reset ALL pills to inactive state first
-    ['saved', 'bookmarked', 'completed', 'all'].forEach(id => {
+    // Update ALL pill visuals
+    ['saved', 'bookmarked', 'completed'].forEach(id => {
         const pill = document.getElementById(`lib-${id}`);
-        if (pill) {
+        if (!pill) return;
+        if (currentLibraryFilter.has(id)) {
+            pill.classList.remove('border-transparent', 'text-gray-600', 'dark:text-gray-400', 'hover:text-[#0a0a0a]', 'dark:hover:text-white');
+            pill.classList.add('bg-[#0a0a0a]', 'dark:bg-white', 'text-white', 'dark:text-[#0a0a0a]', 'border-[#0a0a0a]', 'dark:border-white');
+        } else {
             pill.classList.remove('bg-[#0a0a0a]', 'dark:bg-white', 'text-white', 'dark:text-[#0a0a0a]', 'border-[#0a0a0a]', 'dark:border-white');
             pill.classList.add('border-transparent', 'text-gray-600', 'dark:text-gray-400', 'hover:text-[#0a0a0a]', 'dark:hover:text-white');
         }
     });
 
-    // Apply active state to selected pill
-    const activePill = document.getElementById(`lib-${type}`);
-    if (activePill) {
-        activePill.classList.remove('border-transparent', 'text-gray-600', 'dark:text-gray-400', 'hover:text-[#0a0a0a]', 'dark:hover:text-white');
-        activePill.classList.add('bg-[#0a0a0a]', 'dark:bg-white', 'text-white', 'dark:text-[#0a0a0a]', 'border-[#0a0a0a]', 'dark:border-white');
+    // 'All' pill: active only when nothing else selected
+    const allPill = document.getElementById('lib-all');
+    if (allPill) {
+        if (currentLibraryFilter.size === 0) {
+            allPill.classList.remove('border-transparent', 'text-gray-600', 'dark:text-gray-400', 'hover:text-[#0a0a0a]', 'dark:hover:text-white');
+            allPill.classList.add('bg-[#0a0a0a]', 'dark:bg-white', 'text-white', 'dark:text-[#0a0a0a]', 'border-[#0a0a0a]', 'dark:border-white');
+        } else {
+            allPill.classList.remove('bg-[#0a0a0a]', 'dark:bg-white', 'text-white', 'dark:text-[#0a0a0a]', 'border-[#0a0a0a]', 'dark:border-white');
+            allPill.classList.add('border-transparent', 'text-gray-600', 'dark:text-gray-400', 'hover:text-[#0a0a0a]', 'dark:hover:text-white');
+        }
     }
 
     renderExplorer();
@@ -483,10 +498,7 @@ function filterLibrary(type) {
 function resetToDashboard() {
     currentCategoryFilter = 'all';
     currentBookFilter = 'all';
-    currentLibraryFilter = 'all';
-    showPremiumOnly = false;
-    
-    filterCategory('all');
+    currentLibraryFilter.clear();
     filterLibrary('all');
     updateMembershipUI();
     closeReader();
@@ -539,12 +551,16 @@ function renderExplorer() {
     
     // Filter by membership logic removed (all concepts always visible)
 
-    if (currentLibraryFilter === 'saved') {
-        filtered = filtered.filter(c => savedItems.includes(`${c.bookId}-${c.conceptIndex}`));
-    } else if (currentLibraryFilter === 'bookmarked') {
-        filtered = filtered.filter(c => bookmarkedItems.includes(`${c.bookId}-${c.conceptIndex}`));
-    } else if (currentLibraryFilter === 'completed') {
-        filtered = filtered.filter(c => completedItems.includes(`${c.bookId}-${c.conceptIndex}`));
+    // Apply active library filters with OR logic
+    if (currentLibraryFilter.size > 0) {
+        filtered = filtered.filter(c => {
+            const id = `${c.bookId}-${c.conceptIndex}`;
+            return (
+                (currentLibraryFilter.has('saved') && savedItems.includes(id)) ||
+                (currentLibraryFilter.has('bookmarked') && bookmarkedItems.includes(id)) ||
+                (currentLibraryFilter.has('completed') && completedItems.includes(id))
+            );
+        });
     }
     
     if (currentCategoryFilter !== 'all') {

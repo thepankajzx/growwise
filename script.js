@@ -418,8 +418,8 @@ function filterBook(bookId) {
     // Also set the category to match the book so we only see this book's concepts
     if (bookId !== 'all') {
         const bookObj = findBookById(bookId);
-        if (bookObj && bookObj.category) {
-            currentCategoryFilter = bookObj.category.id;
+        if (bookObj && bookObj.cat) {
+            currentCategoryFilter = bookObj.cat.id;
         }
     }
     renderExplorer();

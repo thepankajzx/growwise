@@ -185,60 +185,100 @@ function toggleTheme() {
     }
 }
 
-function handleMembershipClick(wantsPremium) {
-    if (wantsPremium && !hasPremium()) {
+function toggleProfileDropdown() {
+    const dropdown = document.getElementById('profile-dropdown');
+    if (dropdown) {
+        dropdown.classList.toggle('hidden');
+        dropdown.classList.toggle('flex');
+    }
+}
+
+function requestPremiumAccess() {
+    if (!isLoggedIn()) {
         showLoginModal();
+    } else if (!hasPremium()) {
+        showFreemiumModal();
     }
 }
 
 function handleLogin(e) {
     e.preventDefault();
-    // Simulate successful login
-    localStorage.setItem('tc_premium', 'true');
+    const emailInput = document.getElementById('login-email').value;
+    const passwordInput = document.getElementById('login-password').value;
+    
+    if (emailInput.toLowerCase() === 'admin@84' && passwordInput === '123456') {
+        localStorage.setItem('tlp_role', 'admin');
+        localStorage.setItem('tc_premium', 'true');
+    }
+    
+    localStorage.setItem('tc_email', emailInput);
+    
     closeLoginModal();
     updateMembershipUI();
+    
+    if (pendingConceptToOpen) {
+        const { bookId, conceptIndex, globalIndex } = pendingConceptToOpen;
+        pendingConceptToOpen = null;
+        openReader(bookId, conceptIndex, globalIndex);
+    }
 }
 
 function logout() {
     localStorage.removeItem('tc_premium');
+    localStorage.removeItem('tc_email');
+    localStorage.removeItem('tlp_role');
+    const dropdown = document.getElementById('profile-dropdown');
+    if (dropdown) {
+        dropdown.classList.add('hidden');
+        dropdown.classList.remove('flex');
+    }
     if (window.location.hash === '#admin') navTo('explorer');
     updateMembershipUI();
 }
 
 function updateMembershipUI() {
     const authContainer = document.getElementById('auth-container');
-    if (!authContainer) return;
+    const btnProfile = document.getElementById('btn-profile');
+    const adminBtn = document.getElementById('btn-admin');
     
-    if (window.location.hash === '#master') {
-        authContainer.style.display = 'none';
-        const adminBtn = document.getElementById('btn-admin');
-        if(adminBtn) adminBtn.classList.remove('hidden');
-        return;
+    const email = localStorage.getItem('tc_email');
+    const role = localStorage.getItem('tlp_role');
+    
+    if (email) {
+        if(btnProfile) btnProfile.classList.remove('hidden');
+        const emailDisplay = document.getElementById('profile-email-display');
+        if(emailDisplay) emailDisplay.textContent = email;
+    } else {
+        if(btnProfile) btnProfile.classList.add('hidden');
     }
+    
+    if (role === 'admin') {
+        if(adminBtn) adminBtn.classList.remove('hidden');
+    } else {
+        if(adminBtn) adminBtn.classList.add('hidden');
+    }
+
+    if (!authContainer) return;
     
     authContainer.style.display = 'flex';
     
     if (hasPremium()) {
         authContainer.innerHTML = `
-            <button onclick="logout()" class="flex items-center gap-1 bg-amber-100 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-900 px-3 py-1 rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-amber-700 dark:text-amber-500 transition hover:bg-amber-200 dark:hover:bg-amber-900/40" title="Click to Logout">
+            <button class="flex items-center gap-1 bg-amber-100 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-900 px-3 py-1 rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-amber-700 dark:text-amber-500 cursor-default">
                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                 Premium
             </button>
         `;
-        const adminBtn = document.getElementById('btn-admin');
-        if(adminBtn) adminBtn.classList.remove('hidden');
     } else {
         authContainer.innerHTML = `
             <div class="flex items-center gap-1 bg-gray-100 dark:bg-darkBorder p-0.5 rounded-full border border-gray-200 dark:border-gray-800">
                 <button class="px-3 py-1 rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-widest bg-white dark:bg-darkCard shadow-sm text-[#0a0a0a] dark:text-white transition cursor-default">Free</button>
-                <button onclick="handleMembershipClick(true)" class="px-3 py-1 rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition flex items-center gap-1">
+                <button onclick="requestPremiumAccess()" class="px-3 py-1 rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition flex items-center gap-1">
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                     Premium
                 </button>
             </div>
         `;
-        const adminBtn = document.getElementById('btn-admin');
-        if(adminBtn) adminBtn.classList.add('hidden');
     }
 }
 
@@ -461,6 +501,7 @@ function openReader(bookId, conceptIndex, globalIndex) {
             return;
         }
         if (!hasPremium()) {
+            pendingConceptToOpen = { bookId, conceptIndex, globalIndex };
             showFreemiumModal();
             return;
         }
@@ -912,10 +953,6 @@ async function downloadCarousel() {
 
 // Initialize
 window.onload = () => {
-    if(window.location.hash === '#master') {
-        localStorage.setItem('tc_premium', 'true');
-        localStorage.setItem('tc_email', 'master@admin.com');
-    }
     updateMembershipUI();
     flattenData();
     updateSourceDropdown('all');

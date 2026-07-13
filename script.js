@@ -851,9 +851,15 @@ function renderConceptDisplay() {
 
     let mainContentHtml = '';
     if (concept.markdown) {
+        let parsedHtml = '';
+        if (typeof marked !== 'undefined') {
+            parsedHtml = marked.parse ? marked.parse(concept.markdown) : marked(concept.markdown);
+        } else {
+            parsedHtml = '<p class="text-red-500">Error: Markdown renderer failed to load.</p>';
+        }
         mainContentHtml = `
             <div class="prose prose-lg dark:prose-invert max-w-none prose-p:text-gray-600 dark:prose-p:text-gray-400 prose-headings:font-serif prose-pre:bg-gray-100 prose-pre:text-[#0a0a0a] dark:prose-pre:bg-darkCard dark:prose-pre:text-gray-300">
-                ${marked.parse(concept.markdown)}
+                ${parsedHtml}
             </div>
         `;
     } else {

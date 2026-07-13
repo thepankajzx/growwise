@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Habit Stress Test™</title>
+    
+    <!-- Premium Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        bgLight: '#FAFAF8',
+                        primary: '#0F172A',
+                        secondary: '#64748B',
+                        accent: '#C9A227',
+                        borderLight: '#E2E8F0',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Lora', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #FAFAF8; color: #0F172A; }
+        
+        .editorial-text {
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Checkbox styling */
+        .checklist-item input[type="checkbox"]:checked + label {
+            text-decoration: line-through;
+            color: #64748B;
+            transition: all 0.3s ease;
+        }
+
+        /* Tab animations */
+        .tab-content { display: none; animation: fadeIn 0.4s ease-in-out; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .tab-btn.active { border-bottom: 2px solid #C9A227; color: #0F172A; font-weight: 600; }
+    </style>
+</head>
+<body class="font-sans antialiased editorial-text pb-32 overflow-x-hidden">
+
+    <!-- Fluid Header Section -->
+    <header class="w-full border-b border-borderLight bg-white py-16 sm:py-24 mb-16">
+        <div class="w-full mx-auto px-6 sm:px-12 lg:px-24 xl:px-32 text-center">
+            <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-medium leading-tight text-primary mb-6">
+                The Habit Stress Test™
+            </h1>
+            <p class="font-sans text-lg sm:text-xl text-secondary uppercase tracking-widest font-semibold max-w-4xl mx-auto">
+                Why Most Habits Collapse the Moment Life Gets Hard — And How to Build Ones That Don't
+            </p>
+        </div>
+    </header>
+
+    <!-- Stretched Main Content -->
+    <main class="w-full mx-auto px-6 sm:px-12 lg:px-24 xl:px-32 flex flex-col items-center">
+
+        <!-- Long Explanations: Wide Editorial Text -->
+        <article class="w-full max-w-5xl 2xl:max-w-6xl space-y-10 font-serif text-xl sm:text-2xl leading-relaxed text-gray-800">
+            
+            <p>
+                <span class="float-left text-6xl sm:text-7xl font-serif mr-5 text-accent leading-none mt-2">Y</span>ou've built the habit before. The early morning workouts. The daily writing streak. The clean eating week. It worked — until it didn't. One bad week, one late night, one stressful deadline, and the habit disappeared. Not because you lacked discipline. Because the habit was never designed to survive a hard day.
+            </p>
+            <p>
+                Most habit advice teaches you how to <em>start</em>. Almost none of it teaches you how to <em>survive</em>. This guide fixes that gap.
+            </p>
+
+            <h2 class="font-sans text-3xl sm:text-4xl font-semibold text-primary mt-20 mb-8 tracking-tight">The Hidden Problem</h2>
+            
+            <!-- Premium Quote Block Stretched -->
+            <blockquote class="my-12 border-l-8 border-accent pl-8 py-4 italic font-medium text-3xl text-primary bg-white shadow-sm rounded-r-2xl">
+                "Here's what nobody tells you about habits: the version you build on your best day is not the version that has to survive on your worst day."
+            </blockquote>
+
+            <p>
+                You design your morning run while you're motivated, well-rested, and inspired. You imagine the 6 a.m. alarm, the fresh air, the momentum. What you don't imagine is the version of you that's exhausted, behind on sleep, and emotionally drained — because that version wasn't in the room when you made the plan.
+            </p>
+            <p>
+                That's the hidden problem. Habits are usually engineered for an idealized version of yourself that shows up maybe 20% of the time. The other 80% — tired, busy, distracted, low-willpower you — has no plan at all. So the habit breaks, and you conclude you're "just not consistent." You are consistent. Your habit was just never tested against reality.
+            </p>
+
+            <h2 class="font-sans text-3xl sm:text-4xl font-semibold text-primary mt-20 mb-8 tracking-tight">Why This Matters</h2>
+            <p>
+                Consistency isn't built on good days. Good days take care of themselves — motivation does the work for you. Consistency is built entirely on what happens during bad days, because bad days are where habits are either kept alive or quietly abandoned.
+            </p>
+            <p>
+                This has a compounding effect most people miss: one skipped day rarely ends a habit. What ends a habit is the <em>story</em> you tell yourself after the skip — "I already broke it, so what's the point." A habit that can survive rough days doesn't just save that day. It protects every day that comes after it, because it never gives you the chance to tell yourself that story.
+            </p>
+            <p>
+                If you want habits that last years instead of weeks, you need to stop designing for your best self and start designing for your worst day.
+            </p>
+
+            <h2 class="font-sans text-3xl sm:text-4xl font-semibold text-primary mt-20 mb-8 tracking-tight">Mindset Shift</h2>
+            
+            <!-- Stretched Callout -->
+            <blockquote class="my-12 w-full bg-[#FDFBF7] border border-[#EAE3D1] rounded-3xl p-10 sm:p-16 text-center shadow-sm">
+                <p class="text-secondary font-sans text-sm sm:text-base uppercase tracking-widest font-bold mb-4">Stop asking:</p>
+                <p class="text-2xl sm:text-3xl mb-8">"How do I stay motivated?"</p>
+                <div class="w-16 h-px bg-borderLight mx-auto mb-8"></div>
+                <p class="text-accent font-sans text-sm sm:text-base uppercase tracking-widest font-bold mb-4">Start asking:</p>
+                <p class="text-3xl sm:text-4xl font-medium text-primary">"How do I make this habit work without motivation?"</p>
+            </blockquote>
+
+            <p>
+                Motivation is a mood. Moods are unreliable by nature — they rise and fall with sleep, stress, weather, and a hundred things outside your control. Building a habit that depends on a good mood is building on sand.
+            </p>
+            <p>
+                The goal isn't to feel motivated more often. The goal is to build something so small, so frictionless, and so durable that it doesn't need motivation to survive. That's not a lower standard. It's a smarter one.
+            </p>
+        </article>
+
+        <!-- Visual Content: Process Diagram Stretched -->
+        <section class="w-full mt-32 mb-20">
+            <h2 class="font-sans text-center text-sm uppercase tracking-widest font-bold text-secondary mb-16">Visual Framework</h2>
+            
+            <div class="w-full bg-white border border-borderLight rounded-[2.5rem] p-10 sm:p-20 shadow-sm flex flex-col xl:flex-row items-center justify-between gap-12">
+                
+                <div class="text-center xl:text-left xl:w-1/3">
+                    <h3 class="font-serif text-4xl font-medium text-primary mb-4">THE HABIT STRESS TEST™</h3>
+                    <p class="font-sans text-xl text-secondary">Will this habit survive a bad day?</p>
+                </div>
+
+                <div class="flex flex-col md:flex-row items-center justify-center gap-6 xl:w-2/3">
+                    <!-- Step 1 -->
+                    <div class="w-full md:w-64 bg-[#FAFAF8] border-2 border-borderLight rounded-2xl p-8 text-center hover:border-accent transition-colors">
+                        <p class="font-sans text-xs font-bold uppercase text-accent mb-3">1. Repeatability Test</p>
+                        <p class="font-serif text-lg text-primary">Can I do this every day, not just some days?</p>
+                    </div>
+                    
+                    <svg class="w-8 h-8 text-borderLight rotate-90 md:rotate-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                    
+                    <!-- Step 2 -->
+                    <div class="w-full md:w-64 bg-[#FAFAF8] border-2 border-borderLight rounded-2xl p-8 text-center hover:border-accent transition-colors">
+                        <p class="font-sans text-xs font-bold uppercase text-accent mb-3">2. Friction Test</p>
+                        <p class="font-serif text-lg text-primary">How many steps stand between me and starting?</p>
+                    </div>
+
+                    <svg class="w-8 h-8 text-borderLight rotate-90 md:rotate-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+
+                    <!-- Step 3 -->
+                    <div class="w-full md:w-64 bg-[#FAFAF8] border-2 border-borderLight rounded-2xl p-8 text-center hover:border-accent transition-colors">
+                        <p class="font-sans text-xs font-bold uppercase text-accent mb-3">3. Worst-Day Test</p>
+                        <p class="font-serif text-lg text-primary">Can I still do this on my most exhausted day?</p>
+                    </div>
+                </div>
+            </div>
+            
+            <p class="w-full max-w-5xl mx-auto text-center font-serif text-xl text-gray-700 mt-12">
+                A habit only earns a permanent place in your life once it has passed all three gates. If it fails any one of them, it isn't ready — it's just untested.
+            </p>
+        </section>
+
+        <!-- Tables: Full Width Comparison -->
+        <section class="w-full my-20">
+            <div class="w-full max-w-5xl mx-auto">
+                <h2 class="font-sans text-3xl font-semibold text-primary mb-6">Framework Overview</h2>
+                <p class="font-serif text-xl text-gray-800 mb-10">
+                    The Habit Stress Test™ is a three-pillar diagnostic you run on any habit <em>before</em> you commit to it — and re-run on any habit that keeps failing. Each pillar asks one question. Each question exposes one specific way habits quietly fall apart. Together, they filter out fragile habits before they cost you weeks of false starts.
+                </p>
+            </div>
+
+            <div class="w-full overflow-x-auto border border-borderLight rounded-3xl shadow-sm bg-white">
+                <table class="w-full text-left border-collapse min-w-[800px]">
+                    <thead>
+                        <tr class="bg-gray-50 border-b border-borderLight font-sans text-sm uppercase tracking-wider text-secondary">
+                            <th class="p-8 font-semibold w-1/4">Pillar</th>
+                            <th class="p-8 font-semibold w-1/3">Question It Answers</th>
+                            <th class="p-8 font-semibold">What It Prevents</th>
+                        </tr>
+                    </thead>
+                    <tbody class="font-serif text-xl text-primary divide-y divide-borderLight">
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="p-8 font-medium">Repeatability Test</td>
+                            <td class="p-8 text-gray-700">Can this happen daily, in any circumstance?</td>
+                            <td class="p-8 text-gray-700">Habits that only work in ideal conditions</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="p-8 font-medium">Friction Test</td>
+                            <td class="p-8 text-gray-700">How much effort does starting take?</td>
+                            <td class="p-8 text-gray-700">Habits that die from inconvenience</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="p-8 font-medium">Worst-Day Test</td>
+                            <td class="p-8 text-gray-700">Does this survive exhaustion and low willpower?</td>
+                            <td class="p-8 text-gray-700">Habits that only work when you feel good</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Tabs: Full Width Fluid -->
+        <section class="w-full my-24">
+            <h2 class="font-sans text-3xl font-semibold text-primary mb-10 text-center">Framework Breakdown</h2>
+            
+            <div class="w-full bg-white border border-borderLight rounded-[2rem] overflow-hidden shadow-sm">
+                <!-- Tab Headers -->
+                <div class="flex flex-col sm:flex-row border-b border-borderLight font-sans text-base font-medium text-secondary bg-gray-50">
+                    <button class="tab-btn active flex-1 py-6 px-8 text-center focus:outline-none hover:bg-gray-100 transition" onclick="openTab(event, 'tab-1')">Pillar 1: Repeatability</button>
+                    <button class="tab-btn flex-1 py-6 px-8 text-center focus:outline-none hover:bg-gray-100 transition" onclick="openTab(event, 'tab-2')">Pillar 2: Friction</button>
+                    <button class="tab-btn flex-1 py-6 px-8 text-center focus:outline-none hover:bg-gray-100 transition" onclick="openTab(event, 'tab-3')">Pillar 3: Worst-Day</button>
+                </div>
+
+                <!-- Tab Content -->
+                <div class="p-10 sm:p-16 lg:p-20 font-serif text-xl text-gray-800">
+                    
+                    <!-- Tab 1 -->
+                    <div id="tab-1" class="tab-content active space-y-8">
+                        <p><strong class="font-sans text-primary block mb-2 uppercase tracking-wide text-sm">Definition</strong> A habit passes the Repeatability Test if it can be performed in essentially the same way every single day, regardless of location, schedule, or resources.</p>
+                        <p><strong class="font-sans text-primary block mb-2 uppercase tracking-wide text-sm">Purpose</strong> To catch habits that secretly depend on ideal conditions — a specific gym, a quiet house, a certain block of free time — conditions that won't always be there.</p>
+                        <p><strong class="font-sans text-primary block mb-2 uppercase tracking-wide text-sm">Why it matters</strong> A habit tied to special conditions isn't a habit. It's an event that happens to repeat sometimes. Real habits need to work in a hotel room, on a busy Tuesday, and during a family visit.</p>
+                        <p><strong class="font-sans text-primary block mb-2 uppercase tracking-wide text-sm">Common mistake</strong> Designing a habit around your current, unusually convenient week — then being confused when it doesn't survive a normal one.</p>
+                        <p><strong class="font-sans text-primary block mb-2 uppercase tracking-wide text-sm">Real-life example</strong> "Read 20 pages before bed" only works on nights you get home on time. "Read one page before bed" works every night, because one page fits inside any schedule.</p>
+                        <p><strong class="font-sans text-primary block mb-2 uppercase tracking-wide text-sm">Simple analogy</strong> A habit should work like a pocketknife, not a full toolkit — small enough to carry everywhere, useful in almost any situation.</p>
+                        
+                        <div class="mt-12 bg-green-50 border-l-8 border-green-500 p-8 sm:p-10 rounded-r-2xl shadow-sm">
+                            <p class="font-sans text-sm uppercase font-bold text-green-700 mb-3">Try This Today</p>
+                            <p class="text-green-900 text-2xl">Take your current habit and rewrite it in one sentence so it could be done in a hotel room with no equipment.</p>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2 -->
+                    <div id="tab-2" class="tab-content space-y-8">
+                        <p><strong class="font-sans text-primary block mb-2 uppercase tracking-wide text-sm">Definition</strong> A habit passes the Friction Test if it requires minimal setup, decision-making, or preparation to begin.</p>
+                        <p><strong class="font-sans text-primary block mb-2 uppercase tracking-wide text-sm">Purpose</strong> To identify the invisible steps that quietly drain your willpower before the habit even starts.</p>
+                        <p><strong class="font-sans text-primary block mb-2 uppercase tracking-wide text-sm">Why it matters</strong> People don't skip habits because the habit itself is hard. They skip them because of everything that has to happen <em>before</em> the habit — finding the shoes, packing the bag, deciding when. Each extra step is a new opportunity to quit before you've started.</p>
+                        <p><strong class="font-sans text-primary block mb-2 uppercase tracking-wide text-sm">Common mistake</strong> Focusing all your discipline on the habit itself while ignoring the setup required to reach it.</p>
+                        <p><strong class="font-sans text-primary block mb-2 uppercase tracking-wide text-sm">Real-life example</strong> Sleeping in your gym clothes removes the "get changed" decision entirely. The workout hasn't gotten easier — the number of moments where you could talk yourself out of it has simply gone down.</p>
+                        <p><strong class="font-sans text-primary block mb-2 uppercase tracking-wide text-sm">Simple analogy</strong> Friction is a series of small locked doors between you and the habit. Every door you remove in advance is one less place you can turn back.</p>
+                        
+                        <div class="mt-12 bg-green-50 border-l-8 border-green-500 p-8 sm:p-10 rounded-r-2xl shadow-sm">
+                            <p class="font-sans text-sm uppercase font-bold text-green-700 mb-3">Try This Today</p>
+                            <p class="text-green-900 text-2xl">Prepare one piece of your habit in advance right now — lay out the clothes, open the document, place the book on your pillow.</p>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3 -->
+                    <div id="tab-3" class="tab-content space-y-8">
+                        <p><strong class="font-sans text-primary block mb-2 uppercase tracking-wide text-sm">Definition</strong> A habit passes the Worst-Day Test if it can still be completed when you are tired, stressed, short on time, and completely unmotivated.</p>
+                        <p><strong class="font-sans text-primary block mb-2 uppercase tracking-wide text-sm">Purpose</strong> To make sure the habit has a built-in "minimum version" for the days when your best effort simply isn't available.</p>
+                        <p><strong class="font-sans text-primary block mb-2 uppercase tracking-wide text-sm">Why it matters</strong> Every habit eventually meets a genuinely bad day. What determines whether the habit survives isn't your performance on good days — it's whether a smaller, easier version exists for the bad ones.</p>
+                        <p><strong class="font-sans text-primary block mb-2 uppercase tracking-wide text-sm">Common mistake</strong> Treating "all or nothing" as commitment, when it's actually the fastest way to lose a habit entirely the first time life gets hard.</p>
+                        <p><strong class="font-sans text-primary block mb-2 uppercase tracking-wide text-sm">Real-life example</strong> A "worst-day version" of a workout habit isn't skipping it — it's ten push-ups. Not the full session, but enough to keep the identity and the streak alive.</p>
+                        <p><strong class="font-sans text-primary block mb-2 uppercase tracking-wide text-sm">Simple analogy</strong> Think of it as an emergency generator. It's not meant to power your whole life — just to keep the lights on until things return to normal.</p>
+                        
+                        <div class="mt-12 bg-green-50 border-l-8 border-green-500 p-8 sm:p-10 rounded-r-2xl shadow-sm">
+                            <p class="font-sans text-sm uppercase font-bold text-green-700 mb-3">Try This Today</p>
+                            <p class="text-green-900 text-2xl">Write down the smallest possible version of your habit — the one you could still do exhausted, at 11 p.m., after the worst day of your month.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stretched Interactive Checklist -->
+        <section class="w-full my-24">
+            <div class="w-full bg-[#FDFBF7] border border-[#EAE3D1] rounded-[2.5rem] p-12 sm:p-20 shadow-sm grid grid-cols-1 xl:grid-cols-2 gap-16">
+                
+                <!-- Assessment Side -->
+                <div>
+                    <h2 class="font-sans text-3xl font-semibold text-primary mb-4">Self-Assessment</h2>
+                    <p class="font-serif text-xl text-gray-600 mb-10">Score your current habit from 0–2 on each question (0 = No, 1 = Somewhat, 2 = Yes).</p>
+                    
+                    <ol class="list-decimal pl-6 font-serif text-xl space-y-6 text-primary mb-12">
+                        <li>Can I do this exact habit in a different city with no special equipment?</li>
+                        <li>Does starting require fewer than three physical steps?</li>
+                        <li>Have I defined a version that takes under two minutes?</li>
+                        <li>Did I still complete this habit on my worst day last week?</li>
+                        <li>Would this habit survive five hours of lost sleep?</li>
+                    </ol>
+
+                    <div class="bg-white p-8 rounded-2xl border border-borderLight">
+                        <p class="font-sans text-base font-bold text-primary mb-4 uppercase tracking-wider">Scoring:</p>
+                        <ul class="space-y-4 font-serif text-xl text-gray-700">
+                            <li><strong class="text-green-600">8–10:</strong> Your habit is stress-tested. Focus on consistency, not redesign.</li>
+                            <li><strong class="text-accent">4–7:</strong> Your habit has a weak point. Identify which pillar scored lowest and rebuild that piece.</li>
+                            <li><strong class="text-red-500">0–3:</strong> Your habit is fragile. Rebuild it from the Worst-Day Test upward before continuing.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Blueprint Side -->
+                <div>
+                    <h2 class="font-sans text-3xl font-semibold text-primary mb-4">Action Blueprint</h2>
+                    <p class="font-serif text-xl text-accent font-medium mb-10">Minimum Viable Action (under 5 minutes): Pick one current habit. Run it through all three tests right now and write down which one it fails.</p>
+                    
+                    <p class="font-sans text-base font-bold text-secondary mb-6 uppercase tracking-wider">Expanded version checklist:</p>
+                    
+                    <!-- Interactive Checklist -->
+                    <div class="space-y-6 bg-white p-8 rounded-2xl border border-borderLight shadow-sm">
+                        <div class="checklist-item flex items-start">
+                            <input type="checkbox" id="task1" class="mt-2 w-6 h-6 rounded border-gray-300 text-accent focus:ring-accent accent-accent cursor-pointer shrink-0">
+                            <label for="task1" class="ml-4 font-serif text-xl text-primary cursor-pointer select-none">
+                                Shrink the habit until it passes the Repeatability Test — make it possible anywhere.
+                            </label>
+                        </div>
+                        <div class="checklist-item flex items-start">
+                            <input type="checkbox" id="task2" class="mt-2 w-6 h-6 rounded border-gray-300 text-accent focus:ring-accent accent-accent cursor-pointer shrink-0">
+                            <label for="task2" class="ml-4 font-serif text-xl text-primary cursor-pointer select-none">
+                                Pre-remove one piece of friction tonight, before you need willpower tomorrow.
+                            </label>
+                        </div>
+                        <div class="checklist-item flex items-start">
+                            <input type="checkbox" id="task3" class="mt-2 w-6 h-6 rounded border-gray-300 text-accent focus:ring-accent accent-accent cursor-pointer shrink-0">
+                            <label for="task3" class="ml-4 font-serif text-xl text-primary cursor-pointer select-none">
+                                Define your worst-day version and write it somewhere visible.
+                            </label>
+                        </div>
+                        <div class="checklist-item flex items-start">
+                            <input type="checkbox" id="task4" class="mt-2 w-6 h-6 rounded border-gray-300 text-accent focus:ring-accent accent-accent cursor-pointer shrink-0">
+                            <label for="task4" class="ml-4 font-serif text-xl text-primary cursor-pointer select-none">
+                                Track only one thing: did you do <em>some</em> version of the habit today — yes or no.
+                            </label>
+                        </div>
+                        <div class="checklist-item flex items-start">
+                            <input type="checkbox" id="task5" class="mt-2 w-6 h-6 rounded border-gray-300 text-accent focus:ring-accent accent-accent cursor-pointer shrink-0">
+                            <label for="task5" class="ml-4 font-serif text-xl text-primary cursor-pointer select-none">
+                                Review weekly. If you're skipping often, the habit hasn't failed — the design has. Shrink it further.
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Final Wrap Up (Wide Editorial) -->
+        <article class="w-full max-w-5xl 2xl:max-w-6xl space-y-10 font-serif text-xl sm:text-2xl leading-relaxed text-gray-800 my-20">
+            
+            <h2 class="font-sans text-3xl sm:text-4xl font-semibold text-primary mb-8 tracking-tight">Advanced Insights</h2>
+            <div class="space-y-8">
+                <p>
+                    <strong class="font-sans text-primary">The Two-Day Rule:</strong> Missing one day is an accident. Missing two days in a row is where habits actually die, because the brain starts encoding the <em>absence</em> of the habit as the new normal. Treat a second consecutive miss as the real emergency — that's when the worst-day version becomes mandatory, not optional.
+                </p>
+                <p>
+                    <strong class="font-sans text-primary">Identity Anchoring:</strong> Habits that survive long-term are rarely about the outcome — they're tied to identity ("I'm someone who shows up") rather than results ("I need to lose 10 pounds"). The Worst-Day Test is really an identity-protection tool: doing the tiny version on a hard day isn't about progress, it's about staying someone who doesn't quit.
+                </p>
+            </div>
+
+            <h2 class="font-sans text-3xl sm:text-4xl font-semibold text-primary mt-24 mb-8 tracking-tight">Final Summary</h2>
+            <p>
+                Most habits don't fail because people lack willpower. They fail because they were never built to withstand a bad day — and bad days are where consistency is actually decided.
+            </p>
+            <p>
+                The Habit Stress Test™ gives you a simple filter: run any habit through the Repeatability Test, the Friction Test, and the Worst-Day Test before you trust it to last. If it fails one, it isn't ready. Shrink it until it passes all three.
+            </p>
+            <p>
+                You don't need more motivation. You need a habit small enough, frictionless enough, and durable enough that motivation was never required in the first place.
+            </p>
+            <p class="font-medium text-primary mt-12 text-3xl text-center italic">
+                Start today — with the smallest version you can imagine.
+            </p>
+        </article>
+
+    </main>
+
+    <!-- Script for interactive tabs -->
+    <script>
+        function openTab(evt, tabId) {
+            var i, tabcontent, tablinks;
+            
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove("active");
+            }
+            
+            tablinks = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+            
+            document.getElementById(tabId).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+    </script>
+</body>
+</html>

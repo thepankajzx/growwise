@@ -237,46 +237,42 @@
                     <p class="text-sm md:text-base text-gray-500 dark:text-gray-400 mt-2">Filter and explore all mental models.</p>
                 </div>
                 
-                <!-- Filters Row -->
-                <div class="flex flex-col lg:flex-row gap-6 mb-8 items-start lg:items-center justify-between pb-8 border-b border-gray-100 dark:border-gray-800 w-full">
+                <!-- Filters Row (Mega Menu) -->
+                <div class="flex flex-col gap-6 mb-8 items-start justify-start border-b border-gray-100 dark:border-gray-800 pb-8 w-full relative z-30">
                     
-                    <!-- LEFT SIDE: Library Filters -->
-                    <div class="w-full lg:w-auto flex-shrink-0">
-                        <div id="libraryFilters" class="flex flex-wrap gap-2">
-                            <button onclick="filterLibrary('all')" id="lib-all" class="px-4 py-1.5 rounded-sm text-[13px] sm:text-sm font-bold border border-[#0a0a0a] bg-[#0a0a0a] text-white transition">All Frameworks</button>
-                            <button onclick="filterLibrary('saved')" id="lib-saved" class="px-4 py-1.5 rounded-sm text-[13px] sm:text-sm font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition flex items-center gap-1.5">
-                                <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>My Arsenal
-                            </button>
-                            <button onclick="filterLibrary('save_later')" id="lib-save_later" class="px-4 py-1.5 rounded-sm text-[13px] sm:text-sm font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition">Save for Later</button>
-                            <button onclick="filterLibrary('completed')" id="lib-completed" class="px-4 py-1.5 rounded-sm text-[13px] sm:text-sm font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition flex items-center gap-1.5">
-                                <svg class="w-4 h-4 text-emerald-500" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd"/></svg>Completed
-                            </button>
-                        </div>
-                    </div>
+                    <!-- Mega Menu Toggle Button -->
+                    <button id="mega-menu-btn" onclick="toggleMegaMenu()" class="flex items-center gap-3 px-6 py-3 bg-[#0a0a0a] dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-[#0a0a0a] rounded-full font-bold uppercase tracking-widest text-sm transition shadow-sm">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                        Filter Directory
+                    </button>
 
-                    <!-- RIGHT SIDE: Niches + Dropdown -->
-                    <div class="w-full lg:w-auto flex flex-col md:flex-row items-start md:items-center justify-start lg:justify-end gap-4 overflow-x-auto pb-2 lg:pb-0 scrollbar-hide">
-                        <!-- Niche Filters -->
-                        <div id="filterPills" class="flex flex-nowrap md:flex-wrap gap-2 flex-shrink-0">
-                            <button onclick="filterCategory('all')" id="pill-all" class="px-4 py-1.5 rounded-full text-[13px] sm:text-sm font-bold border border-[#0a0a0a] bg-[#0a0a0a] text-white transition whitespace-nowrap">All Domains</button>
-                            <button onclick="filterCategory('wealth')" id="pill-wealth" class="px-4 py-1.5 rounded-full text-[13px] sm:text-sm font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition whitespace-nowrap">Wealth</button>
-                            <button onclick="filterCategory('business')" id="pill-business" class="px-4 py-1.5 rounded-full text-[13px] sm:text-sm font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition whitespace-nowrap">Business</button>
-                            <button onclick="filterCategory('productivity')" id="pill-productivity" class="px-4 py-1.5 rounded-full text-[13px] sm:text-sm font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition whitespace-nowrap">Productivity</button>
-                            <button onclick="filterCategory('self-improvement')" id="pill-self-improvement" class="px-4 py-1.5 rounded-full text-[13px] sm:text-sm font-bold border-transparent text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition whitespace-nowrap">Growth</button>
-                        </div>
-
-                        <!-- Source Dropdown -->
-                        <div class="relative w-full md:w-48 flex-shrink-0" id="sourceSelectWrapper">
-                            <select id="bookSelect" onchange="filterBook()" class="w-full border border-gray-200 dark:border-gray-800 bg-white dark:bg-darkCard dark:text-gray-200 px-4 py-1.5 text-[13px] sm:text-sm font-bold uppercase tracking-widest text-gray-600 focus:outline-none focus:border-[#0a0a0a] dark:focus:border-white shadow-sm rounded-full cursor-pointer min-h-[34px] sm:min-h-[38px] appearance-none">
-                                <option value="all">All Sources</option>
-                                <!-- Injected via JS -->
-                            </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    <!-- Mega Menu Dropdown Container -->
+                    <div id="mega-menu-dropdown" class="hidden absolute top-[4.5rem] left-0 w-full max-w-4xl bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 rounded-2xl shadow-xl overflow-hidden animate-fade">
+                        <div class="flex flex-col md:flex-row max-h-[500px]">
+                            <!-- Left Column: Niches/Filters -->
+                            <div class="w-full md:w-1/3 border-r border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-[#0f0f0f] overflow-y-auto">
+                                <ul class="py-4" id="mega-menu-domains">
+                                    <!-- Populated via JS -->
+                                </ul>
+                            </div>
+                            <!-- Right Column: Books/Concepts -->
+                            <div class="w-full md:w-2/3 p-6 overflow-y-auto bg-white dark:bg-darkCard" id="mega-menu-content">
+                                <!-- Populated via JS based on hover/click -->
                             </div>
                         </div>
                     </div>
+
+                    <!-- Popular Niches -->
+                    <div class="flex items-center gap-3 w-full overflow-x-auto hide-scrollbar pb-2 sm:pb-0" id="popular-niches-container">
+                        <span class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest shrink-0">Popular:</span>
+                        <button onclick="filterCategory('wealth'); closeMegaMenu();" class="px-4 py-1.5 rounded-full text-[12px] font-bold bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition whitespace-nowrap shadow-sm shrink-0">Wealth</button>
+                        <button onclick="filterCategory('business'); closeMegaMenu();" class="px-4 py-1.5 rounded-full text-[12px] font-bold bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition whitespace-nowrap shadow-sm shrink-0">Business</button>
+                        <button onclick="filterCategory('productivity'); closeMegaMenu();" class="px-4 py-1.5 rounded-full text-[12px] font-bold bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition whitespace-nowrap shadow-sm shrink-0">Productivity</button>
+                        <button onclick="filterCategory('self-improvement'); closeMegaMenu();" class="px-4 py-1.5 rounded-full text-[12px] font-bold bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition whitespace-nowrap shadow-sm shrink-0">Self-Improvement</button>
+                    </div>
+
                 </div>
+
             </div>
 
             <!-- Concept Grid -->
@@ -753,7 +749,7 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <!-- Scripts -->
-    <script src="data.js?v=30"></script>
-    <script src="script.js?v=30"></script>
+    <script src="data.js?v=31"></script>
+    <script src="script.js?v=31"></script>
 </body>
 </html>

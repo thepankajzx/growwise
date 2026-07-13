@@ -410,49 +410,129 @@ function updateMembershipUI() {
 function filterCategory(catId) {
     currentCategoryFilter = catId;
     currentBookFilter = 'all';
-    
-    const pills = document.querySelectorAll('#filterPills button');
-    pills.forEach(pill => {
-        pill.classList.remove('bg-[#0a0a0a]', 'dark:bg-white', 'text-white', 'dark:text-[#0a0a0a]', 'border-[#0a0a0a]', 'dark:border-white', 'border-transparent');
-        pill.classList.add('border-transparent', 'text-gray-600', 'dark:text-gray-400', 'hover:text-[#0a0a0a]', 'dark:hover:text-white');
-    });
-    
-    const activePill = document.getElementById(`pill-${catId}`);
-    if(activePill) {
-        activePill.classList.remove('border-transparent', 'text-gray-600', 'dark:text-gray-400', 'hover:text-[#0a0a0a]', 'dark:hover:text-white');
-        activePill.classList.add('bg-[#0a0a0a]', 'dark:bg-white', 'text-white', 'dark:text-[#0a0a0a]', 'border-[#0a0a0a]', 'dark:border-white');
-    }
-
-    const sourceSelectWrapper = document.getElementById('sourceSelectWrapper');
-    const bookSelect = document.getElementById('bookSelect');
-    
-    if (sourceSelectWrapper) sourceSelectWrapper.classList.remove('hidden');
-    if (bookSelect) {
-        let optionsHTML = '<option value="all">All Source Materials</option>';
-        if (catId === 'all') {
-            booksData.forEach(cat => {
-                cat.books.forEach(book => {
-                    optionsHTML += `<option value="${book.id}">${book.title}</option>`;
-                });
-            });
-        } else {
-            const categoryData = booksData.find(c => c.id === catId);
-            if (categoryData) {
-                categoryData.books.forEach(book => {
-                    optionsHTML += `<option value="${book.id}">${book.title}</option>`;
-                });
-            }
-        }
-        bookSelect.innerHTML = optionsHTML;
-        bookSelect.value = 'all';
-    }
-    
     renderExplorer();
 }
 
-function filterBook() {
-    currentBookFilter = document.getElementById('bookSelect').value;
+function filterBook(bookId) {
+    currentBookFilter = bookId;
+    // Also set the category to match the book so we only see this book's concepts
+    if (bookId !== 'all') {
+        const bookObj = findBookById(bookId);
+        if (bookObj && bookObj.category) {
+            currentCategoryFilter = bookObj.category.id;
+        }
+    }
     renderExplorer();
+    closeMegaMenu(); // if clicked from mega menu
+}
+
+// ----------------------------------------------------
+// MEGA MENU LOGIC
+// ----------------------------------------------------
+
+let currentHoveredDomain = 'all';
+
+function toggleMegaMenu() {
+    const menu = document.getElementById('mega-menu-dropdown');
+    if (menu.classList.contains('hidden')) {
+        menu.classList.remove('hidden');
+        renderMegaMenuDomains();
+        hoverDomain('all');
+    } else {
+        closeMegaMenu();
+    }
+}
+
+function closeMegaMenu() {
+    const menu = document.getElementById('mega-menu-dropdown');
+    if (menu) menu.classList.add('hidden');
+}
+
+// Close mega menu when clicking outside
+document.addEventListener('click', function(event) {
+    const menu = document.getElementById('mega-menu-dropdown');
+    const btn = document.getElementById('mega-menu-btn');
+    if (menu && !menu.classList.contains('hidden')) {
+        if (!menu.contains(event.target) && !btn.contains(event.target)) {
+            closeMegaMenu();
+        }
+    }
+});
+
+function hoverDomain(domainId) {
+    currentHoveredDomain = domainId;
+    renderMegaMenuDomains(); // to update active state
+    renderMegaMenuContent(domainId);
+}
+
+function renderMegaMenuDomains() {
+    const domainsContainer = document.getElementById('mega-menu-domains');
+    if (!domainsContainer) return;
+    
+    let html = `
+        <li>
+            <button onmouseover="hoverDomain('all')" onclick="filterCategory('all'); closeMegaMenu();" class="w-full text-left px-6 py-3 font-bold text-sm tracking-wide transition-colors ${currentHoveredDomain === 'all' ? 'bg-white dark:bg-darkCard text-[#0a0a0a] dark:text-white border-l-4 border-[#0a0a0a] dark:border-white' : 'text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white border-l-4 border-transparent'}">
+                All Domains
+            </button>
+        </li>
+    `;
+    
+    booksData.forEach(cat => {
+        const isActive = currentHoveredDomain === cat.id;
+        html += `
+            <li>
+                <button onmouseover="hoverDomain('${cat.id}')" onclick="filterCategory('${cat.id}'); closeMegaMenu();" class="w-full text-left px-6 py-3 font-bold text-sm tracking-wide transition-colors ${isActive ? 'bg-white dark:bg-darkCard text-[#0a0a0a] dark:text-white border-l-4 border-[#0a0a0a] dark:border-white' : 'text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white border-l-4 border-transparent'}">
+                    ${cat.category}
+                </button>
+            </li>
+        `;
+    });
+    
+    domainsContainer.innerHTML = html;
+}
+
+function renderMegaMenuContent(domainId) {
+    const contentContainer = document.getElementById('mega-menu-content');
+    if (!contentContainer) return;
+    
+    let html = '';
+    
+    if (domainId === 'all') {
+        html = `<div class="text-sm text-gray-500 dark:text-gray-400 mb-6 uppercase tracking-widest font-bold">Featured Source Materials</div>`;
+        html += `<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">`;
+        booksData.forEach(cat => {
+            cat.books.slice(0, 2).forEach(book => {
+                html += `
+                    <button onclick="filterBook('${book.id}')" class="text-left p-4 rounded-xl border border-borderLight dark:border-gray-800 hover:border-[#0a0a0a] dark:hover:border-white transition group bg-gray-50 dark:bg-[#0f0f0f]">
+                        <p class="font-serif text-lg font-medium text-[#0a0a0a] dark:text-white group-hover:text-accent transition">${book.title}</p>
+                        <p class="text-xs text-gray-500 mt-1 uppercase tracking-widest">${cat.category}</p>
+                    </button>
+                `;
+            });
+        });
+        html += `</div>`;
+    } else {
+        const categoryData = booksData.find(c => c.id === domainId);
+        if (categoryData) {
+            html = `<div class="flex items-center justify-between mb-6">
+                        <div class="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-widest font-bold">${categoryData.category} Sources</div>
+                        <button onclick="filterCategory('${domainId}'); closeMegaMenu();" class="text-xs font-bold text-[#0a0a0a] dark:text-white uppercase tracking-widest hover:text-accent transition">View All in Domain →</button>
+                    </div>`;
+            
+            html += `<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">`;
+            categoryData.books.forEach(book => {
+                html += `
+                    <button onclick="filterBook('${book.id}')" class="text-left p-4 rounded-xl border border-borderLight dark:border-gray-800 hover:border-[#0a0a0a] dark:hover:border-white transition group bg-gray-50 dark:bg-[#0f0f0f]">
+                        <p class="font-serif text-lg font-medium text-[#0a0a0a] dark:text-white group-hover:text-accent transition">${book.title}</p>
+                        <p class="text-xs text-gray-500 mt-1 uppercase tracking-widest">${book.concepts.length} Concepts</p>
+                    </button>
+                `;
+            });
+            html += `</div>`;
+        }
+    }
+    
+    contentContainer.innerHTML = html;
 }
 
 function filterLibrary(type) {
@@ -1066,7 +1146,12 @@ function renderConceptDisplay() {
     document.getElementById('reader-author').textContent = book.title;
 
     let mainContentHtml = '';
-    if (concept.markdown) {
+    if (concept.htmlFile) {
+        display.innerHTML = `
+            <iframe src="${concept.htmlFile}" class="w-full min-h-[85vh] border-0 rounded-b-2xl" title="${concept.title}"></iframe>
+        `;
+        return;
+    } else if (concept.markdown) {
         mainContentHtml = parseConceptToComponents(concept.markdown, conceptId);
     } else {
         const sentences = concept.explanation.match(/[^.!?]+[.!?]+/g) || [concept.explanation];

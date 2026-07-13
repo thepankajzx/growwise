@@ -245,7 +245,6 @@ function updateMembershipUI() {
 function filterCategory(catId) {
     currentCategoryFilter = catId;
     currentBookFilter = 'all';
-    document.getElementById('bookSelect').value = 'all';
     
     const pills = document.querySelectorAll('#filterPills button');
     pills.forEach(pill => {
@@ -259,20 +258,41 @@ function filterCategory(catId) {
         activePill.classList.add('bg-[#0a0a0a]', 'dark:bg-white', 'text-white', 'dark:text-[#0a0a0a]', 'border-[#0a0a0a]', 'dark:border-white');
     }
     
+    const domainSelect = document.getElementById('domainSelect');
+    if (domainSelect) domainSelect.value = catId;
+
+    const sourceSelectWrapper = document.getElementById('sourceSelectWrapper');
+    const bookSelect = document.getElementById('bookSelect');
+    
+    if (catId === 'all') {
+        if (sourceSelectWrapper) sourceSelectWrapper.classList.add('hidden');
+    } else {
+        if (sourceSelectWrapper) sourceSelectWrapper.classList.remove('hidden');
+        if (bookSelect) {
+            let optionsHTML = '<option value="all">All Concepts</option>';
+            const categoryData = booksData.find(c => c.id === catId);
+            if (categoryData) {
+                categoryData.books.forEach(book => {
+                    optionsHTML += `<option value="${book.id}">${book.title}</option>`;
+                });
+            }
+            bookSelect.innerHTML = optionsHTML;
+            bookSelect.value = 'all';
+        }
+    }
+    
     renderExplorer();
+}
+
+function handleDomainDropdown() {
+    const domainSelect = document.getElementById('domainSelect');
+    if (domainSelect) {
+        filterCategory(domainSelect.value);
+    }
 }
 
 function filterBook() {
     currentBookFilter = document.getElementById('bookSelect').value;
-    if(currentBookFilter !== 'all') {
-        currentCategoryFilter = 'all';
-        const pills = document.querySelectorAll('#filterPills button');
-        pills.forEach(pill => {
-            pill.classList.remove('bg-[#0a0a0a]', 'dark:bg-white', 'text-white', 'dark:text-[#0a0a0a]', 'border-[#0a0a0a]', 'dark:border-white', 'border-transparent');
-            pill.classList.add('border-transparent', 'text-gray-600', 'dark:text-gray-400', 'hover:text-[#0a0a0a]', 'dark:hover:text-white');
-        });
-        document.getElementById(`pill-all`).classList.add('bg-[#0a0a0a]', 'dark:bg-white', 'text-white', 'dark:text-[#0a0a0a]', 'border-[#0a0a0a]', 'dark:border-white');
-    }
     renderExplorer();
 }
 
@@ -721,12 +741,14 @@ function selectConceptForCarouselFromDropdown() {
         const found = allConcepts.find(c => c.globalIndex === globalIdx);
         if (!found) return;
         concept = found.concept;
+        document.getElementById('cg-preview-source').textContent = found.bookTitle;
     } else {
         if(!bookId || conceptIndex === "") return;
         
         const result = findBookById(bookId);
         if (!result) return;
         concept = result.book.concepts[parseInt(conceptIndex)];
+        document.getElementById('cg-preview-source').textContent = result.book.title;
     }
     
     // Parse premise

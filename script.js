@@ -1500,7 +1500,6 @@ function renderConceptDisplay() {
         }
     }, 50);
 }
-}
 
 function shareInsight() {
     if (!isLoggedIn()) {

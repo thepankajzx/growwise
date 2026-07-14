@@ -12,9 +12,16 @@ let currentGlobalIndex = 0;
 function flattenData() {
     allConcepts = [];
     let globalIndex = 0;
+    // Base date for simulated chronological order (e.g., first concept added Jan 2024, rest follow)
+    const baseDateMs = new Date('2024-01-01T10:00:00Z').getTime();
+    const msPerItem = 86400000 * 1.5; // Add 1.5 days per concept to spread them out
+
     booksData.forEach(cat => {
         cat.books.forEach(book => {
             book.concepts.forEach((concept, idx) => {
+                const itemDateMs = baseDateMs + (globalIndex * msPerItem);
+                const itemDateStr = new Date(itemDateMs).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                
                 allConcepts.push({
                     globalIndex: globalIndex++,
                     categoryId: cat.id,
@@ -23,7 +30,9 @@ function flattenData() {
                     bookTitle: book.title,
                     bookAuthor: book.author,
                     conceptIndex: idx,
-                    concept: concept
+                    concept: concept,
+                    dateAddedMs: itemDateMs,
+                    dateAddedStr: itemDateStr
                 });
             });
         });
@@ -264,6 +273,28 @@ function navTo(view, updateHash = true) {
     if (view === 'profile') {
         window.location.href = 'profile.html';
         return;
+    }
+    
+    if (view === 'explorer') {
+        if (updateHash) { // Reset filters if navigated manually (not from back button)
+            currentLibraryFilter.clear();
+            currentCategoryFilter = 'all';
+            currentBookFilter = 'all';
+            
+            ['saved', 'completed', 'save_later', 'premium'].forEach(id => {
+                const pill = document.getElementById(`lib-${id}`);
+                if (pill) {
+                    pill.classList.remove('bg-[#0a0a0a]', 'dark:bg-white', 'text-white', 'dark:text-[#0a0a0a]', 'border-[#0a0a0a]', 'dark:border-white');
+                    pill.classList.add('border-transparent', 'text-gray-600', 'dark:text-gray-400', 'hover:text-[#0a0a0a]', 'dark:hover:text-white');
+                }
+            });
+            const allPill = document.getElementById('lib-all');
+            if (allPill) {
+                allPill.classList.remove('border-transparent', 'text-gray-600', 'dark:text-gray-400', 'hover:text-[#0a0a0a]', 'dark:hover:text-white');
+                allPill.classList.add('bg-[#0a0a0a]', 'dark:bg-white', 'text-white', 'dark:text-[#0a0a0a]', 'border-[#0a0a0a]', 'dark:border-white');
+            }
+        }
+        if (typeof renderExplorer === 'function') renderExplorer();
     }
     
     window.scrollTo(0, 0);
@@ -739,6 +770,9 @@ function renderExplorer() {
         return;
     }
 
+    // Sort by latest added first
+    filtered = filtered.slice().sort((a, b) => b.dateAddedMs - a.dateAddedMs);
+
     filtered.forEach(item => {
         const conceptId = `${item.bookId}-${item.conceptIndex}`;
         const isSaved = savedItems.includes(conceptId);
@@ -765,8 +799,9 @@ function renderExplorer() {
             <div class="flex-1">
                 <h4 class="text-lg md:text-xl font-bold text-[#0a0a0a] dark:text-white leading-tight mb-2 serif group-hover:text-emerald-800 dark:group-hover:text-emerald-400 transition-colors">${item.concept.title}</h4>
             </div>
-            <div class="mt-2 pt-2 border-t border-gray-50 dark:border-gray-800/50">
+            <div class="mt-2 pt-2 border-t border-gray-50 dark:border-gray-800/50 flex justify-between items-center">
                 <p class="text-[10px] md:text-xs text-gray-400 dark:text-gray-500 leading-relaxed italic truncate">Extracted from ${item.bookTitle}</p>
+                <p class="text-[9px] font-bold tracking-widest text-gray-400 uppercase shrink-0 ml-2">${item.dateAddedStr}</p>
             </div>
         `;
         container.appendChild(card);

@@ -74,67 +74,115 @@ function updateSourceDropdown(domain) {
 // AUTH & PREMIUM LOGIC
 // ----------------------------------------------------
 
+// ----------------------------------------------------
+// FIREBASE AUTH & PREMIUM LOGIC
+// ----------------------------------------------------
+
+let currentUser = null;
+let userProfile = null;
+
+// Listen for auth state changes
+auth.onAuthStateChanged(async (user) => {
+    currentUser = user;
+    if (user) {
+        try {
+            const docRef = db.collection('users').doc(user.uid);
+            const docSnap = await docRef.get();
+            if (docSnap.exists) {
+                userProfile = docSnap.data();
+                // Load synced data into localStorage for seamless UI integration
+                localStorage.setItem('ka_saved', JSON.stringify(userProfile.saved || []));
+                localStorage.setItem('ka_bookmarks', JSON.stringify(userProfile.bookmarks || []));
+                localStorage.setItem('ka_completed', JSON.stringify(userProfile.completed || []));
+                localStorage.setItem('ka_save_later', JSON.stringify(userProfile.saveLater || []));
+            } else {
+                userProfile = { isPremium: false, saved: [], bookmarks: [], completed: [], saveLater: [] };
+                await docRef.set(userProfile);
+            }
+        } catch (err) {
+            console.error("Error fetching user data:", err);
+        }
+    } else {
+        userProfile = null;
+    }
+    updateMembershipUI();
+});
+
 function isLoggedIn() {
-    return !!localStorage.getItem('tc_email');
+    return !!currentUser;
 }
 
 function hasPremium() {
-    return localStorage.getItem('tc_premium') === 'true';
-}
-
-function handleLogin(e) {
-    e.preventDefault();
-    const email = document.getElementById('login-email').value;
-    if(email) {
-        localStorage.setItem('tc_email', email);
-        closeLoginModal();
-        // Retry opening what they clicked
-        if(pendingConceptToOpen) {
-            openReader(pendingConceptToOpen.bookId, pendingConceptToOpen.conceptIndex, pendingConceptToOpen.globalIndex);
-            pendingConceptToOpen = null;
-        }
-    }
+    return userProfile && userProfile.isPremium === true;
 }
 
 function showLoginModal() {
     document.getElementById('login-modal').classList.remove('hidden');
+    document.getElementById('login-error').classList.add('hidden');
 }
 
 function closeLoginModal() {
     document.getElementById('login-modal').classList.add('hidden');
 }
 
-function checkAccessCodeModal() {
+let isSignUpMode = false;
+function toggleAuthMode() {
+    isSignUpMode = !isSignUpMode;
+    const btn = document.getElementById('login-submit-btn');
+    const toggle = document.getElementById('auth-mode-toggle');
+    const err = document.getElementById('login-error');
+    err.classList.add('hidden');
+    
+    if (isSignUpMode) {
+        btn.textContent = 'Sign Up';
+        toggle.textContent = 'Already have an account? Log In';
+    } else {
+        btn.textContent = 'Log In';
+        toggle.textContent = 'Need an account? Sign Up';
+    }
+}
+
+async function checkAccessCodeModal() {
     const input = document.getElementById('modalSecretCodeInput');
     const btn = document.getElementById('codeSubmitBtn');
     
     if(input.value === 'pankaj@') {
-        localStorage.setItem('tc_premium', 'true');
-        btn.textContent = 'ACCESS GRANTED';
-        btn.classList.remove('bg-gray-100', 'text-[#0a0a0a]');
-        btn.classList.add('bg-emerald-600', 'text-white', 'border-emerald-600');
+        if (!currentUser) return;
         
-        // Confetti burst!
-        if (typeof confetti === 'function') {
-            confetti({
-                particleCount: 150,
-                spread: 70,
-                origin: { y: 0.6 },
-                colors: ['#059669', '#10b981', '#34d399', '#ffffff'] // Emerald tones
-            });
-        }
-        
-        setTimeout(() => {
-            closeFreemiumModal();
-            updateMembershipUI();
-            setPremiumFilter(true); // Automatically switch them to premium view
+        btn.textContent = 'VERIFYING...';
+        try {
+            await db.collection('users').doc(currentUser.uid).update({ isPremium: true });
+            userProfile.isPremium = true;
             
-            // Retry opening what they clicked
-            if(pendingConceptToOpen) {
-                openReader(pendingConceptToOpen.bookId, pendingConceptToOpen.conceptIndex, pendingConceptToOpen.globalIndex);
-                pendingConceptToOpen = null;
+            btn.textContent = 'ACCESS GRANTED';
+            btn.classList.remove('bg-gray-100', 'text-[#0a0a0a]', 'dark:bg-darkBg', 'dark:text-white');
+            btn.classList.add('bg-emerald-600', 'text-white', 'border-emerald-600');
+            
+            // Confetti burst!
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 150,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#059669', '#10b981', '#34d399', '#ffffff']
+                });
             }
-        }, 1500);
+            
+            setTimeout(() => {
+                closeFreemiumModal();
+                updateMembershipUI();
+                setPremiumFilter(true); // Automatically switch them to premium view
+                
+                // Retry opening what they clicked
+                if(pendingConceptToOpen) {
+                    openReader(pendingConceptToOpen.bookId, pendingConceptToOpen.conceptIndex, pendingConceptToOpen.globalIndex);
+                    pendingConceptToOpen = null;
+                }
+            }, 1500);
+        } catch (err) {
+            console.error(err);
+            btn.textContent = 'ERROR';
+        }
     } else {
         input.value = '';
         input.placeholder = 'Invalid Code';
@@ -274,43 +322,53 @@ function requestPremiumAccess() {
     }
 }
 
-function handleLogin(e) {
+async function handleLogin(e) {
     e.preventDefault();
     const emailInput = document.getElementById('login-email').value;
     const passwordInput = document.getElementById('login-password').value;
+    const btn = document.getElementById('login-submit-btn');
+    const err = document.getElementById('login-error');
     
-    if (emailInput.toLowerCase() === 'admin@84' && passwordInput === '123456') {
-        localStorage.setItem('tlp_role', 'admin');
-        localStorage.setItem('tc_premium', 'true');
-    }
+    btn.textContent = 'PLEASE WAIT...';
+    err.classList.add('hidden');
     
-    localStorage.setItem('tc_email', emailInput);
-    
-    closeLoginModal();
-    updateMembershipUI();
-    
-    if (pendingConceptToOpen) {
-        const { bookId, conceptIndex, globalIndex } = pendingConceptToOpen;
-        pendingConceptToOpen = null;
-        openReader(bookId, conceptIndex, globalIndex);
+    try {
+        if (isSignUpMode) {
+            await auth.createUserWithEmailAndPassword(emailInput, passwordInput);
+        } else {
+            await auth.signInWithEmailAndPassword(emailInput, passwordInput);
+        }
+        
+        closeLoginModal();
+        if (pendingConceptToOpen) {
+            const { bookId, conceptIndex, globalIndex } = pendingConceptToOpen;
+            pendingConceptToOpen = null;
+            openReader(bookId, conceptIndex, globalIndex);
+        }
+    } catch (error) {
+        err.textContent = error.message;
+        err.classList.remove('hidden');
+    } finally {
+        btn.textContent = isSignUpMode ? 'Sign Up' : 'Log In';
     }
 }
 
-function logout() {
-    localStorage.removeItem('tc_premium');
-    localStorage.removeItem('tc_email');
-    localStorage.removeItem('tlp_role');
-    const dropdown = document.getElementById('profile-dropdown');
-    if (dropdown) {
-        dropdown.classList.add('hidden');
-        dropdown.classList.remove('flex');
+async function logout() {
+    try {
+        await auth.signOut();
+        const dropdown = document.getElementById('profile-dropdown');
+        if (dropdown) {
+            dropdown.classList.add('hidden');
+            dropdown.classList.remove('flex');
+        }
+        if (window.location.hash === '#admin') navTo('explorer');
+    } catch (error) {
+        console.error("Logout error", error);
     }
-    if (window.location.hash === '#admin') navTo('explorer');
-    updateMembershipUI();
 }
 
 function updateMembershipUI() {
-    const email = localStorage.getItem('tc_email');
+    const email = currentUser ? currentUser.email : null;
     const premium = hasPremium();
     
     // Desktop UI
@@ -827,7 +885,18 @@ function updateActionButtonsState() {
     }
 }
 
-function toggleSaved() {
+async function syncToFirestore(field, data) {
+    if (currentUser) {
+        try {
+            await db.collection('users').doc(currentUser.uid).update({ [field]: data });
+            if (userProfile) userProfile[field] = data;
+        } catch (err) {
+            console.error("Sync error:", err);
+        }
+    }
+}
+
+async function toggleSaved() {
     if (!isLoggedIn()) {
         showLoginModal();
         return;
@@ -839,9 +908,10 @@ function toggleSaved() {
     localStorage.setItem('ka_saved', JSON.stringify(saved));
     updateActionButtonsState();
     renderExplorer();
+    await syncToFirestore('saved', saved);
 }
 
-function toggleBookmark() {
+async function toggleBookmark() {
     if (!isLoggedIn()) {
         showLoginModal();
         return;
@@ -853,9 +923,10 @@ function toggleBookmark() {
     localStorage.setItem('ka_bookmarks', JSON.stringify(bookmarks));
     updateActionButtonsState();
     renderExplorer();
+    await syncToFirestore('bookmarks', bookmarks);
 }
 
-function toggleCompleted() {
+async function toggleCompleted() {
     if (!isLoggedIn()) {
         showLoginModal();
         return;
@@ -867,9 +938,10 @@ function toggleCompleted() {
     localStorage.setItem('ka_completed', JSON.stringify(completed));
     updateActionButtonsState();
     renderExplorer();
+    await syncToFirestore('completed', completed);
 }
 
-function toggleSaveLater() {
+async function toggleSaveLater() {
     if (!isLoggedIn()) {
         showLoginModal();
         return;
@@ -881,6 +953,7 @@ function toggleSaveLater() {
     localStorage.setItem('ka_save_later', JSON.stringify(saveLater));
     updateActionButtonsState();
     renderExplorer();
+    await syncToFirestore('saveLater', saveLater);
 }
 
 function toggleChecklist(el) {

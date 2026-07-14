@@ -721,8 +721,12 @@
                         <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-1">Password</label>
                         <input type="password" id="login-password" required placeholder="••••••••" class="w-full institutional-border dark:bg-darkBg dark:text-white rounded-sm px-4 py-3 text-sm focus:outline-none focus:border-[#0a0a0a] dark:focus:border-white">
                     </div>
+                    <div id="login-error" class="hidden text-red-500 text-xs font-bold mb-2"></div>
                     <div class="pt-2 flex flex-col gap-2">
-                        <button type="submit" class="w-full bg-[#0a0a0a] dark:bg-white text-white dark:text-[#0a0a0a] py-3 rounded-sm font-bold uppercase tracking-widest text-xs hover:bg-gray-800 dark:hover:bg-gray-200 transition shadow-lg">Log In / Sign Up</button>
+                        <button type="submit" id="login-submit-btn" class="w-full bg-[#0a0a0a] dark:bg-white text-white dark:text-[#0a0a0a] py-3 rounded-sm font-bold uppercase tracking-widest text-xs hover:bg-gray-800 dark:hover:bg-gray-200 transition shadow-lg">Log In</button>
+                    </div>
+                    <div class="text-center mt-2">
+                        <button type="button" onclick="toggleAuthMode()" id="auth-mode-toggle" class="text-[10px] font-bold text-gray-500 hover:text-black dark:hover:text-white uppercase tracking-widest transition">Need an account? Sign Up</button>
                     </div>
                 </form>
                 <p class="text-[10px] text-gray-400 uppercase tracking-widest">No spam. Only high-signal insights.</p>
@@ -770,8 +774,14 @@
     <!-- Confetti Library -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
+    <!-- Firebase SDK (Compat libraries for non-module usage) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
     <!-- Scripts -->
-    <script src="data.js?v=32"></script>
-    <script src="script.js?v=32"></script>
+    <script src="firebase-config.js?v=1"></script>
+    <script src="data.js?v=33"></script>
+    <script src="script.js?v=33"></script>
 </body>
 </html>

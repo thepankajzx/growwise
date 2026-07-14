@@ -1125,6 +1125,15 @@ function parseConceptToComponents(markdown, conceptId) {
     return html;
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// READING EXPERIENCE RENDERER — Premium Editorial System
+// Philosophy: Less Interface. More Reading. Every element must earn its place.
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Shared reading column constraint — optimal 65–75ch reading measure
+const READING_COL = 'max-w-2xl mx-auto px-5 sm:px-8 lg:px-4';
+const WIDE_COL = 'max-w-4xl mx-auto px-5 sm:px-8';
+
 function renderVisualCard(content) {
     const codeMatch = content.match(/```([\s\S]*?)```/);
     const code = codeMatch ? codeMatch[1].trim() : '';
@@ -1136,52 +1145,69 @@ function renderVisualCard(content) {
     }
 
     return `
-    <div class="w-full bg-[#0a0a0a] dark:bg-[#111] border border-[#0a0a0a] dark:border-gray-800 rounded-[2rem] overflow-hidden shadow-2xl relative mb-16 group">
-        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-emerald-900"></div>
-        <div class="p-8 sm:p-12 overflow-x-auto scrollbar-hide">
-            <pre class="text-emerald-400 dark:text-emerald-500 font-mono text-[10px] sm:text-xs md:text-sm leading-loose tracking-widest">${code}</pre>
+    <div class="${WIDE_COL} mb-16">
+        <div class="w-full bg-[#0a0a0a] dark:bg-[#0e0e0e] border border-[#222] rounded-2xl overflow-hidden shadow-xl relative">
+            <div class="absolute top-0 left-0 w-full h-[2px] bg-emerald-600 opacity-70"></div>
+            <div class="px-7 py-8 sm:px-10 sm:py-10 overflow-x-auto">
+                <pre class="text-emerald-400 dark:text-emerald-500 font-mono text-[11px] sm:text-xs leading-[2] tracking-wide whitespace-pre">${code}</pre>
+            </div>
+            ${captionText ? `<div class="border-t border-white/10 px-7 sm:px-10 py-5 text-sm text-gray-400 leading-relaxed">
+                ${parsedCaption}
+            </div>` : ''}
         </div>
-        ${captionText ? `<div class="bg-[#111] dark:bg-[#1a1a1a] border-t border-gray-800 p-6 sm:px-12 text-sm text-gray-400 italic">
-            ${parsedCaption}
-        </div>` : ''}
     </div>
     `;
 }
 
 function renderExplanationCard(title, content) {
+    let parsedContent = content;
+    if (typeof marked !== 'undefined') {
+        parsedContent = marked.parse ? marked.parse(content) : content;
+    }
     return `
-    <div class="mb-12">
-        <h3 class="text-[10px] font-bold uppercase tracking-widest text-emerald-800 dark:text-emerald-500 mb-4">${title}</h3>
-        <p class="text-2xl md:text-3xl font-serif text-[#0a0a0a] dark:text-gray-100 leading-snug">
-            ${content}
-        </p>
+    <div class="${READING_COL} mb-14">
+        <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-emerald-700 dark:text-emerald-500 mb-5">${title}</p>
+        <div class="text-[1.2rem] md:text-[1.35rem] font-serif text-[#111] dark:text-gray-100 leading-[1.75] prose prose-lg dark:prose-invert max-w-none prose-p:m-0 prose-p:mb-3">
+            ${parsedContent}
+        </div>
     </div>
     `;
 }
 
 function renderExampleCard(content) {
+    let parsedContent = content;
+    if (typeof marked !== 'undefined') {
+        parsedContent = marked.parse ? marked.parse(content) : content;
+    }
     return `
-    <div class="bg-gray-50 dark:bg-[#151515] p-8 md:p-10 border border-borderLight dark:border-gray-800 rounded-3xl mb-12 relative overflow-hidden">
-        <div class="absolute left-0 top-0 bottom-0 w-1 bg-[#0a0a0a] dark:bg-gray-500"></div>
-        <h3 class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4 pl-2">Real-Life Example</h3>
-        <p class="text-lg md:text-xl text-[#0a0a0a] dark:text-gray-300 leading-relaxed font-serif pl-2">
-            ${content}
-        </p>
+    <div class="${READING_COL} mb-14">
+        <div class="border-l-2 border-[#0a0a0a] dark:border-gray-500 pl-6">
+            <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-gray-400 dark:text-gray-500 mb-4">Real-Life Example</p>
+            <div class="text-[1.05rem] md:text-[1.15rem] font-serif text-[#222] dark:text-gray-300 leading-[1.8] prose dark:prose-invert max-w-none prose-p:m-0 prose-p:mb-3">
+                ${parsedContent}
+            </div>
+        </div>
     </div>
     `;
 }
 
 function renderWarningCard(content) {
+    let parsedContent = content;
+    if (typeof marked !== 'undefined') {
+        parsedContent = marked.parse ? marked.parse(content) : content;
+    }
     return `
-    <div class="bg-red-50/50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/30 rounded-3xl p-6 md:p-8 mb-12 flex items-start gap-4">
-        <div class="text-red-500 mt-1 shrink-0">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-        </div>
-        <div>
-            <h3 class="text-[10px] font-bold uppercase tracking-widest text-red-700 dark:text-red-400 mb-2">Common Mistake</h3>
-            <p class="text-base md:text-lg text-red-900 dark:text-red-300 leading-relaxed">
-                ${content}
-            </p>
+    <div class="${READING_COL} mb-14">
+        <div class="flex items-start gap-4">
+            <div class="shrink-0 mt-1 w-5 h-5 text-red-400">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            </div>
+            <div>
+                <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-red-500 dark:text-red-400 mb-3">Common Mistake</p>
+                <div class="text-base md:text-[1.05rem] text-[#333] dark:text-red-200 leading-[1.8] prose dark:prose-invert max-w-none prose-p:m-0 prose-p:mb-3">
+                    ${parsedContent}
+                </div>
+            </div>
         </div>
     </div>
     `;
@@ -1190,83 +1216,104 @@ function renderWarningCard(content) {
 function renderReflectionCard(content, id) {
     const savedText = localStorage.getItem(`reflection_${id}`) || '';
     return `
-    <div class="bg-white dark:bg-darkCard border border-borderLight dark:border-gray-800 rounded-[2rem] p-8 md:p-10 mb-12 premium-shadow">
-        <h3 class="text-[10px] font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-4 flex items-center gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-            Reflection
-        </h3>
-        <p class="text-xl md:text-2xl font-serif text-[#0a0a0a] dark:text-white leading-snug mb-6">
-            ${content}
-        </p>
-        <textarea id="reflection_input_${id}" class="w-full bg-gray-50 dark:bg-darkBg border border-borderLight dark:border-gray-800 rounded-xl p-6 text-sm md:text-base text-[#0a0a0a] dark:text-gray-300 focus:outline-none focus:border-[#0a0a0a] dark:focus:border-emerald-500 transition-colors resize-y min-h-[120px]" placeholder="Type your thoughts here...">${savedText}</textarea>
-        <div class="flex justify-end mt-4">
-            <button onclick="saveReflection('${id}')" class="bg-[#0a0a0a] dark:bg-white text-white dark:text-[#0a0a0a] px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gray-800 dark:hover:bg-gray-200 transition shadow-lg">Save Note</button>
+    <div class="${READING_COL} mb-14">
+        <div class="border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden">
+            <div class="px-7 py-6 border-b border-gray-100 dark:border-gray-800 bg-gray-50/60 dark:bg-[#151515]">
+                <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-indigo-600 dark:text-indigo-400 mb-4">Reflect</p>
+                <p class="text-[1.1rem] md:text-[1.2rem] font-serif text-[#111] dark:text-gray-100 leading-[1.75]">${content}</p>
+            </div>
+            <div class="relative bg-white dark:bg-[#111]">
+                <textarea
+                    id="reflection_input_${id}"
+                    oninput="this.style.height='auto'; this.style.height=this.scrollHeight+'px'; autoSaveReflection('${id}')"
+                    class="w-full bg-transparent px-7 py-5 text-[0.95rem] text-[#333] dark:text-gray-300 focus:outline-none resize-none leading-relaxed placeholder-gray-300 dark:placeholder-gray-700 min-h-[80px]"
+                    placeholder="Write your thoughts here…"
+                    style="height: auto"
+                >${savedText}</textarea>
+                <div id="reflection_status_${id}" class="px-7 pb-4 text-[11px] text-gray-400 dark:text-gray-600 font-medium h-5">${savedText ? 'Saved' : ''}</div>
+            </div>
         </div>
     </div>
     `;
 }
 
+let _reflectionTimers = {};
+function autoSaveReflection(id) {
+    clearTimeout(_reflectionTimers[id]);
+    const statusEl = document.getElementById(`reflection_status_${id}`);
+    if (statusEl) statusEl.textContent = '';
+    _reflectionTimers[id] = setTimeout(() => {
+        const val = document.getElementById(`reflection_input_${id}`)?.value || '';
+        localStorage.setItem(`reflection_${id}`, val);
+        if (statusEl) {
+            statusEl.textContent = 'Saved just now';
+            setTimeout(() => { if(statusEl) statusEl.textContent = ''; }, 2000);
+        }
+    }, 800);
+}
+
 function saveReflection(id) {
-    const val = document.getElementById(`reflection_input_${id}`).value;
+    const val = document.getElementById(`reflection_input_${id}`)?.value || '';
     localStorage.setItem(`reflection_${id}`, val);
-    const toast = document.getElementById('toast');
-    if (toast) {
-        toast.innerHTML = 'Note saved securely.';
-        toast.classList.remove('opacity-0');
-        setTimeout(() => toast.classList.add('opacity-0'), 2000);
-    }
+    const statusEl = document.getElementById(`reflection_status_${id}`);
+    if (statusEl) { statusEl.textContent = 'Saved just now'; setTimeout(()=>{ statusEl.textContent=''; }, 2000); }
 }
 
 function renderActionCard(title, content, id) {
     const safeTitle = title.replace(/\s+/g, '_');
     const isChecked = localStorage.getItem(`action_${id}_${safeTitle}`) === 'true';
-    const opacityState = isChecked ? 'opacity-50 line-through' : '';
-    const iconState = isChecked ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>' : '';
-    
+    const checked = isChecked;
+    const textClass = isChecked ? 'opacity-50 line-through' : '';
+    const iconPath = isChecked ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>' : '';
+    const boxClass = isChecked ? 'bg-[#0a0a0a] dark:bg-emerald-500 border-transparent' : 'border-gray-300 dark:border-gray-600';
+
     return `
-    <div class="border border-borderLight dark:border-gray-800 rounded-3xl mb-12 bg-white dark:bg-darkCard group cursor-pointer transition hover:border-[#0a0a0a] dark:hover:border-gray-500 premium-shadow" onclick="toggleActionItem('${id}', '${safeTitle}', this)">
-        <div class="p-6 md:p-8 flex items-start gap-4 transition-all duration-300 ${opacityState}" id="action_container_${id}_${safeTitle}">
-            <div class="w-6 h-6 rounded-full border-2 border-[#0a0a0a] dark:border-gray-500 flex items-center justify-center flex-shrink-0 mt-1 transition-colors ${isChecked ? 'bg-[#0a0a0a] dark:bg-emerald-500 border-transparent' : 'bg-transparent'}">
-                <svg class="w-4 h-4 text-white dark:text-[#0a0a0a] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">${iconState}</svg>
+    <div class="${READING_COL} mb-10">
+        <button
+            type="button"
+            onclick="toggleActionItem('${id}', '${safeTitle}', this)"
+            class="w-full text-left flex items-start gap-4 group py-1"
+        >
+            <div class="w-5 h-5 mt-[3px] shrink-0 rounded-full border-2 ${boxClass} flex items-center justify-center transition-all duration-200">
+                <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">${iconPath}</svg>
             </div>
-            <div>
-                <h3 class="text-[10px] font-bold uppercase tracking-widest text-[#0a0a0a] dark:text-gray-400 mb-2">${title}</h3>
-                <p class="text-base md:text-lg text-gray-600 dark:text-gray-300 leading-relaxed">${content}</p>
+            <div id="action_container_${id}_${safeTitle}" class="flex-1 ${textClass} transition-all duration-200">
+                <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-gray-400 mb-1.5">${title}</p>
+                <p class="text-base text-[#333] dark:text-gray-300 leading-[1.7] group-hover:text-[#0a0a0a] dark:group-hover:text-white transition-colors">${content}</p>
             </div>
-        </div>
+        </button>
     </div>
     `;
 }
 
 function toggleActionItem(id, safeTitle, el) {
     const container = document.getElementById(`action_container_${id}_${safeTitle}`);
-    const icon = container.querySelector('svg');
-    const box = container.querySelector('.w-6');
+    const btn = el.closest ? el.closest('button') || el : el;
+    const box = btn.querySelector('.rounded-full');
+    const icon = btn.querySelector('svg');
     const isChecked = localStorage.getItem(`action_${id}_${safeTitle}`) === 'true';
     
     if (isChecked) {
         localStorage.setItem(`action_${id}_${safeTitle}`, 'false');
-        container.classList.remove('opacity-50', 'line-through');
-        icon.innerHTML = '';
-        box.classList.remove('bg-[#0a0a0a]', 'dark:bg-emerald-500', 'border-transparent');
-        box.classList.add('bg-transparent');
+        if(container) { container.classList.remove('opacity-50', 'line-through'); }
+        if(icon) icon.innerHTML = '';
+        if(box) { box.classList.remove('bg-[#0a0a0a]', 'dark:bg-emerald-500', 'border-transparent'); box.classList.add('border-gray-300', 'dark:border-gray-600'); }
     } else {
         localStorage.setItem(`action_${id}_${safeTitle}`, 'true');
-        container.classList.add('opacity-50', 'line-through');
-        icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>';
-        box.classList.remove('bg-transparent');
-        box.classList.add('bg-[#0a0a0a]', 'dark:bg-emerald-500', 'border-transparent');
+        if(container) { container.classList.add('opacity-50', 'line-through'); }
+        if(icon) icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>';
+        if(box) { box.classList.add('bg-[#0a0a0a]', 'dark:bg-emerald-500', 'border-transparent'); box.classList.remove('border-gray-300', 'dark:border-gray-600'); }
     }
 }
 
 function renderMemoryCard(title, content) {
+    const clean = content.replace(/\*/g, '').trim();
     return `
-    <div class="mb-12 mt-16">
-        <h3 class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">${title}</h3>
-        <div class="p-8 sm:p-12 bg-[#0a0a0a] dark:bg-black text-white rounded-[2rem] premium-shadow border border-[#0a0a0a] dark:border-gray-800 relative overflow-hidden">
-            <div class="absolute -right-20 -top-20 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl"></div>
-            <p class="text-xl md:text-2xl font-medium leading-relaxed font-serif relative z-10 italic text-center">
-                "${content.replace(/\*/g, '')}"
+    <div class="${WIDE_COL} mb-12 mt-20">
+        <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-gray-400 dark:text-gray-500 mb-5 text-center">Mental Model</p>
+        <div class="bg-[#0a0a0a] dark:bg-[#0e0e0e] text-white rounded-2xl px-8 sm:px-14 py-10 sm:py-12 relative overflow-hidden border border-[#1a1a1a]">
+            <p class="text-[1.2rem] sm:text-[1.4rem] font-serif leading-[1.75] italic text-center text-gray-100">
+                &ldquo;${clean}&rdquo;
             </p>
         </div>
     </div>
@@ -1274,17 +1321,26 @@ function renderMemoryCard(title, content) {
 }
 
 function renderTakeawayCard(content) {
+    const clean = content.replace(/\*/g, '').replace(/'/g, "\\'");
+    const display = content.replace(/\*/g, '');
+    const copyFn = `(function(){
+        navigator.clipboard.writeText('${clean}');
+        const t=document.getElementById('toast');
+        if(t){t.innerHTML='Copied to clipboard';t.classList.remove('opacity-0');setTimeout(()=>t.classList.add('opacity-0'),2000);}
+    })()`;
     return `
-    <div class="mb-16 mt-24">
-        <div class="border-t border-borderLight dark:border-gray-800 pt-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
-            <div>
-                <h3 class="text-[10px] font-bold uppercase tracking-widest text-[#0a0a0a] dark:text-gray-400 mb-4">Key Takeaway</h3>
-                <p class="text-2xl md:text-4xl font-serif text-[#0a0a0a] dark:text-white leading-tight font-medium max-w-3xl">
-                    ${content.replace(/\*/g, '')}
-                </p>
-            </div>
-            <button onclick="navigator.clipboard.writeText('${content.replace(/\*/g, '').replace(/'/g, "\\'")}'); const t=document.getElementById('toast'); if(t){t.innerHTML='Copied to clipboard'; t.classList.remove('opacity-0'); setTimeout(()=>t.classList.add('opacity-0'),2000);}" class="shrink-0 w-14 h-14 flex items-center justify-center border border-borderLight dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-darkCard transition text-[#0a0a0a] dark:text-white rounded-full shadow-sm hover:shadow-md">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+    <div class="${READING_COL} mb-24 mt-20">
+        <div class="border-t border-gray-200 dark:border-gray-800 pt-12">
+            <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-gray-400 dark:text-gray-500 mb-6">Key Takeaway</p>
+            <p class="text-[1.4rem] sm:text-[1.65rem] font-serif text-[#0a0a0a] dark:text-white leading-[1.6] font-medium mb-8">
+                ${display}
+            </p>
+            <button
+                onclick="${copyFn}"
+                class="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.15em] text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition-colors"
+            >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                Copy
             </button>
         </div>
     </div>
@@ -1319,16 +1375,41 @@ function renderConceptDisplay() {
                           renderExplanationCard('The Mechanism', mechanism) + 
                           renderActionCard('Actionable Pivot', steps.join('<br>'), conceptId);
     }
+    }
+
+    const premiumBadge = (concept.premium || concept.isPremium) ? `
+        <div class="max-w-[700px] mx-auto mb-8">
+            <span class="inline-flex items-center gap-2 bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-500 px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest">
+                Premium Framework
+            </span>
+        </div>` : '';
 
     display.innerHTML = `
-        <div class="animate-fade pt-4 md:pt-12">
-            ${concept.premium || concept.isPremium ? '<div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-500 px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 mb-12 inline-flex shadow-sm"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.956 11.956 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg> Premium Framework Unlocked</div>' : ''}
-            
-            <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold font-serif text-[#0a0a0a] dark:text-white leading-[1.1] tracking-tight mb-20 text-balance">
-                ${concept.title}
-            </h1>
+        <div class="animate-fade">
+            ${premiumBadge}
 
+            <!-- Concept Title -->
+            <div class="max-w-2xl mx-auto px-5 sm:px-8 lg:px-4 mb-16 sm:mb-24">
+                <h1 class="text-[2rem] sm:text-[2.6rem] md:text-[3.2rem] font-bold font-serif text-[#0a0a0a] dark:text-white leading-[1.12] tracking-tight text-balance">
+                    ${concept.title}
+                </h1>
+            </div>
+
+            <!-- Content Blocks -->
             ${mainContentHtml}
+
+            <!-- Concept Navigation -->
+            <div class="max-w-2xl mx-auto px-5 sm:px-8 lg:px-4 mt-8 pb-8 border-t border-gray-100 dark:border-gray-900 pt-10 flex justify-between items-center">
+                <button onclick="navigateConcept(-1)" class="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.15em] text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                    Previous
+                </button>
+                <span class="text-[11px] text-gray-300 dark:text-gray-700 font-medium">${currentConceptIndex + 1} of ${book.concepts.length}</span>
+                <button onclick="navigateConcept(1)" class="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.15em] text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition-colors">
+                    Next
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </button>
+            </div>
         </div>
     `;
 }
@@ -1360,6 +1441,21 @@ function closeReader() {
     stopReadingTimer();
     document.getElementById('reader-overlay').classList.add('hidden');
     document.body.style.overflow = ''; 
+}
+
+function navigateConcept(direction) {
+    const result = findBookById(currentBookId);
+    if (!result) return;
+    const { book } = result;
+    const newIndex = currentConceptIndex + direction;
+    if (newIndex < 0 || newIndex >= book.concepts.length) return;
+    const item = allConcepts.find(c => c.bookId === currentBookId && c.conceptIndex === newIndex);
+    if (!item) return;
+    // Scroll reader to top
+    const overlay = document.getElementById('reader-overlay');
+    if (overlay) overlay.scrollTop = 0;
+    // Re-open with new index
+    openReader(currentBookId, newIndex, item.globalIndex);
 }
 
 // ----------------------------------------------------

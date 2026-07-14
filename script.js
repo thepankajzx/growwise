@@ -794,7 +794,7 @@ function closeFreemiumModal() {
 
 let pendingConceptToOpen = null;
 
-function openReader(bookId, conceptIndex, globalIndex) {
+function openReader(bookId, conceptIndex, globalIndex, updateHistory = true) {
     const result = findBookById(bookId);
     if(!result) return;
     const { book, cat } = result;
@@ -823,6 +823,10 @@ function openReader(bookId, conceptIndex, globalIndex) {
     document.body.style.overflow = 'hidden'; 
     overlay.classList.remove('hidden');
     overlay.scrollTop = 0;
+    
+    if (updateHistory && window.location.hash !== `#read=${bookId}-${conceptIndex}`) {
+        window.history.pushState(null, null, `#read=${bookId}-${conceptIndex}`);
+    }
     
     // Check if we were passed a specific scroll position via URL (from Profile)
     const urlParams = new URLSearchParams(window.location.search);
@@ -1529,10 +1533,14 @@ function highlightSidebarItem(el) {
     if (el) el.classList.add('active');
 }
 
-function closeReader() {
+function closeReader(updateHistory = true) {
     stopReadingTimer();
     document.getElementById('reader-overlay').classList.add('hidden');
     document.body.style.overflow = ''; 
+
+    if (updateHistory && window.location.hash.startsWith('#read=')) {
+        window.history.back();
+    }
 }
 
 function navigateConcept(direction) {
@@ -1547,7 +1555,8 @@ function navigateConcept(direction) {
     const overlay = document.getElementById('reader-overlay');
     if (overlay) overlay.scrollTop = 0;
     // Re-open with new index
-    openReader(currentBookId, newIndex, item.globalIndex);
+    window.history.replaceState(null, null, `#read=${currentBookId}-${newIndex}`);
+    openReader(currentBookId, newIndex, item.globalIndex, false);
 }
 
 // ----------------------------------------------------
@@ -1878,24 +1887,49 @@ window.onload = () => {
     }
     
     // Initial routing based on hash
-    const initialHash = window.location.hash.replace('#', '');
-    const validViews = ['dashboard', 'explorer', 'explorer-premium', 'admin', 'profile'];
-    if (validViews.includes(initialHash)) {
-        navTo(initialHash, false);
-    } else {
-        navTo('dashboard', false); // Default view
-    }
+    handleHashRoute();
 };
 
 window.addEventListener('hashchange', () => {
-    const newHash = window.location.hash.replace('#', '');
+    handleHashRoute();
+});
+
+function handleHashRoute() {
+    const hash = window.location.hash.replace('#', '');
+    
+    if (hash.startsWith('read=')) {
+        const parts = hash.replace('read=', '').split('-');
+        if (parts.length >= 2) {
+            const conceptIndex = parseInt(parts.pop());
+            const bookId = parts.join('-');
+            const item = allConcepts.find(c => c.bookId === bookId && c.conceptIndex === conceptIndex);
+            if (item) {
+                // Ensure underlying view is rendered (default to explorer if coming from external link/refresh without prior state)
+                const currentView = document.querySelector('main > section:not(.hidden)');
+                if (!currentView || currentView.id === 'view-dashboard') {
+                   navTo('explorer', false);
+                }
+                
+                if (document.getElementById('reader-overlay').classList.contains('hidden')) {
+                    openReader(bookId, conceptIndex, item.globalIndex, false);
+                }
+            }
+        }
+        return;
+    }
+
+    // Navigating back to a main view, close reader if open
+    if (!document.getElementById('reader-overlay').classList.contains('hidden')) {
+        closeReader(false);
+    }
+
     const validViews = ['dashboard', 'explorer', 'explorer-premium', 'admin', 'profile'];
-    if (validViews.includes(newHash)) {
-        navTo(newHash, false);
+    if (validViews.includes(hash)) {
+        navTo(hash, false);
     } else {
         navTo('dashboard', false);
     }
-});
+}
 
 document.addEventListener('keydown', (e) => { 
     if(e.key === 'Escape' && !document.getElementById('reader-overlay').classList.contains('hidden')) {

@@ -338,15 +338,15 @@ async function loadContinueJourney(uid) {
             const resumeUrl = `index.html?resumeBook=${encodeURIComponent(data.bookId)}&resumeConcept=${data.conceptIndex}&resumeGlobal=${data.globalContentIndex}&scroll=${data.scrollPosition}`;
 
             container.innerHTML = `
-                <div class="flex justify-between items-start mb-8">
+                <div class="flex justify-between items-start mb-4 md:mb-8">
                     <div class="inline-flex items-center gap-2">
                         <div class="w-2 h-2 rounded-full bg-accent animate-pulse"></div>
                         <span class="font-sans text-xs uppercase tracking-widest font-bold text-accent">Continue Your Journey</span>
                     </div>
                 </div>
                 
-                <div class="mb-12">
-                    <h2 class="font-serif text-4xl sm:text-5xl text-white font-medium mb-4 leading-tight">${bookName}</h2>
+                <div class="mb-6 md:mb-12">
+                    <h2 class="font-serif text-3xl md:text-4xl sm:text-5xl text-white font-medium mb-2 md:mb-4 leading-tight">${bookName}</h2>
                     <p class="font-sans text-lg sm:text-xl text-white/70 font-light flex items-center gap-3">
                         <svg class="w-5 h-5 text-accent/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                         Concept ${data.conceptIndex + 1}
@@ -364,7 +364,7 @@ async function loadContinueJourney(uid) {
                     </div>
                     
                     <div class="w-full md:w-auto flex flex-col items-center md:items-end">
-                        <a href="${resumeUrl}" class="w-full sm:w-auto px-8 py-4 bg-white text-primary rounded-full font-sans text-sm font-bold hover:bg-gray-100 hover:scale-105 transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.2)] flex items-center justify-center gap-2">
+                        <a href="${resumeUrl}" class="w-full sm:w-auto px-5 py-3 md:px-8 md:py-4 bg-white text-primary rounded-full font-sans text-xs md:text-sm font-bold hover:bg-gray-100 hover:scale-105 transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.2)] flex items-center justify-center gap-2">
                             Resume Learning
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                         </a>

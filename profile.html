@@ -132,7 +132,7 @@
                         <line x1="18" y1="6" x2="6" y2="18"></line>
                     </svg>
                 </div>
-                <span class="hidden md:inline text-sm md:text-xl font-bold tracking-tight text-[#0a0a0a] dark:text-white serif whitespace-nowrap">Last<span class="italic text-emerald-800 dark:text-emerald-500">Percent</span></span>
+                <span class="hidden"></span>
             </a>
             
             <div class="flex items-center gap-4 sm:gap-6">
@@ -152,10 +152,10 @@
     </header>
 
     <!-- Main Learning Dashboard -->
-    <main class="w-full mx-auto px-4 sm:px-8 lg:px-12 xl:px-20 pt-16 pb-32 flex flex-col xl:flex-row gap-16">
+    <main class="w-full mx-auto px-3 sm:px-8 lg:px-12 xl:px-20 pt-6 md:pt-16 pb-20 md:pb-32 flex flex-col xl:flex-row gap-8 md:gap-16">
         
         <!-- LEFT COLUMN (65% - The Learning Journey) -->
-        <div class="w-full xl:w-[65%] flex flex-col gap-12">
+        <div class="w-full xl:w-[65%] flex flex-col gap-6 md:gap-12">
             
             <!-- 1. Editorial Welcome Hero -->
             <section class="animate-fade-up" style="animation-delay: 0s;">
@@ -194,8 +194,8 @@
 
             <!-- 3. Learning Stats -->
             <section class="grid grid-cols-1 sm:grid-cols-2 gap-6 animate-fade-up" style="animation-delay: 0.2s;">
-                <div class="bg-white border border-borderLight rounded-3xl p-8 flex flex-col justify-between card-hover premium-shadow group">
-                    <div class="flex justify-between items-start mb-10">
+                <div class="bg-white border border-borderLight rounded-3xl p-5 md:p-8 flex flex-col justify-between card-hover premium-shadow group">
+                    <div class="flex justify-between items-start mb-6 md:mb-10">
                         <div class="w-12 h-12 rounded-2xl bg-bgPaper border border-borderLight flex items-center justify-center">
                             <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
                         </div>
@@ -205,8 +205,8 @@
                         <div class="flex items-baseline gap-2 mb-2">
                             <p class="font-serif text-5xl font-medium text-primary counter" id="stat-ideas" data-target="0">0</p>
                         </div>
-                        <p class="font-sans text-sm uppercase tracking-widest text-secondary font-bold mb-6">Ideas Internalized</p>
-                        <div class="border-t border-borderLight pt-5">
+                        <p class="font-sans text-sm uppercase tracking-widest text-secondary font-bold mb-4 md:mb-6">Ideas Internalized</p>
+                        <div class="border-t border-borderLight pt-4 md:pt-5">
                             <a href="index.html#explorer" class="inline-flex items-center text-sm font-sans font-medium text-accent group-hover:text-primary transition-colors">
                                 Explore Concepts
                                 <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
@@ -215,8 +215,8 @@
                     </div>
                 </div>
                 
-                <div class="bg-white border border-borderLight rounded-3xl p-8 flex flex-col justify-between card-hover premium-shadow group">
-                    <div class="flex justify-between items-start mb-10">
+                <div class="bg-white border border-borderLight rounded-3xl p-5 md:p-8 flex flex-col justify-between card-hover premium-shadow group">
+                    <div class="flex justify-between items-start mb-6 md:mb-10">
                         <div class="w-12 h-12 rounded-2xl bg-bgPaper border border-borderLight flex items-center justify-center">
                             <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"></path></svg>
                         </div>
@@ -224,8 +224,8 @@
                     </div>
                     <div>
                         <p class="font-serif text-5xl font-medium text-primary mb-2 counter" id="stat-systems" data-target="0">0</p>
-                        <p class="font-sans text-sm uppercase tracking-widest text-secondary font-bold mb-6">Execution Systems</p>
-                        <div class="border-t border-borderLight pt-5">
+                        <p class="font-sans text-sm uppercase tracking-widest text-secondary font-bold mb-4 md:mb-6">Execution Systems</p>
+                        <div class="border-t border-borderLight pt-4 md:pt-5">
                             <a href="index.html#explorer-premium" class="inline-flex items-center text-sm font-sans font-medium text-accent group-hover:text-primary transition-colors">
                                 Explore Frameworks
                                 <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
@@ -311,15 +311,15 @@
 
 
         <!-- RIGHT COLUMN (35% - Context & Profile) -->
-        <aside class="w-full xl:w-[35%] flex flex-col gap-8">
+        <aside class="w-full xl:w-[35%] flex flex-col gap-6 md:gap-8">
             
             <!-- 1. Premium Avatar / Profile Card -->
-            <section class="flex items-center gap-5 animate-fade-up" style="animation-delay: 0.1s;">
-                <div class="w-16 h-16 rounded-full bg-bgPaper border-2 border-white shadow-md overflow-hidden shrink-0">
+            <section class="flex items-center gap-3 md:gap-5 animate-fade-up" style="animation-delay: 0.1s;">
+                <div class="w-12 h-12 md:w-16 md:h-16 rounded-full bg-bgPaper border-2 border-white shadow-md overflow-hidden shrink-0">
                     <img id="avatar-img" src="https://api.dicebear.com/7.x/notionists/svg?seed=User&backgroundColor=f8f9fa" alt="Avatar" class="w-full h-full object-cover">
                 </div>
                 <div>
-                    <h2 class="font-serif text-2xl font-medium text-primary mb-1" id="avatar-name">Loading...</h2>
+                    <h2 class="font-serif text-xl md:text-2xl font-medium text-primary mb-0 md:mb-1" id="avatar-name">Loading...</h2>
                     <div class="inline-flex items-center gap-1.5" id="membership-badge">
                         <div class="w-24 h-4 bg-gray-200 animate-pulse rounded"></div>
                     </div>
@@ -327,12 +327,12 @@
             </section>
 
             <!-- 2. Learning Snapshot (Today) -->
-            <section class="bg-white border border-borderLight rounded-3xl p-6 flex justify-between items-center premium-shadow card-hover animate-fade-up" style="animation-delay: 0.2s;">
+            <section class="bg-white border border-borderLight rounded-3xl p-4 md:p-6 flex justify-between items-center premium-shadow card-hover animate-fade-up" style="animation-delay: 0.2s;">
                 <div>
                     <p class="font-sans text-[10px] uppercase tracking-widest font-bold text-secondary mb-1">Learning Snapshot</p>
                     <p class="font-serif text-lg font-medium text-primary">Today</p>
                 </div>
-                <div class="flex gap-6 text-center">
+                <div class="flex gap-4 md:gap-6 text-center">
                     <div>
                         <p class="font-serif text-xl font-medium text-primary" id="snap-mins">0<span class="text-xs text-secondary font-sans ml-0.5">m</span></p>
                         <p class="font-sans text-[10px] uppercase text-secondary">Read</p>
@@ -349,7 +349,7 @@
             </section>
 
             <!-- 3. Reading Streak -->
-            <section class="bg-white border border-borderLight rounded-3xl p-8 sm:p-10 premium-shadow card-hover animate-fade-up" style="animation-delay: 0.3s;">
+            <section class="bg-white border border-borderLight rounded-3xl p-5 md:p-8 sm:p-10 premium-shadow card-hover animate-fade-up" style="animation-delay: 0.3s;">
                 <div class="text-center mb-8 border-b border-borderLight pb-6">
                     <h3 id="streak-month-title" class="font-serif text-2xl font-medium text-primary tracking-wide"></h3>
                 </div>
@@ -358,7 +358,7 @@
                     <p class="font-serif text-xl italic text-primary leading-snug">"Consistency beats intensity."</p>
                 </div>
                 
-                <div class="flex justify-between items-end mb-8">
+                <div class="flex justify-between items-end mb-4 md:mb-8">
                     <div>
                         <p class="font-sans text-[10px] uppercase tracking-widest font-bold text-secondary mb-1">Current Streak</p>
                         <p class="font-serif text-4xl font-medium text-primary flex items-center gap-2">

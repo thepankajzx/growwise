@@ -219,42 +219,9 @@ function navTo(view, updateHash = true) {
         }
     }
     
-    // Extra logic for profile view stats updates
     if (view === 'profile') {
-        const completedItems = JSON.parse(localStorage.getItem('ka_completed') || '[]');
-        const savedItems = JSON.parse(localStorage.getItem('ka_saved') || '[]');
-        
-        const completedBooks = new Set();
-        let premiumConcepts = 0;
-        
-        completedItems.forEach(id => {
-            const parts = id.split('-');
-            if (parts.length >= 2) {
-                const conceptIdx = parseInt(parts.pop());
-                const bookId = parts.join('-');
-                completedBooks.add(bookId);
-                
-                const found = allConcepts.find(c => c.bookId === bookId && c.conceptIndex === conceptIdx);
-                if (found && found.concept.premium) {
-                    premiumConcepts++;
-                }
-            }
-        });
-        
-        const countDisplay = document.getElementById('profile-concepts-count');
-        if (countDisplay) countDisplay.textContent = completedItems.length;
-        
-        const booksDisplay = document.getElementById('profile-books-count');
-        if (booksDisplay) booksDisplay.textContent = completedBooks.size;
-        
-        const premiumDisplay = document.getElementById('profile-premium-count');
-        if (premiumDisplay) premiumDisplay.textContent = premiumConcepts;
-        
-        const hoursDisplay = document.getElementById('profile-hours');
-        if (hoursDisplay) hoursDisplay.textContent = Math.round((completedItems.length * 5) / 60);
-        
-        const streakDisplay = document.getElementById('profile-streak');
-        if (streakDisplay) streakDisplay.textContent = completedItems.length > 0 ? "1 Day" : "0 Days";
+        window.location.href = 'profile.html';
+        return;
     }
     
     window.scrollTo(0, 0);
@@ -815,12 +782,27 @@ function openReader(bookId, conceptIndex, globalIndex) {
     overlay.classList.remove('hidden');
     overlay.scrollTop = 0;
     
+    // Check if we were passed a specific scroll position via URL (from Profile)
+    const urlParams = new URLSearchParams(window.location.search);
+    const resumeBook = urlParams.get('resumeBook');
+    const resumeConcept = urlParams.get('resumeConcept');
+    const scrollPos = urlParams.get('scroll');
+    if (resumeBook === bookId && parseInt(resumeConcept) === conceptIndex && scrollPos) {
+        // Wait for render to finish before scrolling
+        setTimeout(() => {
+            overlay.scrollTop = parseInt(scrollPos);
+        }, 100);
+        // Clear params to prevent re-triggering
+        window.history.replaceState({}, document.title, window.location.pathname + window.location.hash);
+    }
+    
     // Reset progress bar
     const progressBar = document.getElementById('progress-bar');
     if (progressBar) progressBar.style.width = '0%';
     
     updateActionButtonsState();
     renderConceptDisplay();
+    startReadingTimer();
 }
 
 function updateActionButtonsState() {
@@ -941,12 +923,54 @@ async function toggleCompleted() {
     }
     const conceptId = `${currentBookId}-${currentConceptIndex}`;
     let completed = JSON.parse(localStorage.getItem('ka_completed') || '[]');
-    if (completed.includes(conceptId)) completed = completed.filter(id => id !== conceptId);
-    else completed.push(conceptId);
+    let isAdding = false;
+    
+    if (completed.includes(conceptId)) {
+        completed = completed.filter(id => id !== conceptId);
+    } else {
+        completed.push(conceptId);
+        isAdding = true;
+    }
+    
     localStorage.setItem('ka_completed', JSON.stringify(completed));
     updateActionButtonsState();
     renderExplorer();
+    
+    // Sync array (backward compat)
     await syncToFirestore('completed', completed);
+    
+    // Sync subcollections (New Architecture)
+    if (currentUser) {
+        try {
+            const result = findBookById(currentBookId);
+            if (!result) return;
+            const concept = result.book.concepts[currentConceptIndex];
+            
+            const userRef = db.collection('users').doc(currentUser.uid);
+            if (isAdding) {
+                await userRef.collection('completedConcepts').doc(conceptId).set({
+                    bookId: currentBookId,
+                    conceptId: conceptId,
+                    completedDate: firebase.firestore.FieldValue.serverTimestamp(),
+                    completionPercentage: 100
+                });
+                
+                if (concept.isPremium) {
+                    await userRef.collection('completedFrameworks').doc(conceptId).set({
+                        frameworkId: conceptId,
+                        completedDate: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+            } else {
+                await userRef.collection('completedConcepts').doc(conceptId).delete();
+                if (concept.isPremium) {
+                    await userRef.collection('completedFrameworks').doc(conceptId).delete();
+                }
+            }
+        } catch (e) {
+            console.error("Error syncing completed subcollections", e);
+        }
+    }
 }
 
 async function toggleSaveLater() {
@@ -1284,6 +1308,7 @@ function shareInsight() {
 }
 
 function closeReader() {
+    stopReadingTimer();
     document.getElementById('reader-overlay').classList.add('hidden');
     document.body.style.overflow = ''; 
 }
@@ -1559,19 +1584,38 @@ window.onload = () => {
     renderDashboard();
     renderExplorer();
     
+    // Auto-Save variables
+    let progressSaveTimeout = null;
+    let lastSavedPct = 0;
+
     // Reader Progress Bar & Text
     document.getElementById('reader-overlay').addEventListener('scroll', function() {
         const overlay = this;
         const progress = document.getElementById('progress-bar');
         const progressText = document.getElementById('progress-text');
         
+        let scrolled = 0;
         if(overlay.scrollHeight > overlay.clientHeight) {
-            let scrolled = (overlay.scrollTop / (overlay.scrollHeight - overlay.clientHeight)) * 100;
-            // Cap it between 0 and 100
+            scrolled = (overlay.scrollTop / (overlay.scrollHeight - overlay.clientHeight)) * 100;
             scrolled = Math.max(0, Math.min(100, scrolled));
             
             if (progress) progress.style.width = scrolled + '%';
             if (progressText) progressText.textContent = Math.round(scrolled) + '%';
+        }
+
+        // Auto Save Progress to Firebase
+        if (currentUser && currentBookId) {
+            // Save if scrolled 10% more, or after 10 seconds of stopping
+            if (Math.abs(scrolled - lastSavedPct) > 10) {
+                lastSavedPct = scrolled;
+                saveReadingProgress(overlay.scrollTop, scrolled);
+            } else {
+                clearTimeout(progressSaveTimeout);
+                progressSaveTimeout = setTimeout(() => {
+                    lastSavedPct = scrolled;
+                    saveReadingProgress(overlay.scrollTop, scrolled);
+                }, 10000);
+            }
         }
     });
 
@@ -1621,3 +1665,53 @@ document.addEventListener('keydown', (e) => {
         closeReader(); 
     }
 });
+
+// ----------------------------------------------------
+// FIREBASE READING TRACKING & HISTORY
+// ----------------------------------------------------
+
+let readingSessionTimer = null;
+
+function startReadingTimer() {
+    if (readingSessionTimer) clearInterval(readingSessionTimer);
+    readingSessionTimer = setInterval(() => {
+        // Every 1 minute, if the reader is open and page is focused, log a minute
+        if (!document.getElementById('reader-overlay').classList.contains('hidden') && document.hasFocus()) {
+            saveReadingMinutesToHistory(1);
+        }
+    }, 60000); // 1 minute
+}
+
+function stopReadingTimer() {
+    if (readingSessionTimer) clearInterval(readingSessionTimer);
+}
+
+async function saveReadingProgress(scrollTop, percentage) {
+    if (!currentUser || !currentBookId) return;
+    try {
+        await db.collection('users').doc(currentUser.uid).collection('progress').doc('current').set({
+            bookId: currentBookId,
+            conceptIndex: currentConceptIndex,
+            globalContentIndex: currentGlobalIndex,
+            scrollPosition: scrollTop,
+            readingPercentage: percentage,
+            lastReadTimestamp: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+    } catch (err) {
+        console.error("Failed to save reading progress:", err);
+    }
+}
+
+async function saveReadingMinutesToHistory(minutes) {
+    if (!currentUser) return;
+    const today = new Date().toISOString().split('T')[0];
+    try {
+        const docRef = db.collection('users').doc(currentUser.uid).collection('history').doc(today);
+        await docRef.set({
+            readingMinutes: firebase.firestore.FieldValue.increment(minutes),
+            lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+    } catch (err) {
+        console.error("Failed to update history:", err);
+    }
+}

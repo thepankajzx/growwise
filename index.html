@@ -152,7 +152,7 @@
 
                 <!-- PROFILE (DESKTOP, SHOWN WHEN LOGGED IN) -->
                 <div class="shrink-0 relative hidden md:block" id="desktop-profile-wrapper">
-                    <button onclick="navTo('profile')" id="btn-profile" class="hidden text-gray-500 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition whitespace-nowrap">
+                    <button onclick="window.location.href='profile.html'" id="btn-profile" class="hidden text-gray-500 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition whitespace-nowrap">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
@@ -192,7 +192,7 @@
 
                         <!-- Profile Section Mobile (Shows if logged in) -->
                         <div id="mobile-profile-section" class="hidden flex-col gap-2 pt-2 border-t border-gray-100 dark:border-gray-800">
-                            <button onclick="navTo('profile'); toggleMobileMenu()" class="w-full text-left text-xs font-bold text-[#0a0a0a] dark:text-white hover:opacity-70 transition flex items-center gap-2">
+                            <button onclick="window.location.href='profile.html'" class="w-full text-left text-xs font-bold text-[#0a0a0a] dark:text-white hover:opacity-70 transition flex items-center gap-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                                 My Profile
                             </button>
@@ -432,132 +432,7 @@
             </div>
         </section>
 
-    <!-- PROFILE VIEW -->
-    <section id="view-profile" class="hidden animate-fade w-full pb-32">
-        <div class="w-full mx-auto px-4 md:px-8 xl:px-20 pt-8 flex flex-col xl:flex-row gap-12">
-            <!-- MAIN COLUMN (Learning Identity) -->
-            <div class="w-full flex-1 space-y-12">
-                <!-- TOP HERO -->
-                <section class="w-full bg-white dark:bg-darkCard border border-borderLight dark:border-gray-800 rounded-[2rem] p-8 sm:p-12 premium-shadow flex flex-col md:flex-row items-center md:items-start justify-between gap-8 hover-card">
-                    <div class="flex flex-col md:flex-row items-center md:items-start gap-8 text-center md:text-left">
-                        <div>
-                            <h1 class="font-serif text-3xl sm:text-4xl font-medium text-primary dark:text-white mb-2" id="profile-name">Alex Mitchell</h1>
-                            <div class="flex flex-wrap items-center justify-center md:justify-start gap-3 text-xs uppercase tracking-widest font-semibold mb-6">
-                                <span class="text-[#166534]">Premium Member</span>
-                                <span class="text-secondary dark:text-gray-500">&bull;</span>
-                                <span class="text-secondary">Since 2026</span>
-                                <span class="text-secondary dark:text-gray-500">&bull;</span>
-                                <span class="text-secondary flex items-center"><svg class="w-3.5 h-3.5 mr-1 text-orange-500" fill="currentColor" viewBox="0 0 24 24"><path d="M17.5 12.5c0 2.5-2.5 5-5.5 5s-5.5-2.5-5.5-5 2.5-5 5.5-5 5.5 2.5 5.5 5z"></path><path d="M12 2C7.58 2 4 5.58 4 10c0 4.42 8 12 8 12s8-7.58 8-12c0-4.42-3.58-8-8-8zm0 18S5 13.58 5 10c0-3.87 3.13-7 7-7s7 3.13 7 7c0 3.58-7 10-7 10z"></path></svg> 14 Day Streak</span>
-                            </div>
-                            <p class="font-serif text-xl sm:text-2xl italic text-primary dark:text-gray-300 max-w-lg leading-relaxed">
-                                "Small improvements become extraordinary results."
-                            </p>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- SECTION 2: CURRENT PROGRESS -->
-                <section class="w-full bg-[#0a0a0a] dark:bg-black border border-[#0a0a0a] dark:border-gray-800 rounded-[2rem] p-8 sm:p-10 premium-shadow text-white group cursor-pointer overflow-hidden relative">
-                    <div class="absolute -right-20 -top-20 w-64 h-64 bg-[#166534]/20 rounded-full blur-3xl"></div>
-                    <p class="font-sans text-xs uppercase tracking-widest font-bold text-[#166534] mb-6 relative z-10">Continue Reading</p>
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 relative z-10">
-                        <div>
-                            <h2 class="font-serif text-3xl font-medium mb-2">Atomic Habits</h2>
-                            <p class="font-sans text-sm text-gray-400 mb-6">Current Concept: The 1% Better Framework</p>
-                            <div class="flex items-center gap-4">
-                                <div class="w-48 sm:w-64 h-1.5 bg-gray-800 rounded-full overflow-hidden">
-                                    <div class="h-full bg-[#166534] w-[65%] rounded-full"></div>
-                                </div>
-                                <span class="font-sans text-xs font-medium text-gray-400">65% • 8 Min Left</span>
-                            </div>
-                        </div>
-                        <button class="px-6 py-3 bg-white text-[#0a0a0a] rounded-full text-sm font-semibold hover:bg-gray-100 transition shadow-lg">
-                            Resume Learning
-                        </button>
-                    </div>
-                </section>
-
-                <!-- SECTION 1: LEARNING OVERVIEW -->
-                <section>
-                    <h3 class="font-sans text-xs uppercase tracking-widest font-semibold text-gray-500 mb-6 pl-2">Learning Overview</h3>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
-                        <div class="bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 rounded-2xl p-6 hover-card">
-                            <p class="font-sans text-4xl font-medium text-[#0a0a0a] dark:text-white mb-2" id="profile-books-count">0</p>
-                            <p class="font-sans text-xs uppercase tracking-wide text-gray-500">Books Completed</p>
-                        </div>
-                        <div class="bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 rounded-2xl p-6 hover-card">
-                            <p class="font-sans text-4xl font-medium text-[#0a0a0a] dark:text-white mb-2" id="profile-concepts-count">0</p>
-                            <p class="font-sans text-xs uppercase tracking-wide text-gray-500">Concepts Learned</p>
-                        </div>
-                        <div class="bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 rounded-2xl p-6 hover-card">
-                            <p class="font-sans text-4xl font-medium text-[#166534] mb-2" id="profile-premium-count">0</p>
-                            <p class="font-sans text-xs uppercase tracking-wide text-gray-500">Premium Frameworks</p>
-                        </div>
-                        <div class="bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 rounded-2xl p-6 hover-card">
-                            <p class="font-sans text-4xl font-medium text-[#0a0a0a] dark:text-white mb-2"><span id="profile-hours">0</span><span class="text-xl">h</span></p>
-                            <p class="font-sans text-xs uppercase tracking-wide text-gray-500">Reading Hours</p>
-                        </div>
-                    </div>
-                </section>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-                    <section>
-                        <h3 class="font-sans text-xs uppercase tracking-widest font-semibold text-gray-500 mb-6 pl-2">Execution Stats</h3>
-                        <div class="bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 rounded-3xl p-8 hover-card flex flex-col justify-between h-[232px]">
-                            <div class="flex items-end justify-between border-b border-gray-200 dark:border-gray-800 pb-6 mb-6">
-                                <div>
-                                    <p class="font-sans text-xs uppercase tracking-wide text-gray-500 mb-1">Execution Score</p>
-                                    <p class="font-serif text-5xl font-medium text-[#166534]">92<span class="text-2xl text-gray-500">/100</span></p>
-                                </div>
-                                <svg class="w-10 h-10 text-[#166534]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                            </div>
-                            <div class="flex justify-between text-sm font-medium">
-                                <span class="text-gray-500">Action Plans Completed</span>
-                                <span class="text-[#0a0a0a] dark:text-white">24</span>
-                            </div>
-                            <div class="flex justify-between text-sm font-medium mt-3">
-                                <span class="text-gray-500">Frameworks Applied</span>
-                                <span class="text-[#0a0a0a] dark:text-white">18</span>
-                            </div>
-                        </div>
-                    </section>
-                </div>
-            </div>
-
-            <!-- RIGHT SIDEBAR -->
-            <aside class="w-full xl:w-[320px] shrink-0 space-y-8 xl:sticky xl:top-28 self-start">
-                <div class="bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 rounded-3xl p-8 text-center premium-shadow hover-card">
-                    <h3 class="font-sans text-[10px] uppercase tracking-widest font-bold text-gray-500 mb-6">Learning Score</h3>
-                    <div class="relative w-40 h-40 mx-auto mb-6">
-                        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-                            <path class="text-gray-100 dark:text-gray-800" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="2"/>
-                            <path class="text-[#166534] transition-all duration-1000 ease-out" stroke-dasharray="75, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-                        </svg>
-                        <div class="absolute inset-0 flex flex-col items-center justify-center">
-                            <span class="font-serif text-4xl font-medium text-[#0a0a0a] dark:text-white">75</span>
-                            <span class="text-[10px] uppercase font-bold text-gray-500 mt-1">Top 10%</span>
-                        </div>
-                    </div>
-                    <p class="font-sans text-sm text-gray-500">You are executing better than <span class="font-semibold text-[#0a0a0a] dark:text-white">90%</span> of readers.</p>
-                </div>
-
-                <div class="bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 rounded-3xl p-8 premium-shadow flex items-center justify-between hover-card">
-                    <div>
-                        <h3 class="font-sans text-[10px] uppercase tracking-widest font-bold text-gray-500 mb-1">Current Streak</h3>
-                        <p class="font-serif text-2xl font-medium text-[#0a0a0a] dark:text-white">14 Days</p>
-                    </div>
-                    <div class="w-12 h-12 rounded-full bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-900 flex items-center justify-center">
-                        <svg class="w-6 h-6 text-orange-500" fill="currentColor" viewBox="0 0 24 24"><path d="M17.5 12.5c0 2.5-2.5 5-5.5 5s-5.5-2.5-5.5-5 2.5-5 5.5-5 5.5 2.5 5.5 5z"></path><path d="M12 2C7.58 2 4 5.58 4 10c0 4.42 8 12 8 12s8-7.58 8-12c0-4.42-3.58-8-8-8zm0 18S5 13.58 5 10c0-3.87 3.13-7 7-7s7 3.13 7 7c0 3.58-7 10-7 10z"></path></svg>
-                    </div>
-                </div>
-
-                <button onclick="logout()" class="w-full bg-red-50 dark:bg-red-900/10 text-red-600 dark:text-red-500 border border-red-100 dark:border-red-900/30 py-4 rounded-3xl font-bold uppercase tracking-widest text-[10px] hover:bg-red-100 dark:hover:bg-red-900/20 transition shadow-sm flex items-center justify-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                    Logout Securely
-                </button>
-            </aside>
-        </div>
-    </section>
+    <!-- REMOVED PROFILE VIEW (Moved to profile.html) -->
     
     </main>
 

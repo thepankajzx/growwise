@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Last Percent™ - Personal Learning Headquarters</title>
+    
+    <!-- Premium Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bgLight: '#FAFAF8',
+                        bgPaper: '#FDFBF7',
+                        primary: '#0F172A',
+                        secondary: '#64748B',
+                        accent: '#C9A227',
+                        borderLight: '#EAE3D1',
+                        borderSubtle: '#F1EDE4',
+                        
+                        // New Vibrant Heatmap Colors
+                        heatFuture: '#F1F5F9', // Very Light Gray
+                        heatNone: '#EF4444',   // Bright Red
+                        heatLow: '#F97316',    // Deep Orange
+                        heatMed: '#EAB308',    // Golden Yellow
+                        heatHigh: '#84CC16',   // Light Green
+                        heatMax: '#22C55E',    // Bright Green
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Lora', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #FAFAF8; color: #0F172A; }
+        
+        .editorial-text {
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Clean up details/summary default markers */
+        details > summary { list-style: none; }
+        details > summary::-webkit-details-marker { display: none; }
+
+        /* Premium Shadows & Hovers */
+        .premium-shadow { box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03); }
+        .card-hover { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(15, 23, 42, 0.06);
+            border-color: #C9A227;
+        }
+
+        /* Animations */
+        @keyframes fillBar { from { width: 0%; } }
+        .animate-bar { animation: fillBar 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-up {
+            animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+
+        /* Heatmap Tooltip */
+        .heat-cell { position: relative; }
+        .heat-cell::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 120%;
+            left: 50%;
+            transform: translateX(-50%) translateY(5px);
+            background: #0F172A;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.2s ease;
+            z-index: 10;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .heat-cell:hover::after {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+<body class="font-sans antialiased editorial-text min-h-screen overflow-x-hidden">
+
+    <!-- Header -->
+    <header class="w-full bg-bgLight/80 backdrop-blur-md sticky top-0 z-50 border-b border-borderSubtle">
+        <div class="max-w-[1400px] mx-auto px-6 sm:px-12 h-16 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-3 outline-none group">
+                <div class="w-8 h-8 rounded bg-primary flex items-center justify-center shrink-0 transition-transform duration-500 group-hover:scale-105">
+                    <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="8" cy="8" r="1.5" fill="currentColor"></circle>
+                        <circle cx="16" cy="16" r="1.5" fill="currentColor"></circle>
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                    </svg>
+                </div>
+                <span class="font-serif font-medium text-lg tracking-tight text-primary">The Last <span class="italic text-accent">Percent</span></span>
+            </a>
+            
+            <div class="flex items-center gap-4 sm:gap-6">
+                <button onclick="history.length > 1 ? history.back() : window.location.href='index.html'" class="group flex items-center gap-1.5 font-sans text-xs sm:text-sm font-semibold text-secondary hover:text-primary transition-colors">
+                    <svg class="w-4 h-4 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    Back
+                </button>
+                
+                <div class="w-px h-4 bg-borderLight"></div>
+                
+                <button id="btn-logout" class="group flex items-center gap-1.5 font-sans text-xs sm:text-sm font-semibold text-red-400 hover:text-red-600 transition-colors">
+                    Logout
+                    <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Learning Dashboard -->
+    <main class="max-w-[1400px] mx-auto px-6 sm:px-12 pt-16 pb-32 flex flex-col xl:flex-row gap-16">
+        
+        <!-- LEFT COLUMN (65% - The Learning Journey) -->
+        <div class="w-full xl:w-[65%] flex flex-col gap-12">
+            
+            <!-- 1. Editorial Welcome Hero -->
+            <section class="animate-fade-up" style="animation-delay: 0s;">
+                <h1 class="font-serif text-4xl sm:text-5xl font-medium text-primary leading-tight mb-4 tracking-tight" id="hero-welcome">
+                    <!-- Skeleton Loader -->
+                    <div class="h-10 sm:h-12 bg-gray-200 animate-pulse rounded w-2/3"></div>
+                </h1>
+                <div class="font-sans text-xl text-secondary font-light max-w-2xl" id="hero-subtitle">
+                    <div class="h-6 bg-gray-200 animate-pulse rounded w-full mb-2"></div>
+                    <div class="h-6 bg-gray-200 animate-pulse rounded w-3/4"></div>
+                </div>
+            </section>
+
+            <!-- 2. Continue Your Journey -->
+            <section class="animate-fade-up" style="animation-delay: 0.1s;">
+                <div class="bg-primary rounded-[2rem] p-8 sm:p-12 relative overflow-hidden group premium-shadow">
+                    <div class="absolute -right-32 -top-32 w-96 h-96 bg-accent/20 rounded-full blur-[80px] pointer-events-none transition-transform duration-700 group-hover:scale-110"></div>
+                    <div class="absolute -left-10 -bottom-10 w-64 h-64 bg-white/5 rounded-full blur-[60px] pointer-events-none"></div>
+                    
+                    <div class="relative z-10 flex flex-col h-full justify-between" id="continue-journey-container">
+                        <!-- Skeleton Loader -->
+                        <div class="animate-pulse flex flex-col gap-8">
+                            <div class="flex justify-between items-start mb-8">
+                                <div class="w-32 h-4 bg-white/20 rounded"></div>
+                                <div class="w-24 h-4 bg-white/20 rounded hidden sm:block"></div>
+                            </div>
+                            <div>
+                                <div class="w-3/4 h-10 bg-white/20 rounded mb-4"></div>
+                                <div class="w-1/2 h-6 bg-white/20 rounded"></div>
+                            </div>
+                            <div class="w-full h-8 bg-white/20 rounded mt-8"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Learning Stats -->
+            <section class="grid grid-cols-1 sm:grid-cols-2 gap-6 animate-fade-up" style="animation-delay: 0.2s;">
+                <div class="bg-white border border-borderLight rounded-3xl p-8 flex flex-col justify-between card-hover premium-shadow group">
+                    <div class="flex justify-between items-start mb-10">
+                        <div class="w-12 h-12 rounded-2xl bg-bgPaper border border-borderLight flex items-center justify-center">
+                            <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-baseline gap-2 mb-2">
+                            <p class="font-serif text-5xl font-medium text-primary counter" id="stat-ideas" data-target="0">0</p>
+                        </div>
+                        <p class="font-sans text-sm uppercase tracking-widest text-secondary font-bold mb-6">Ideas Internalized</p>
+                        <div class="border-t border-borderLight pt-5">
+                            <a href="index.html#explorer" class="inline-flex items-center text-sm font-sans font-medium text-accent group-hover:text-primary transition-colors">
+                                View Library
+                                <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white border border-borderLight rounded-3xl p-8 flex flex-col justify-between card-hover premium-shadow group">
+                    <div class="flex justify-between items-start mb-10">
+                        <div class="w-12 h-12 rounded-2xl bg-bgPaper border border-borderLight flex items-center justify-center">
+                            <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"></path></svg>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="font-serif text-5xl font-medium text-primary mb-2 counter" id="stat-systems" data-target="0">0</p>
+                        <p class="font-sans text-sm uppercase tracking-widest text-secondary font-bold mb-6">Execution Systems</p>
+                        <div class="border-t border-borderLight pt-5">
+                            <a href="index.html#explorer" class="inline-flex items-center text-sm font-sans font-medium text-accent group-hover:text-primary transition-colors">
+                                Explore Systems
+                                <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. BOTTOM: Personal Details (Expandable) -->
+            <section class="animate-fade-up" style="animation-delay: 0.3s;">
+                <details class="group bg-white border border-borderLight rounded-3xl overflow-hidden transition-all duration-300 premium-shadow card-hover">
+                    <summary class="cursor-pointer p-8 font-sans text-sm uppercase tracking-widest font-semibold text-secondary flex justify-between items-center select-none hover:text-primary transition-colors outline-none">
+                        Personal Details
+                        <svg class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7"></path></svg>
+                    </summary>
+                    
+                    <div class="px-8 pb-10 pt-2 border-t border-borderSubtle bg-bgPaper/50 relative">
+                        <!-- Header -->
+                        <div class="flex justify-between items-center mb-8">
+                            <div>
+                                <h3 class="font-serif text-2xl font-medium text-primary">Your Profile</h3>
+                                <p class="font-sans text-xs text-secondary mt-1">Manage your account information</p>
+                            </div>
+                            <button id="btn-edit-profile" class="px-5 py-2.5 bg-white rounded-full border border-borderLight font-sans text-xs font-bold text-primary hover:border-accent hover:text-accent transition-all flex items-center gap-2 shadow-sm">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                                Edit Profile
+                            </button>
+                        </div>
+                        
+                        <!-- View Mode -->
+                        <div id="profile-view-mode" class="grid grid-cols-1 sm:grid-cols-2 gap-y-8 gap-x-12 transition-opacity duration-300">
+                            <div>
+                                <p class="font-sans text-[10px] uppercase tracking-widest text-secondary font-bold mb-1.5">Full Name</p>
+                                <p class="font-sans text-base text-primary font-medium" id="display-name">Loading...</p>
+                            </div>
+                            <div>
+                                <p class="font-sans text-[10px] uppercase tracking-widest text-secondary font-bold mb-1.5">Email Address</p>
+                                <p class="font-sans text-base text-primary font-medium" id="display-email">Loading...</p>
+                            </div>
+                            <div>
+                                <p class="font-sans text-[10px] uppercase tracking-widest text-secondary font-bold mb-1.5">Phone Number</p>
+                                <p class="font-sans text-base text-primary font-medium" id="display-phone">Not Set</p>
+                            </div>
+                            <div>
+                                <p class="font-sans text-[10px] uppercase tracking-widest text-secondary font-bold mb-1.5">Date of Birth</p>
+                                <p class="font-sans text-base text-primary font-medium" id="display-dob">Not Set</p>
+                            </div>
+                        </div>
+
+                        <!-- Edit Mode (Inline matching exactly the UI guidelines) -->
+                        <div id="profile-edit-mode" class="hidden flex-col gap-6 transition-opacity duration-300">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-12">
+                                <div>
+                                    <label class="block font-sans text-[10px] uppercase tracking-widest text-secondary font-bold mb-1.5">Full Name</label>
+                                    <input type="text" id="edit-name" class="w-full bg-white border border-borderLight rounded-md px-4 py-2 font-sans text-sm text-primary focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors" placeholder="e.g. Pankaj Kumar">
+                                </div>
+                                <div>
+                                    <label class="block font-sans text-[10px] uppercase tracking-widest text-secondary font-bold mb-1.5">Email Address (Read-Only)</label>
+                                    <input type="text" id="edit-email" disabled class="w-full bg-bgPaper border border-borderSubtle text-secondary rounded-md px-4 py-2 font-sans text-sm cursor-not-allowed">
+                                </div>
+                                <div>
+                                    <label class="block font-sans text-[10px] uppercase tracking-widest text-secondary font-bold mb-1.5">Phone Number</label>
+                                    <input type="text" id="edit-phone" class="w-full bg-white border border-borderLight rounded-md px-4 py-2 font-sans text-sm text-primary focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors" placeholder="+91 XXXXX XXXXX">
+                                </div>
+                                <div>
+                                    <label class="block font-sans text-[10px] uppercase tracking-widest text-secondary font-bold mb-1.5">Date of Birth</label>
+                                    <input type="date" id="edit-dob" class="w-full bg-white border border-borderLight rounded-md px-4 py-2 font-sans text-sm text-primary focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors">
+                                </div>
+                            </div>
+                            <div class="flex justify-end gap-3 mt-2">
+                                <button id="btn-cancel-edit" class="px-5 py-2 rounded-full font-sans text-xs font-bold text-secondary hover:text-primary transition-colors">Cancel</button>
+                                <button id="btn-save-edit" class="px-5 py-2 bg-primary text-white rounded-full font-sans text-xs font-bold hover:bg-black transition-colors flex items-center gap-2">
+                                    Save Changes
+                                    <span id="save-spinner" class="hidden w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </section>
+        </div>
+
+
+        <!-- RIGHT COLUMN (35% - Context & Profile) -->
+        <aside class="w-full xl:w-[35%] flex flex-col gap-8">
+            
+            <!-- 1. Premium Avatar / Profile Card -->
+            <section class="flex items-center gap-5 animate-fade-up" style="animation-delay: 0.1s;">
+                <div class="w-16 h-16 rounded-full bg-bgPaper border-2 border-white shadow-md overflow-hidden shrink-0">
+                    <img id="avatar-img" src="https://api.dicebear.com/7.x/notionists/svg?seed=User&backgroundColor=f8f9fa" alt="Avatar" class="w-full h-full object-cover">
+                </div>
+                <div>
+                    <h2 class="font-serif text-2xl font-medium text-primary mb-1" id="avatar-name">Loading...</h2>
+                    <div class="inline-flex items-center gap-1.5" id="membership-badge">
+                        <div class="w-24 h-4 bg-gray-200 animate-pulse rounded"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Learning Snapshot (Today) -->
+            <section class="bg-white border border-borderLight rounded-3xl p-6 flex justify-between items-center premium-shadow card-hover animate-fade-up" style="animation-delay: 0.2s;">
+                <div>
+                    <p class="font-sans text-[10px] uppercase tracking-widest font-bold text-secondary mb-1">Learning Snapshot</p>
+                    <p class="font-serif text-lg font-medium text-primary">Today</p>
+                </div>
+                <div class="flex gap-6 text-center">
+                    <div>
+                        <p class="font-serif text-xl font-medium text-primary" id="snap-mins">0<span class="text-xs text-secondary font-sans ml-0.5">m</span></p>
+                        <p class="font-sans text-[10px] uppercase text-secondary">Read</p>
+                    </div>
+                    <div>
+                        <p class="font-serif text-xl font-medium text-primary" id="snap-concepts">0</p>
+                        <p class="font-sans text-[10px] uppercase text-secondary">Concept</p>
+                    </div>
+                    <div>
+                        <p class="font-serif text-xl font-medium text-secondary" id="snap-reflects">0</p>
+                        <p class="font-sans text-[10px] uppercase text-secondary">Reflect</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Reading Streak -->
+            <section class="bg-white border border-borderLight rounded-3xl p-8 sm:p-10 premium-shadow card-hover animate-fade-up" style="animation-delay: 0.3s;">
+                <div class="text-center mb-8 border-b border-borderLight pb-6">
+                    <h3 id="streak-month-title" class="font-serif text-2xl font-medium text-primary tracking-wide"></h3>
+                </div>
+
+                <div class="border-l-2 border-accent pl-4 mb-8">
+                    <p class="font-serif text-xl italic text-primary leading-snug">"Consistency beats intensity."</p>
+                </div>
+                
+                <div class="flex justify-between items-end mb-8">
+                    <div>
+                        <p class="font-sans text-[10px] uppercase tracking-widest font-bold text-secondary mb-1">Current Streak</p>
+                        <p class="font-serif text-4xl font-medium text-primary flex items-center gap-2">
+                            <span id="streak-current">0</span> <span class="text-xl text-orange-500">🔥</span>
+                        </p>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-sans text-[10px] uppercase tracking-widest font-bold text-secondary mb-1">Longest</p>
+                        <p class="font-serif text-2xl font-medium text-primary"><span id="streak-longest">0</span> Days</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between gap-2 mb-5 px-1">
+                    <div class="flex gap-1.5">
+                        <div class="w-2.5 h-2.5 rounded bg-heatNone"></div>
+                        <div class="w-2.5 h-2.5 rounded bg-heatLow"></div>
+                        <div class="w-2.5 h-2.5 rounded bg-heatMed"></div>
+                        <div class="w-2.5 h-2.5 rounded bg-heatHigh"></div>
+                        <div class="w-2.5 h-2.5 rounded bg-heatMax"></div>
+                    </div>
+                    <span class="font-sans text-[9px] uppercase tracking-wider text-secondary font-bold">Intensity</span>
+                </div>
+
+                <div id="streak-grid" class="grid grid-cols-7 gap-2 sm:gap-2.5">
+                    <!-- JS injects the cells here -->
+                </div>
+            </section>
+
+            <!-- 4. Reading This Week -->
+            <section class="bg-bgPaper border border-borderSubtle rounded-3xl p-8 animate-fade-up" style="animation-delay: 0.4s;">
+                <div class="flex justify-between items-end mb-4">
+                    <h3 class="font-sans text-[10px] uppercase tracking-widest font-bold text-secondary">Reading This Week</h3>
+                    <span class="font-serif text-2xl font-medium text-primary" id="weekly-time">0h 0m</span>
+                </div>
+                <div class="w-full h-1.5 bg-borderLight rounded-full overflow-hidden">
+                    <div class="h-full bg-primary rounded-full animate-bar" id="weekly-progress" style="width: 0%;"></div>
+                </div>
+            </section>
+            
+        </aside>
+
+    </main>
+
+    <!-- Firebase SDK (Compat libraries for non-module usage) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+    <!-- Scripts -->
+    <script src="firebase-config.js?v=2"></script>
+    <script src="data.js?v=34"></script>
+    <script src="profile.js?v=1"></script>
+</body>
+</html>

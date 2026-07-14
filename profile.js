@@ -3,6 +3,23 @@
 let currentUser = null;
 let userProfile = null;
 
+let allConcepts = [];
+if (typeof booksData !== 'undefined') {
+    booksData.forEach(category => {
+        category.books.forEach(book => {
+            book.concepts.forEach((concept, idx) => {
+                allConcepts.push({
+                    bookId: book.id,
+                    conceptIndex: idx,
+                    book: book,
+                    concept: concept,
+                    globalIndex: allConcepts.length
+                });
+            });
+        });
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     // Check Auth State
     auth.onAuthStateChanged(async (user) => {
@@ -308,8 +325,11 @@ async function loadContinueJourney(uid) {
             // Find book name
             const bookId = data.bookId;
             let bookName = bookId.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-            if (window.booksData && window.booksData[bookId]) {
-                bookName = window.booksData[bookId].title;
+            if (typeof allConcepts !== 'undefined') {
+                const found = allConcepts.find(c => c.bookId === bookId);
+                if (found) {
+                    bookName = found.book.title;
+                }
             }
 
             const pct = Math.round(data.readingPercentage || 0);

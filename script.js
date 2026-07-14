@@ -1375,7 +1375,6 @@ function renderConceptDisplay() {
                           renderExplanationCard('The Mechanism', mechanism) + 
                           renderActionCard('Actionable Pivot', steps.join('<br>'), conceptId);
     }
-    }
 
     const premiumBadge = (concept.premium || concept.isPremium) ? `
         <div class="max-w-[700px] mx-auto mb-8">

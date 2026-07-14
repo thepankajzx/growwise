@@ -1130,33 +1130,31 @@ function parseConceptToComponents(markdown, conceptId) {
 // Philosophy: Less Interface. More Reading. Every element must earn its place.
 // ─────────────────────────────────────────────────────────────────────────────
 
-// Full-width reading layout with comfortable padding
-const READING_COL = 'w-full px-4 sm:px-8 lg:px-16 xl:px-24';
-const WIDE_COL = 'w-full px-4 sm:px-8 lg:px-16 xl:px-24';
+// Full-width reading layout
+const READING_COL = 'w-full';
+const WIDE_COL = 'w-full';
 
 function renderVisualCard(content) {
     const codeMatch = content.match(/```([\s\S]*?)```/);
     const code = codeMatch ? codeMatch[1].trim() : '';
     const captionText = content.replace(/```[\s\S]*?```/, '').trim();
-    
     let parsedCaption = captionText;
     if (typeof marked !== 'undefined') {
         parsedCaption = marked.parseInline ? marked.parseInline(captionText) : captionText;
     }
-
     return `
-    <div class="${WIDE_COL} mb-16">
-        <div class="w-full bg-[#0a0a0a] dark:bg-[#0e0e0e] border border-[#222] rounded-2xl overflow-hidden shadow-xl relative">
-            <div class="absolute top-0 left-0 w-full h-[2px] bg-emerald-600 opacity-70"></div>
-            <div class="px-7 py-8 sm:px-10 sm:py-10 overflow-x-auto">
-                <pre class="text-emerald-400 dark:text-emerald-500 font-mono text-[11px] sm:text-xs leading-[2] tracking-wide whitespace-pre">${code}</pre>
+    <div class="reader-section" data-section="Visual Framework">
+        <div class="section-label"><span class="section-dot" style="background:#059669"></span>Visual Framework</div>
+        <div class="section-body">
+            <div class="w-full bg-[#0a0a0a] dark:bg-[#0e0e0e] border border-[#1e1e1e] rounded-xl overflow-hidden shadow-lg">
+                <div class="w-full h-[2px] bg-emerald-600"></div>
+                <div class="px-6 py-8 sm:px-10 overflow-x-auto">
+                    <pre class="text-emerald-400 font-mono text-[11px] sm:text-sm leading-[2] tracking-wide whitespace-pre">${code}</pre>
+                </div>
+                ${captionText ? `<div class="border-t border-white/10 px-6 sm:px-10 py-4 text-sm text-gray-400 italic">${parsedCaption}</div>` : ''}
             </div>
-            ${captionText ? `<div class="border-t border-white/10 px-7 sm:px-10 py-5 text-sm text-gray-400 leading-relaxed">
-                ${parsedCaption}
-            </div>` : ''}
         </div>
-    </div>
-    `;
+    </div>`;
 }
 
 function renderExplanationCard(title, content) {
@@ -1164,14 +1162,14 @@ function renderExplanationCard(title, content) {
     if (typeof marked !== 'undefined') {
         parsedContent = marked.parse ? marked.parse(content) : content;
     }
+    const dotColor = title === 'Simple Explanation' ? '#166534' : title === 'Why It Matters' ? '#1d4ed8' : '#374151';
     return `
-    <div class="${READING_COL} mb-14">
-        <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-emerald-700 dark:text-emerald-500 mb-5">${title}</p>
-        <div class="text-[1.2rem] md:text-[1.35rem] font-serif text-[#111] dark:text-gray-100 leading-[1.75] prose prose-lg dark:prose-invert max-w-none prose-p:m-0 prose-p:mb-3">
-            ${parsedContent}
+    <div class="reader-section" data-section="${title}">
+        <div class="section-label"><span class="section-dot" style="background:${dotColor}"></span>${title}</div>
+        <div class="section-body">
+            <div class="text-[1.1rem] md:text-[1.25rem] font-serif text-[#111] dark:text-gray-100 leading-[1.85] prose prose-lg dark:prose-invert max-w-none prose-p:mb-4">${parsedContent}</div>
         </div>
-    </div>
-    `;
+    </div>`;
 }
 
 function renderExampleCard(content) {
@@ -1180,15 +1178,14 @@ function renderExampleCard(content) {
         parsedContent = marked.parse ? marked.parse(content) : content;
     }
     return `
-    <div class="${READING_COL} mb-14">
-        <div class="border-l-2 border-[#0a0a0a] dark:border-gray-500 pl-6">
-            <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-gray-400 dark:text-gray-500 mb-4">Real-Life Example</p>
-            <div class="text-[1.05rem] md:text-[1.15rem] font-serif text-[#222] dark:text-gray-300 leading-[1.8] prose dark:prose-invert max-w-none prose-p:m-0 prose-p:mb-3">
-                ${parsedContent}
+    <div class="reader-section" data-section="Real-Life Example">
+        <div class="section-label"><span class="section-dot" style="background:#d97706"></span>Real-Life Example</div>
+        <div class="section-body">
+            <div class="border-l-2 border-[#d97706] pl-5">
+                <div class="text-[1.05rem] md:text-[1.15rem] font-serif text-[#222] dark:text-gray-300 leading-[1.85] prose dark:prose-invert max-w-none prose-p:mb-4">${parsedContent}</div>
             </div>
         </div>
-    </div>
-    `;
+    </div>`;
 }
 
 function renderWarningCard(content) {
@@ -1197,44 +1194,38 @@ function renderWarningCard(content) {
         parsedContent = marked.parse ? marked.parse(content) : content;
     }
     return `
-    <div class="${READING_COL} mb-14">
-        <div class="flex items-start gap-4">
-            <div class="shrink-0 mt-1 w-5 h-5 text-red-400">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-            </div>
-            <div>
-                <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-red-500 dark:text-red-400 mb-3">Common Mistake</p>
-                <div class="text-base md:text-[1.05rem] text-[#333] dark:text-red-200 leading-[1.8] prose dark:prose-invert max-w-none prose-p:m-0 prose-p:mb-3">
-                    ${parsedContent}
-                </div>
+    <div class="reader-section" data-section="Common Mistake">
+        <div class="section-label"><span class="section-dot" style="background:#dc2626"></span>Common Mistake</div>
+        <div class="section-body">
+            <div class="flex items-start gap-3">
+                <svg class="w-4 h-4 mt-1 shrink-0 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                <div class="text-base md:text-[1.05rem] text-[#333] dark:text-red-200 leading-[1.85] prose dark:prose-invert max-w-none prose-p:mb-4">${parsedContent}</div>
             </div>
         </div>
-    </div>
-    `;
+    </div>`;
 }
 
 function renderReflectionCard(content, id) {
     const savedText = localStorage.getItem(`reflection_${id}`) || '';
     return `
-    <div class="${READING_COL} mb-14">
-        <div class="border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden">
-            <div class="px-7 py-6 border-b border-gray-100 dark:border-gray-800 bg-gray-50/60 dark:bg-[#151515]">
-                <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-indigo-600 dark:text-indigo-400 mb-4">Reflect</p>
-                <p class="text-[1.1rem] md:text-[1.2rem] font-serif text-[#111] dark:text-gray-100 leading-[1.75]">${content}</p>
-            </div>
-            <div class="relative bg-white dark:bg-[#111]">
+    <div class="reader-section" data-section="Reflect">
+        <div class="section-label"><span class="section-dot" style="background:#4f46e5"></span>Reflect</div>
+        <div class="section-body">
+            <p class="text-[1.05rem] md:text-[1.15rem] font-serif text-[#111] dark:text-gray-100 leading-[1.8] mb-5">${content}</p>
+            <div class="border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden">
                 <textarea
                     id="reflection_input_${id}"
                     oninput="this.style.height='auto'; this.style.height=this.scrollHeight+'px'; autoSaveReflection('${id}')"
-                    class="w-full bg-transparent px-7 py-5 text-[0.95rem] text-[#333] dark:text-gray-300 focus:outline-none resize-none leading-relaxed placeholder-gray-300 dark:placeholder-gray-700 min-h-[80px]"
+                    class="w-full bg-white dark:bg-[#111] px-5 py-4 text-sm text-[#333] dark:text-gray-300 focus:outline-none resize-none leading-relaxed placeholder-gray-300 dark:placeholder-gray-700 min-h-[80px]"
                     placeholder="Write your thoughts here…"
                     style="height: auto"
                 >${savedText}</textarea>
-                <div id="reflection_status_${id}" class="px-7 pb-4 text-[11px] text-gray-400 dark:text-gray-600 font-medium h-5">${savedText ? 'Saved' : ''}</div>
+                <div class="px-5 py-2 bg-gray-50 dark:bg-[#0e0e0e] border-t border-gray-100 dark:border-gray-800 flex justify-end">
+                    <span id="reflection_status_${id}" class="text-[11px] text-gray-400 font-medium">${savedText ? 'Saved' : ''}</span>
+                </div>
             </div>
         </div>
-    </div>
-    `;
+    </div>`;
 }
 
 let _reflectionTimers = {};
@@ -1262,28 +1253,23 @@ function saveReflection(id) {
 function renderActionCard(title, content, id) {
     const safeTitle = title.replace(/\s+/g, '_');
     const isChecked = localStorage.getItem(`action_${id}_${safeTitle}`) === 'true';
-    const checked = isChecked;
     const textClass = isChecked ? 'opacity-50 line-through' : '';
     const iconPath = isChecked ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>' : '';
     const boxClass = isChecked ? 'bg-[#0a0a0a] dark:bg-emerald-500 border-transparent' : 'border-gray-300 dark:border-gray-600';
-
     return `
-    <div class="${READING_COL} mb-10">
-        <button
-            type="button"
-            onclick="toggleActionItem('${id}', '${safeTitle}', this)"
-            class="w-full text-left flex items-start gap-4 group py-1"
-        >
-            <div class="w-5 h-5 mt-[3px] shrink-0 rounded-full border-2 ${boxClass} flex items-center justify-center transition-all duration-200">
-                <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">${iconPath}</svg>
-            </div>
-            <div id="action_container_${id}_${safeTitle}" class="flex-1 ${textClass} transition-all duration-200">
-                <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-gray-400 mb-1.5">${title}</p>
-                <p class="text-base text-[#333] dark:text-gray-300 leading-[1.7] group-hover:text-[#0a0a0a] dark:group-hover:text-white transition-colors">${content}</p>
-            </div>
-        </button>
-    </div>
-    `;
+    <div class="reader-section" data-section="${title}">
+        <div class="section-label"><span class="section-dot" style="background:#0a0a0a"></span>${title}</div>
+        <div class="section-body">
+            <button type="button" onclick="toggleActionItem('${id}', '${safeTitle}', this)" class="w-full text-left flex items-start gap-4 group">
+                <div class="w-5 h-5 mt-[3px] shrink-0 rounded-full border-2 ${boxClass} flex items-center justify-center transition-all duration-200">
+                    <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">${iconPath}</svg>
+                </div>
+                <div id="action_container_${id}_${safeTitle}" class="flex-1 ${textClass} transition-all duration-200">
+                    <p class="text-base text-[#333] dark:text-gray-300 leading-[1.8] group-hover:text-[#0a0a0a] dark:group-hover:text-white transition-colors">${content}</p>
+                </div>
+            </button>
+        </div>
+    </div>`;
 }
 
 function toggleActionItem(id, safeTitle, el) {
@@ -1309,15 +1295,14 @@ function toggleActionItem(id, safeTitle, el) {
 function renderMemoryCard(title, content) {
     const clean = content.replace(/\*/g, '').trim();
     return `
-    <div class="${WIDE_COL} mb-12 mt-20">
-        <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-gray-400 dark:text-gray-500 mb-5 text-center">Mental Model</p>
-        <div class="bg-[#0a0a0a] dark:bg-[#0e0e0e] text-white rounded-2xl px-8 sm:px-14 py-10 sm:py-12 relative overflow-hidden border border-[#1a1a1a]">
-            <p class="text-[1.2rem] sm:text-[1.4rem] font-serif leading-[1.75] italic text-center text-gray-100">
-                &ldquo;${clean}&rdquo;
-            </p>
+    <div class="reader-section" data-section="Mental Model">
+        <div class="section-label"><span class="section-dot" style="background:#0a0a0a"></span>Mental Model</div>
+        <div class="section-body">
+            <div class="bg-[#0a0a0a] dark:bg-[#0e0e0e] text-white rounded-xl px-8 sm:px-12 py-10 border border-[#1a1a1a]">
+                <p class="text-[1.2rem] sm:text-[1.35rem] font-serif leading-[1.8] italic text-gray-100 text-center">&ldquo;${clean}&rdquo;</p>
+            </div>
         </div>
-    </div>
-    `;
+    </div>`;
 }
 
 function renderTakeawayCard(content) {
@@ -1329,22 +1314,16 @@ function renderTakeawayCard(content) {
         if(t){t.innerHTML='Copied to clipboard';t.classList.remove('opacity-0');setTimeout(()=>t.classList.add('opacity-0'),2000);}
     })()`;
     return `
-    <div class="${READING_COL} mb-24 mt-20">
-        <div class="border-t border-gray-200 dark:border-gray-800 pt-12">
-            <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-gray-400 dark:text-gray-500 mb-6">Key Takeaway</p>
-            <p class="text-[1.4rem] sm:text-[1.65rem] font-serif text-[#0a0a0a] dark:text-white leading-[1.6] font-medium mb-8">
-                ${display}
-            </p>
-            <button
-                onclick="${copyFn}"
-                class="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.15em] text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition-colors"
-            >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+    <div class="reader-section" data-section="Key Takeaway">
+        <div class="section-label"><span class="section-dot" style="background:#166534"></span>Key Takeaway</div>
+        <div class="section-body">
+            <p class="text-[1.4rem] sm:text-[1.6rem] font-serif text-[#0a0a0a] dark:text-white leading-[1.65] font-medium mb-6">${display}</p>
+            <button onclick="${copyFn}" class="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.15em] text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition-colors">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                 Copy
             </button>
         </div>
-    </div>
-    `;
+    </div>`;
 }
 
 function renderConceptDisplay() {
@@ -1376,28 +1355,151 @@ function renderConceptDisplay() {
                           renderActionCard('Actionable Pivot', steps.join('<br>'), conceptId);
     }
 
+    // Build sections outline from the content
+    const sectionOrder = ['Visual Framework','Simple Explanation','Why It Matters','Real-Life Example','Common Mistake','Reflect','Try This Today','Mental Model','Key Takeaway'];
+
     const premiumBadge = (concept.premium || concept.isPremium) ? `
-        <div class="max-w-[700px] mx-auto mb-8">
-            <span class="inline-flex items-center gap-2 bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-500 px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest">
-                Premium Framework
-            </span>
-        </div>` : '';
+        <span class="inline-flex items-center gap-1.5 bg-amber-100 dark:bg-amber-900/20 text-amber-800 dark:text-amber-500 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest mb-6">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.956 11.956 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            Premium Framework
+        </span>` : '';
 
     display.innerHTML = `
+        <style>
+            .reader-layout { display: flex; width: 100%; min-height: 100vh; }
+            .reader-sidebar {
+                display: none;
+                width: 220px;
+                min-width: 220px;
+                flex-shrink: 0;
+                padding: 2.5rem 1.5rem 2.5rem 2rem;
+                border-right: 1px solid #f0f0f0;
+                position: sticky;
+                top: 64px;
+                height: calc(100vh - 64px);
+                overflow-y: auto;
+            }
+            .dark .reader-sidebar { border-color: #1f1f1f; }
+            @media (min-width: 1024px) { .reader-sidebar { display: block; } }
+            .sidebar-outline-title {
+                font-size: 9px;
+                font-weight: 800;
+                letter-spacing: 0.18em;
+                text-transform: uppercase;
+                color: #9ca3af;
+                margin-bottom: 1rem;
+            }
+            .sidebar-item {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 6px 8px;
+                border-radius: 6px;
+                font-size: 12px;
+                font-weight: 500;
+                color: #6b7280;
+                cursor: pointer;
+                transition: all 0.15s;
+                margin-bottom: 2px;
+                text-decoration: none;
+            }
+            .sidebar-item:hover { background: #f9fafb; color: #0a0a0a; }
+            .dark .sidebar-item:hover { background: #1a1a1a; color: #fff; }
+            .sidebar-item.active { background: #f0fdf4; color: #166534; font-weight: 700; }
+            .dark .sidebar-item.active { background: #052e16; color: #4ade80; }
+            .sidebar-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+            .reader-main { flex: 1; min-width: 0; padding: 2.5rem 2rem 6rem; }
+            @media (min-width: 768px) { .reader-main { padding: 2.5rem 3rem 6rem; } }
+            @media (min-width: 1280px) { .reader-main { padding: 2.5rem 4rem 6rem; } }
+            .reader-section { margin-bottom: 0; border-bottom: 1px solid #f3f4f6; }
+            .dark .reader-section { border-color: #1a1a1a; }
+            .reader-section:last-child { border-bottom: none; }
+            .section-label {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-size: 10px;
+                font-weight: 800;
+                letter-spacing: 0.18em;
+                text-transform: uppercase;
+                color: #9ca3af;
+                padding: 1.25rem 0 0.75rem;
+                cursor: pointer;
+                user-select: none;
+            }
+            .section-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+            .section-body { padding: 0.5rem 0 2rem 1.25rem; }
+            @media (max-width: 640px) { .section-body { padding-left: 0; } }
+        </style>
         <div class="animate-fade">
-            ${premiumBadge}
-
-            <!-- Concept Title -->
-            <div class="w-full px-4 sm:px-8 lg:px-16 xl:px-24 mb-16 sm:mb-20">
-                <h1 class="text-[2rem] sm:text-[2.6rem] md:text-[3.2rem] font-bold font-serif text-[#0a0a0a] dark:text-white leading-[1.12] tracking-tight">
+            <!-- Concept Header -->
+            <div style="padding: 2.5rem 2rem 0; border-bottom: 1px solid #f3f4f6;" class="dark:border-b-[#1a1a1a]">
+                ${premiumBadge}
+                <h1 class="text-[1.9rem] sm:text-[2.4rem] md:text-[2.9rem] font-bold font-serif text-[#0a0a0a] dark:text-white leading-[1.15] tracking-tight mb-6">
                     ${concept.title}
                 </h1>
+                <p class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-4">From <span class="text-[#0a0a0a] dark:text-gray-200">${book.title}</span></p>
             </div>
 
-            <!-- Content Blocks -->
-            ${mainContentHtml}
+            <!-- Two Column: Sidebar + Content -->
+            <div class="reader-layout">
+                <!-- Left Outline Sidebar -->
+                <aside class="reader-sidebar" id="reader-outline-sidebar">
+                    <div class="sidebar-outline-title">In this concept</div>
+                    <nav id="reader-outline-nav"></nav>
+                </aside>
+
+                <!-- Main Content -->
+                <div class="reader-main">
+                    ${mainContentHtml}
+                </div>
+            </div>
         </div>
     `;
+
+    // Build outline nav from rendered sections
+    setTimeout(() => {
+        const nav = document.getElementById('reader-outline-nav');
+        const sections = document.querySelectorAll('#reader-display .reader-section');
+        if (!nav || !sections.length) return;
+        const dotColors = {
+            'Visual Framework': '#059669',
+            'Simple Explanation': '#166534',
+            'Why It Matters': '#1d4ed8',
+            'Real-Life Example': '#d97706',
+            'Common Mistake': '#dc2626',
+            'Reflect': '#4f46e5',
+            'Mental Model': '#0a0a0a',
+            'Key Takeaway': '#166534'
+        };
+        let html = '';
+        sections.forEach((sec, i) => {
+            const name = sec.getAttribute('data-section') || `Section ${i+1}`;
+            const color = dotColors[name] || '#6b7280';
+            sec.setAttribute('id', `reader-sec-${i}`);
+            html += `<a class="sidebar-item" href="#reader-sec-${i}" onclick="highlightSidebarItem(this); return true;">
+                <span class="sidebar-dot" style="background:${color}"></span>${name}
+            </a>`;
+        });
+        nav.innerHTML = html;
+
+        // Scroll spy
+        const overlay = document.getElementById('reader-overlay');
+        if (overlay) {
+            overlay._spyFn && overlay.removeEventListener('scroll', overlay._spyFn);
+            overlay._spyFn = function() {
+                let active = 0;
+                sections.forEach((sec, i) => {
+                    if (sec.getBoundingClientRect().top < 200) active = i;
+                });
+                document.querySelectorAll('#reader-outline-nav .sidebar-item').forEach((a, i) => {
+                    a.classList.toggle('active', i === active);
+                });
+            };
+            overlay.addEventListener('scroll', overlay._spyFn);
+        }
+    }, 50);
+}
 }
 
 function shareInsight() {
@@ -1421,6 +1523,11 @@ function shareInsight() {
         toast.classList.remove('opacity-0');
         setTimeout(() => toast.classList.add('opacity-0'), 2000);
     });
+}
+
+function highlightSidebarItem(el) {
+    document.querySelectorAll('#reader-outline-nav .sidebar-item').forEach(a => a.classList.remove('active'));
+    if (el) el.classList.add('active');
 }
 
 function closeReader() {

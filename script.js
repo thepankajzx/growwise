@@ -1130,9 +1130,9 @@ function parseConceptToComponents(markdown, conceptId) {
 // Philosophy: Less Interface. More Reading. Every element must earn its place.
 // ─────────────────────────────────────────────────────────────────────────────
 
-// Shared reading column constraint — optimal 65–75ch reading measure
-const READING_COL = 'max-w-2xl mx-auto px-5 sm:px-8 lg:px-4';
-const WIDE_COL = 'max-w-4xl mx-auto px-5 sm:px-8';
+// Full-width reading layout with comfortable padding
+const READING_COL = 'w-full px-4 sm:px-8 lg:px-16 xl:px-24';
+const WIDE_COL = 'w-full px-4 sm:px-8 lg:px-16 xl:px-24';
 
 function renderVisualCard(content) {
     const codeMatch = content.match(/```([\s\S]*?)```/);
@@ -1388,27 +1388,14 @@ function renderConceptDisplay() {
             ${premiumBadge}
 
             <!-- Concept Title -->
-            <div class="max-w-2xl mx-auto px-5 sm:px-8 lg:px-4 mb-16 sm:mb-24">
-                <h1 class="text-[2rem] sm:text-[2.6rem] md:text-[3.2rem] font-bold font-serif text-[#0a0a0a] dark:text-white leading-[1.12] tracking-tight text-balance">
+            <div class="w-full px-4 sm:px-8 lg:px-16 xl:px-24 mb-16 sm:mb-20">
+                <h1 class="text-[2rem] sm:text-[2.6rem] md:text-[3.2rem] font-bold font-serif text-[#0a0a0a] dark:text-white leading-[1.12] tracking-tight">
                     ${concept.title}
                 </h1>
             </div>
 
             <!-- Content Blocks -->
             ${mainContentHtml}
-
-            <!-- Concept Navigation -->
-            <div class="max-w-2xl mx-auto px-5 sm:px-8 lg:px-4 mt-8 pb-8 border-t border-gray-100 dark:border-gray-900 pt-10 flex justify-between items-center">
-                <button onclick="navigateConcept(-1)" class="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.15em] text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition-colors">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                    Previous
-                </button>
-                <span class="text-[11px] text-gray-300 dark:text-gray-700 font-medium">${currentConceptIndex + 1} of ${book.concepts.length}</span>
-                <button onclick="navigateConcept(1)" class="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.15em] text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition-colors">
-                    Next
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                </button>
-            </div>
         </div>
     `;
 }

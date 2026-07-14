@@ -458,18 +458,15 @@ async function openCompletedModal(type) {
                 
                 html += `
                     <a href="${resumeUrl}" class="flex items-center p-4 rounded-2xl border border-gray-100 hover:border-gray-300 hover:shadow-lg transition-all group bg-white cursor-pointer">
-                        <div class="w-12 h-16 shrink-0 rounded bg-gray-100 overflow-hidden mr-4 shadow-sm group-hover:scale-105 transition-transform">
-                            <img src="${book.coverUrl}" alt="Cover" class="w-full h-full object-cover">
-                        </div>
                         <div class="flex-1 min-w-0">
                             <h3 class="font-sans text-sm font-bold text-[#0a0a0a] truncate mb-0.5 group-hover:text-primary transition-colors">${concept.title}</h3>
                             <p class="font-sans text-xs text-gray-500 truncate mb-2">${book.title}</p>
                             <div class="flex items-center gap-2">
-                                <span class="bg-green-100 text-green-700 text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-sm flex items-center">
+                                <span class="bg-green-100 text-green-700 text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-sm flex items-center shrink-0">
                                     <svg class="w-2.5 h-2.5 mr-1" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path></svg>
                                     Done
                                 </span>
-                                <span class="font-sans text-[10px] text-gray-400 font-semibold">${completedDateStr}</span>
+                                <span class="font-sans text-[10px] text-gray-400 font-semibold truncate">${completedDateStr}</span>
                             </div>
                         </div>
                     </a>

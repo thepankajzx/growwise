@@ -199,12 +199,54 @@ async function checkAccessCodeModal() {
 // ----------------------------------------------------
 
 function navTo(view, updateHash = true) {
+    if (view === 'explorer-premium') {
+        if (updateHash && window.location.hash !== `#explorer-premium`) {
+            window.history.pushState(null, null, `#explorer-premium`);
+        }
+        document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
+        document.getElementById(`view-explorer`).classList.remove('hidden');
+        
+        document.querySelectorAll('nav button').forEach(b => b.classList.remove('nav-active'));
+        const btn = document.getElementById(`btn-explorer`);
+        if (btn) btn.classList.add('nav-active');
+        
+        const footer = document.getElementById('main-footer');
+        if (footer) footer.classList.add('hidden');
+        
+        currentLibraryFilter.clear();
+        currentLibraryFilter.add('premium');
+        
+        // Update pills UI
+        ['saved', 'completed', 'save_later', 'premium'].forEach(id => {
+            const pill = document.getElementById(`lib-${id}`);
+            if (!pill) return;
+            if (currentLibraryFilter.has(id)) {
+                pill.classList.remove('border-transparent', 'text-gray-600', 'dark:text-gray-400', 'hover:text-[#0a0a0a]', 'dark:hover:text-white');
+                pill.classList.add('bg-[#0a0a0a]', 'dark:bg-white', 'text-white', 'dark:text-[#0a0a0a]', 'border-[#0a0a0a]', 'dark:border-white');
+            } else {
+                pill.classList.remove('bg-[#0a0a0a]', 'dark:bg-white', 'text-white', 'dark:text-[#0a0a0a]', 'border-[#0a0a0a]', 'dark:border-white');
+                pill.classList.add('border-transparent', 'text-gray-600', 'dark:text-gray-400', 'hover:text-[#0a0a0a]', 'dark:hover:text-white');
+            }
+        });
+        
+        const allPill = document.getElementById('lib-all');
+        if (allPill) {
+            allPill.classList.remove('bg-[#0a0a0a]', 'dark:bg-white', 'text-white', 'dark:text-[#0a0a0a]', 'border-[#0a0a0a]', 'dark:border-white');
+            allPill.classList.add('border-transparent', 'text-gray-600', 'dark:text-gray-400', 'hover:text-[#0a0a0a]', 'dark:hover:text-white');
+        }
+
+        if (typeof renderExplorer === 'function') renderExplorer();
+        window.scrollTo(0, 0);
+        return;
+    }
+
     if (updateHash && window.location.hash !== `#${view}`) {
         window.history.pushState(null, null, `#${view}`);
     }
 
     document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
-    document.getElementById(`view-${view}`).classList.remove('hidden');
+    const targetSection = document.getElementById(`view-${view}`);
+    if (targetSection) targetSection.classList.remove('hidden');
     
     document.querySelectorAll('nav button').forEach(b => b.classList.remove('nav-active'));
     const btn = document.getElementById(`btn-${view}`);
@@ -948,23 +990,30 @@ async function toggleCompleted() {
             
             const userRef = db.collection('users').doc(currentUser.uid);
             if (isAdding) {
-                await userRef.collection('completedConcepts').doc(conceptId).set({
-                    bookId: currentBookId,
-                    conceptId: conceptId,
-                    completedDate: firebase.firestore.FieldValue.serverTimestamp(),
-                    completionPercentage: 100
-                });
-                
                 if (concept.isPremium) {
                     await userRef.collection('completedFrameworks').doc(conceptId).set({
                         frameworkId: conceptId,
-                        completedDate: firebase.firestore.FieldValue.serverTimestamp()
+                        bookId: currentBookId,
+                        completedAt: new Date().toISOString(),
+                        lastOpenedAt: new Date().toISOString(),
+                        readingTime: 0,
+                        completionPercentage: 100
+                    });
+                } else {
+                    await userRef.collection('completedConcepts').doc(conceptId).set({
+                        conceptId: conceptId,
+                        bookId: currentBookId,
+                        completedAt: new Date().toISOString(),
+                        lastOpenedAt: new Date().toISOString(),
+                        readingTime: 0,
+                        completionPercentage: 100
                     });
                 }
             } else {
-                await userRef.collection('completedConcepts').doc(conceptId).delete();
                 if (concept.isPremium) {
                     await userRef.collection('completedFrameworks').doc(conceptId).delete();
+                } else {
+                    await userRef.collection('completedConcepts').doc(conceptId).delete();
                 }
             }
         } catch (e) {
@@ -1642,7 +1691,7 @@ window.onload = () => {
     
     // Initial routing based on hash
     const initialHash = window.location.hash.replace('#', '');
-    const validViews = ['dashboard', 'explorer', 'admin', 'profile'];
+    const validViews = ['dashboard', 'explorer', 'explorer-premium', 'admin', 'profile'];
     if (validViews.includes(initialHash)) {
         navTo(initialHash, false);
     } else {
@@ -1652,7 +1701,7 @@ window.onload = () => {
 
 window.addEventListener('hashchange', () => {
     const newHash = window.location.hash.replace('#', '');
-    const validViews = ['dashboard', 'explorer', 'admin', 'profile'];
+    const validViews = ['dashboard', 'explorer', 'explorer-premium', 'admin', 'profile'];
     if (validViews.includes(newHash)) {
         navTo(newHash, false);
     } else {

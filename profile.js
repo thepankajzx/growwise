@@ -367,3 +367,151 @@ async function loadContinueJourney(uid) {
         console.error("Error loading journey:", err);
     }
 }
+
+// ----------------------------------------------------
+// MODAL LOGIC
+// ----------------------------------------------------
+
+async function openCompletedModal(type) {
+    const modal = document.getElementById('completed-modal');
+    const title = document.getElementById('completed-modal-title');
+    const subtitle = document.getElementById('completed-modal-subtitle');
+    const list = document.getElementById('completed-modal-list');
+    
+    if (!modal || !currentUser) return;
+    
+    // Setup UI
+    modal.classList.remove('hidden');
+    list.innerHTML = `
+        <div class="animate-pulse space-y-4">
+            <div class="h-24 bg-gray-100 rounded-2xl w-full"></div>
+            <div class="h-24 bg-gray-100 rounded-2xl w-full"></div>
+            <div class="h-24 bg-gray-100 rounded-2xl w-full"></div>
+        </div>
+    `;
+    
+    if (type === 'free') {
+        title.textContent = 'Ideas Internalized';
+        subtitle.textContent = 'Completed Free Concepts';
+    } else {
+        title.textContent = 'Execution Systems';
+        subtitle.textContent = 'Completed Premium Frameworks';
+    }
+    
+    try {
+        const collectionName = type === 'free' ? 'completedConcepts' : 'completedFrameworks';
+        const snapshot = await db.collection('users').doc(currentUser.uid).collection(collectionName).get();
+        
+        if (snapshot.empty) {
+            list.innerHTML = `
+                <div class="flex flex-col items-center justify-center h-full text-center py-12">
+                    <svg class="w-12 h-12 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                    <p class="font-serif text-xl text-[#0a0a0a] mb-2">Nothing here yet</p>
+                    <p class="font-sans text-sm text-gray-500 max-w-[250px]">Explore the library to find new concepts to master.</p>
+                </div>
+            `;
+            return;
+        }
+        
+        let html = '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">';
+        
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const id = doc.id; // bookId-conceptIndex
+            const parts = id.split('-');
+            const conceptIdx = parseInt(parts.pop());
+            const bookId = parts.join('-');
+            
+            const result = allConcepts.find(c => c.bookId === bookId && c.conceptIndex === conceptIdx);
+            if (result) {
+                const book = result.book;
+                const concept = result.concept;
+                const resumeUrl = `index.html?resumeBook=${book.id}&resumeConcept=${conceptIdx}&resumeGlobal=${result.globalIndex}`;
+                
+                let completedDateStr = "Unknown Date";
+                if (data.completedAt) {
+                    completedDateStr = new Date(data.completedAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+                } else if (data.completedDate) {
+                    // Backwards compatibility with Timestamp
+                    completedDateStr = new Date(data.completedDate.toDate()).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+                }
+                
+                html += `
+                    <a href="${resumeUrl}" class="flex items-center p-4 rounded-2xl border border-gray-100 hover:border-gray-300 hover:shadow-lg transition-all group bg-white cursor-pointer">
+                        <div class="w-12 h-16 shrink-0 rounded bg-gray-100 overflow-hidden mr-4 shadow-sm group-hover:scale-105 transition-transform">
+                            <img src="${book.coverUrl}" alt="Cover" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h3 class="font-sans text-sm font-bold text-[#0a0a0a] truncate mb-0.5 group-hover:text-primary transition-colors">${concept.title}</h3>
+                            <p class="font-sans text-xs text-gray-500 truncate mb-2">${book.title}</p>
+                            <div class="flex items-center gap-2">
+                                <span class="bg-green-100 text-green-700 text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-sm flex items-center">
+                                    <svg class="w-2.5 h-2.5 mr-1" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path></svg>
+                                    Done
+                                </span>
+                                <span class="font-sans text-[10px] text-gray-400 font-semibold">${completedDateStr}</span>
+                            </div>
+                        </div>
+                    </a>
+                `;
+            }
+        });
+        
+        html += '</div>';
+        list.innerHTML = html;
+        
+    } catch(err) {
+        console.error("Error loading modal data:", err);
+        list.innerHTML = `<p class="text-red-500 text-center">Failed to load data. Please try again.</p>`;
+    }
+}
+
+function closeCompletedModal() {
+    const modal = document.getElementById('completed-modal');
+    if (modal) modal.classList.add('hidden');
+}
+
+// ----------------------------------------------------
+// ONE-TIME CLEANUP SCRIPT (Do not auto-run)
+// ----------------------------------------------------
+window.runMigrationScript = async function() {
+    if (!currentUser) return console.log("Not logged in");
+    console.log("Starting migration...");
+    
+    try {
+        const conceptsRef = db.collection('users').doc(currentUser.uid).collection('completedConcepts');
+        const frameworksRef = db.collection('users').doc(currentUser.uid).collection('completedFrameworks');
+        
+        const snapshot = await conceptsRef.get();
+        let migrated = 0;
+        
+        for (const doc of snapshot.docs) {
+            const data = doc.data();
+            const id = doc.id; // bookId-conceptIndex
+            const parts = id.split('-');
+            const conceptIdx = parseInt(parts.pop());
+            const bookId = parts.join('-');
+            
+            const result = allConcepts.find(c => c.bookId === bookId && c.conceptIndex === conceptIdx);
+            if (result && result.concept.isPremium) {
+                // It's a premium concept inside completedConcepts!
+                console.log(`Migrating premium framework: ${id}`);
+                // Move to frameworks
+                await frameworksRef.doc(id).set({
+                    ...data,
+                    frameworkId: id,
+                    migratedAt: new Date().toISOString()
+                });
+                // Delete from concepts
+                await conceptsRef.doc(id).delete();
+                migrated++;
+            }
+        }
+        
+        console.log(`Migration complete! Migrated ${migrated} items.`);
+    } catch(err) {
+        console.error("Migration failed:", err);
+    }
+};
+ 
+ 

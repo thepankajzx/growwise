@@ -184,6 +184,7 @@
                         <div class="w-12 h-12 rounded-2xl bg-bgPaper border border-borderLight flex items-center justify-center">
                             <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
                         </div>
+                        <button onclick="openCompletedModal('free')" class="text-xs font-sans font-bold uppercase tracking-widest text-secondary hover:text-primary transition-colors bg-bgPaper border border-borderLight px-3 py-1.5 rounded-full shadow-sm">View</button>
                     </div>
                     <div>
                         <div class="flex items-baseline gap-2 mb-2">
@@ -192,7 +193,7 @@
                         <p class="font-sans text-sm uppercase tracking-widest text-secondary font-bold mb-6">Ideas Internalized</p>
                         <div class="border-t border-borderLight pt-5">
                             <a href="index.html#explorer" class="inline-flex items-center text-sm font-sans font-medium text-accent group-hover:text-primary transition-colors">
-                                View Library
+                                Explore Concepts
                                 <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                             </a>
                         </div>
@@ -204,13 +205,14 @@
                         <div class="w-12 h-12 rounded-2xl bg-bgPaper border border-borderLight flex items-center justify-center">
                             <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"></path></svg>
                         </div>
+                        <button onclick="openCompletedModal('premium')" class="text-xs font-sans font-bold uppercase tracking-widest text-secondary hover:text-primary transition-colors bg-bgPaper border border-borderLight px-3 py-1.5 rounded-full shadow-sm">View</button>
                     </div>
                     <div>
                         <p class="font-serif text-5xl font-medium text-primary mb-2 counter" id="stat-systems" data-target="0">0</p>
                         <p class="font-sans text-sm uppercase tracking-widest text-secondary font-bold mb-6">Execution Systems</p>
                         <div class="border-t border-borderLight pt-5">
-                            <a href="index.html#explorer" class="inline-flex items-center text-sm font-sans font-medium text-accent group-hover:text-primary transition-colors">
-                                Explore Systems
+                            <a href="index.html#explorer-premium" class="inline-flex items-center text-sm font-sans font-medium text-accent group-hover:text-primary transition-colors">
+                                Explore Frameworks
                                 <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                             </a>
                         </div>
@@ -390,9 +392,41 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
+    <!-- COMPLETED MODAL -->
+    <div id="completed-modal" class="fixed inset-0 z-[100] hidden">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm animate-fade" onclick="closeCompletedModal()"></div>
+        
+        <!-- Modal Content -->
+        <div class="absolute right-0 top-0 bottom-0 w-full md:w-[600px] bg-white shadow-2xl flex flex-col animate-slide-in">
+            <!-- Header -->
+            <div class="px-8 py-6 border-b border-borderLight flex justify-between items-center bg-bgPaper shrink-0">
+                <div>
+                    <h2 class="font-serif text-2xl font-medium text-primary" id="completed-modal-title">Completed</h2>
+                    <p class="font-sans text-xs text-secondary mt-1 uppercase tracking-widest font-semibold" id="completed-modal-subtitle">Loading...</p>
+                </div>
+                <button onclick="closeCompletedModal()" class="p-2 text-secondary hover:text-primary hover:bg-gray-100 rounded-full transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- List Container -->
+            <div class="flex-1 overflow-y-auto p-8" id="completed-modal-list">
+                <!-- Skeleton Loader initially -->
+                <div class="animate-pulse space-y-4">
+                    <div class="h-24 bg-gray-100 rounded-2xl w-full"></div>
+                    <div class="h-24 bg-gray-100 rounded-2xl w-full"></div>
+                    <div class="h-24 bg-gray-100 rounded-2xl w-full"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
-    <script src="firebase-config.js?v=2"></script>
     <script src="data.js?v=34"></script>
+    <script src="firebase-config.js?v=2"></script>
     <script src="profile.js?v=1"></script>
 </body>
 </html>

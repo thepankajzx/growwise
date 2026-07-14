@@ -654,9 +654,20 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
-    <!-- Scripts -->
-    <script src="firebase-config.js?v=1"></script>
-    <script src="data.js?v=33"></script>
-    <script src="script.js?v=40"></script>
+    <!-- Scripts: timestamp cache-bust — always loads latest, no Ctrl+F5 needed -->
+    <script>
+        (function() {
+            var ts = Date.now();
+            var scripts = ['firebase-config.js', 'data.js', 'script.js'];
+            function loadNext(i) {
+                if (i >= scripts.length) return;
+                var el = document.createElement('script');
+                el.src = scripts[i] + '?v=' + ts;
+                el.onload = function() { loadNext(i + 1); };
+                document.body.appendChild(el);
+            }
+            loadNext(0);
+        })();
+    </script>
 </body>
 </html>

@@ -346,7 +346,15 @@ async function handleLogin(e) {
             openReader(bookId, conceptIndex, globalIndex);
         }
     } catch (error) {
-        err.textContent = error.message;
+        if (error.code === 'auth/invalid-credential') {
+            err.textContent = "Invalid email or password. If you don't have an account, please Sign Up first.";
+        } else if (error.code === 'auth/email-already-in-use') {
+            err.textContent = "This email is already in use. Please Log In instead.";
+        } else if (error.code === 'auth/weak-password') {
+            err.textContent = "Password should be at least 6 characters.";
+        } else {
+            err.textContent = error.message;
+        }
         err.classList.remove('hidden');
     } finally {
         btn.textContent = isSignUpMode ? 'Sign Up' : 'Log In';

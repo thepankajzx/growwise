@@ -300,7 +300,7 @@ function navTo(view, updateHash = true) {
     window.scrollTo(0, 0);
 }
 
-window.addEventListener('load', () => {
+function initAdmin() {
     if(window.location.hash === '#master') {
         localStorage.setItem('tc_premium', 'true');
         localStorage.setItem('tc_email', 'master@admin.com');
@@ -308,7 +308,8 @@ window.addEventListener('load', () => {
     } else {
         document.getElementById('btn-admin').classList.add('hidden');
     }
-});
+}
+initAdmin();
 window.addEventListener('hashchange', () => {
     if(window.location.hash === '#master') {
         localStorage.setItem('tc_premium', 'true');
@@ -1858,7 +1859,7 @@ async function downloadCarousel() {
 }
 
 // Initialize
-window.onload = () => {
+function initializeApp() {
     updateMembershipUI();
     flattenData();
     updateSourceDropdown('all');
@@ -1923,7 +1924,9 @@ window.onload = () => {
     
     // Initial routing based on hash
     handleHashRoute();
-};
+}
+
+initializeApp();
 
 window.addEventListener('hashchange', () => {
     handleHashRoute();

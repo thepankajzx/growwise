@@ -1574,8 +1574,15 @@ function closeReader(updateHistory = true) {
     document.getElementById('reader-overlay').classList.add('hidden');
     document.body.style.overflow = ''; 
 
-    if (updateHistory && window.location.hash.startsWith('#read=')) {
-        window.history.back();
+    if (updateHistory) {
+        const currentView = document.querySelector('main > section:not(.hidden)');
+        let targetHash = 'explorer';
+        if (currentView) {
+            targetHash = currentView.id.replace('view-', '');
+        }
+        if (window.location.hash !== `#${targetHash}`) {
+            window.location.hash = `#${targetHash}`;
+        }
     }
 }
 

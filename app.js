@@ -854,6 +854,12 @@ function openReader(bookId, conceptIndex, globalIndex, updateHistory = true) {
     currentConceptIndex = conceptIndex;
     currentGlobalIndex = globalIndex;
     
+    // Save current hash so back button knows where to go
+    if (!window._hashBeforeReader) {
+        const h = window.location.hash.replace('#', '');
+        window._hashBeforeReader = (h && !h.startsWith('read=')) ? h : 'explorer';
+    }
+
     const overlay = document.getElementById('reader-overlay');
     
     document.body.style.overflow = 'hidden'; 
@@ -1575,14 +1581,10 @@ function closeReader(updateHistory = true) {
     document.body.style.overflow = ''; 
 
     if (updateHistory) {
-        const currentView = document.querySelector('main > section:not(.hidden)');
-        let targetHash = 'explorer';
-        if (currentView) {
-            targetHash = currentView.id.replace('view-', '');
-        }
-        if (window.location.hash !== `#${targetHash}`) {
-            window.location.hash = `#${targetHash}`;
-        }
+        // Use the hash that was saved when the reader was opened
+        const targetHash = window._hashBeforeReader || 'explorer';
+        window.location.hash = '#' + targetHash;
+        window._hashBeforeReader = null;
     }
 }
 

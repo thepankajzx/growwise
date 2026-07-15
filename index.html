@@ -530,9 +530,21 @@
         <header class="sticky top-0 w-full bg-white/90 dark:bg-[#121212]/90 backdrop-blur-md border-b border-borderLight dark:border-gray-800 z-50 transition-colors duration-300 pt-2 sm:pt-0">
             <div class="w-full mx-auto px-2 sm:px-8 lg:px-12 xl:px-20 min-h-[3.5rem] sm:min-h-[4rem] py-2 flex items-center justify-between">
                 <div class="flex items-center space-x-1 sm:space-x-4 shrink-0 overflow-hidden">
-                    <button onclick="closeReader()" class="p-3 -ml-2 sm:p-2 sm:ml-0 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition shrink-0">
+                    <button id="reader-back-btn" class="p-3 -ml-2 sm:p-2 sm:ml-0 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition shrink-0" style="cursor:pointer; -webkit-tap-highlight-color: transparent;">
                         <svg class="w-6 h-6 sm:w-5 sm:h-5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                     </button>
+                    <script>
+                        document.getElementById('reader-back-btn').addEventListener('click', function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            try { if (typeof closeReader === 'function') { closeReader(); return; } } catch(err) { console.error('closeReader error:', err); }
+                            // Fallback: manually close
+                            var overlay = document.getElementById('reader-overlay');
+                            if (overlay) { overlay.classList.add('hidden'); }
+                            document.body.style.overflow = '';
+                            window.location.hash = '#explorer';
+                        });
+                    </script>
                     <div class="flex flex-col truncate">
                         <span id="reader-author" class="font-medium text-[11px] sm:text-sm text-secondary tracking-wide uppercase truncate">Atomic Habits</span>
                     </div>

@@ -2,7 +2,20 @@ const booksData = [
     {
         id: "wealth",
         category: "Wealth & Finance",
-        books: []
+        books: [
+            {
+                id: "psychology-of-money",
+                title: "The Psychology of Money",
+                author: "Morgan Housel",
+                concepts: [
+                    {
+                        title: "The Freedom Filter™",
+                        htmlFile: "premium_content_2.html",
+                        isPremium: true
+                    }
+                ]
+            }
+        ]
     },
     {
         id: "business",

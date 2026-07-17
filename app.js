@@ -558,9 +558,13 @@ function closeMegaMenu() {
 // Close mega menu when clicking outside
 document.addEventListener('click', function(event) {
     const menu = document.getElementById('mega-menu-dropdown');
-    const btn = document.getElementById('mega-menu-btn');
+    const btnDesktop = document.getElementById('mega-menu-btn');
+    const btnMobile = document.getElementById('mega-menu-btn-mobile');
     if (menu && !menu.classList.contains('hidden')) {
-        if (!menu.contains(event.target) && !btn.contains(event.target)) {
+        const outsideMenu = !menu.contains(event.target);
+        const outsideDesktop = !btnDesktop || !btnDesktop.contains(event.target);
+        const outsideMobile = !btnMobile || !btnMobile.contains(event.target);
+        if (outsideMenu && outsideDesktop && outsideMobile) {
             closeMegaMenu();
         }
     }

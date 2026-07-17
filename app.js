@@ -1141,9 +1141,9 @@ function parseConceptToComponents(markdown, conceptId) {
                 const joined = currentContent.join('\n\n');
                 const parsed = marked.parse ? marked.parse(joined) : marked(joined);
                 html += `
-                    <div class="mb-12 prose prose-lg dark:prose-invert max-w-none prose-p:text-gray-600 dark:prose-p:text-gray-400 prose-headings:font-serif prose-headings:text-[#0a0a0a] dark:prose-headings:text-white prose-hr:border-gray-200 dark:prose-hr:border-gray-800 prose-table:w-full prose-li:text-gray-600 dark:prose-li:text-gray-400">
+                    <section class="block prose">
                         ${parsed}
-                    </div>
+                    </section>
                 `;
             }
         }
@@ -1175,15 +1175,6 @@ function parseConceptToComponents(markdown, conceptId) {
     return html;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// READING EXPERIENCE RENDERER — Premium Editorial System
-// Philosophy: Less Interface. More Reading. Every element must earn its place.
-// ─────────────────────────────────────────────────────────────────────────────
-
-// Full-width reading layout
-const READING_COL = 'w-full';
-const WIDE_COL = 'w-full';
-
 function renderVisualCard(content) {
     const codeMatch = content.match(/```([\s\S]*?)```/);
     const code = codeMatch ? codeMatch[1].trim() : '';
@@ -1192,19 +1183,15 @@ function renderVisualCard(content) {
     if (typeof marked !== 'undefined') {
         parsedCaption = marked.parseInline ? marked.parseInline(captionText) : captionText;
     }
+    
     return `
-    <div class="reader-section" data-section="Visual Framework">
-        <div class="section-label"><span class="section-dot" style="background:#059669"></span>Visual Framework</div>
-        <div class="section-body">
-            <div class="w-full bg-[#0a0a0a] dark:bg-[#0e0e0e] border border-[#1e1e1e] rounded-xl overflow-hidden shadow-lg">
-                <div class="w-full h-[2px] bg-emerald-600"></div>
-                <div class="px-6 py-8 sm:px-10 overflow-x-auto">
-                    <pre class="text-emerald-400 font-mono text-[11px] sm:text-sm leading-[2] tracking-wide whitespace-pre">${code}</pre>
-                </div>
-                ${captionText ? `<div class="border-t border-white/10 px-6 sm:px-10 py-4 text-sm text-gray-400 italic">${parsedCaption}</div>` : ''}
-            </div>
+    <section class="block" id="visual" data-title="Visual Framework">
+        <p class="block__label">Visual Framework</p>
+        <div class="diagram" style="padding: 1.5rem; overflow-x: auto;">
+            <pre class="font-mono text-[11px] sm:text-sm text-emerald-400 leading-[2]">${code}</pre>
+            ${captionText ? `<div class="mt-4 pt-4 border-t border-[#2B291F] text-xs text-[#8A8578] italic">${parsedCaption}</div>` : ''}
         </div>
-    </div>`;
+    </section>`;
 }
 
 function renderExplanationCard(title, content) {
@@ -1212,14 +1199,22 @@ function renderExplanationCard(title, content) {
     if (typeof marked !== 'undefined') {
         parsedContent = marked.parse ? marked.parse(content) : content;
     }
-    const dotColor = title === 'Simple Explanation' ? '#166534' : title === 'Why It Matters' ? '#1d4ed8' : '#374151';
+    
+    if (title === 'Why It Matters') {
+        return `
+        <section class="block" id="matters" data-title="Why It Matters">
+            <p class="block__label">Why It Matters</p>
+            <div class="pullquote">
+                ${parsedContent}
+            </div>
+        </section>`;
+    }
+    
     return `
-    <div class="reader-section" data-section="${title}">
-        <div class="section-label"><span class="section-dot" style="background:${dotColor}"></span>${title}</div>
-        <div class="section-body">
-            <div class="text-[1.1rem] md:text-[1.25rem] font-serif text-[#111] dark:text-gray-100 leading-[1.85] prose prose-lg dark:prose-invert max-w-none prose-p:mb-4">${parsedContent}</div>
-        </div>
-    </div>`;
+    <section class="block prose" id="explanation" data-title="Simple Explanation">
+        <p class="block__label">Simple Explanation</p>
+        ${parsedContent}
+    </section>`;
 }
 
 function renderExampleCard(content) {
@@ -1228,131 +1223,101 @@ function renderExampleCard(content) {
         parsedContent = marked.parse ? marked.parse(content) : content;
     }
     return `
-    <div class="reader-section" data-section="Real-Life Example">
-        <div class="section-label"><span class="section-dot" style="background:#d97706"></span>Real-Life Example</div>
-        <div class="section-body">
-            <div class="border-l-2 border-[#d97706] pl-5">
-                <div class="text-[1.05rem] md:text-[1.15rem] font-serif text-[#222] dark:text-gray-300 leading-[1.85] prose dark:prose-invert max-w-none prose-p:mb-4">${parsedContent}</div>
-            </div>
+    <section class="block" id="example" data-title="Real-Life Example">
+        <p class="block__label">Real-Life Example</p>
+        <div class="card prose prose-p:mb-0">
+            ${parsedContent}
         </div>
-    </div>`;
+    </section>`;
 }
 
 function renderWarningCard(content) {
     let parsedContent = content;
     if (typeof marked !== 'undefined') {
-        parsedContent = marked.parse ? marked.parse(content) : content;
+        parsedContent = marked.parseInline ? marked.parseInline(content) : content;
     }
     return `
-    <div class="reader-section" data-section="Common Mistake">
-        <div class="section-label"><span class="section-dot" style="background:#dc2626"></span>Common Mistake</div>
-        <div class="section-body">
-            <div class="flex items-start gap-3">
-                <svg class="w-4 h-4 mt-1 shrink-0 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                <div class="text-base md:text-[1.05rem] text-[#333] dark:text-red-200 leading-[1.85] prose dark:prose-invert max-w-none prose-p:mb-4">${parsedContent}</div>
-            </div>
+    <section class="block" id="mistake" data-title="Common Mistake">
+        <p class="block__label">Common Mistake</p>
+        <div class="callout">
+            <svg class="callout__icon" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            <p>${parsedContent}</p>
         </div>
-    </div>`;
+    </section>`;
 }
 
 function renderReflectionCard(content, id) {
     const savedText = localStorage.getItem(`reflection_${id}`) || '';
     return `
-    <div class="reader-section" data-section="Reflect">
-        <div class="section-label"><span class="section-dot" style="background:#4f46e5"></span>Reflect</div>
-        <div class="section-body">
-            <p class="text-[1.05rem] md:text-[1.15rem] font-serif text-[#111] dark:text-gray-100 leading-[1.8] mb-5">${content}</p>
-            <div class="border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden">
-                <textarea
-                    id="reflection_input_${id}"
-                    oninput="this.style.height='auto'; this.style.height=this.scrollHeight+'px'; autoSaveReflection('${id}')"
-                    class="w-full bg-white dark:bg-[#111] px-5 py-4 text-sm text-[#333] dark:text-gray-300 focus:outline-none resize-none leading-relaxed placeholder-gray-300 dark:placeholder-gray-700 min-h-[80px]"
-                    placeholder="Write your thoughts here…"
-                    style="height: auto"
-                >${savedText}</textarea>
-                <div class="px-5 py-2 bg-gray-50 dark:bg-[#0e0e0e] border-t border-gray-100 dark:border-gray-800 flex justify-end">
-                    <span id="reflection_status_${id}" class="text-[11px] text-gray-400 font-medium">${savedText ? 'Saved' : ''}</span>
-                </div>
+    <section class="block" id="reflect" data-title="Reflect">
+        <p class="block__label">Reflect</p>
+        <div class="reflect">
+            <p>${content}</p>
+            <textarea
+                id="reflection_input_${id}"
+                oninput="this.style.height='auto'; this.style.height=this.scrollHeight+'px'; autoSaveReflection('${id}')"
+                placeholder="Write your thoughts here..."
+            >${savedText}</textarea>
+            <div style="text-align: right; margin-top: 0.25rem;">
+                <span id="reflection_status_${id}" style="font-size: 0.75rem; color: var(--ink-faint);">${savedText ? 'Saved' : ''}</span>
             </div>
         </div>
-    </div>`;
-}
-
-let _reflectionTimers = {};
-function autoSaveReflection(id) {
-    clearTimeout(_reflectionTimers[id]);
-    const statusEl = document.getElementById(`reflection_status_${id}`);
-    if (statusEl) statusEl.textContent = '';
-    _reflectionTimers[id] = setTimeout(() => {
-        const val = document.getElementById(`reflection_input_${id}`)?.value || '';
-        localStorage.setItem(`reflection_${id}`, val);
-        if (statusEl) {
-            statusEl.textContent = 'Saved just now';
-            setTimeout(() => { if(statusEl) statusEl.textContent = ''; }, 2000);
-        }
-    }, 800);
-}
-
-function saveReflection(id) {
-    const val = document.getElementById(`reflection_input_${id}`)?.value || '';
-    localStorage.setItem(`reflection_${id}`, val);
-    const statusEl = document.getElementById(`reflection_status_${id}`);
-    if (statusEl) { statusEl.textContent = 'Saved just now'; setTimeout(()=>{ statusEl.textContent=''; }, 2000); }
+    </section>`;
 }
 
 function renderActionCard(title, content, id) {
     const safeTitle = title.replace(/\s+/g, '_');
-    const isChecked = localStorage.getItem(`action_${id}_${safeTitle}`) === 'true';
-    const textClass = isChecked ? 'opacity-50 line-through' : '';
-    const iconPath = isChecked ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>' : '';
-    const boxClass = isChecked ? 'bg-[#0a0a0a] dark:bg-emerald-500 border-transparent' : 'border-gray-300 dark:border-gray-600';
-    return `
-    <div class="reader-section" data-section="${title}">
-        <div class="section-label"><span class="section-dot" style="background:#0a0a0a"></span>${title}</div>
-        <div class="section-body">
-            <button type="button" onclick="toggleActionItem('${id}', '${safeTitle}', this)" class="w-full text-left flex items-start gap-4 group">
-                <div class="w-5 h-5 mt-[3px] shrink-0 rounded-full border-2 ${boxClass} flex items-center justify-center transition-all duration-200">
-                    <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">${iconPath}</svg>
-                </div>
-                <div id="action_container_${id}_${safeTitle}" class="flex-1 ${textClass} transition-all duration-200">
-                    <p class="text-base text-[#333] dark:text-gray-300 leading-[1.8] group-hover:text-[#0a0a0a] dark:group-hover:text-white transition-colors">${content}</p>
-                </div>
-            </button>
-        </div>
-    </div>`;
+    
+    let items = [];
+    if (content.includes('- ')) {
+        items = content.split('- ').filter(i => i.trim().length > 0).map(i => i.trim());
+    } else {
+        items = [content.trim()];
+    }
+    
+    let html = `
+    <section class="block" id="try" data-title="Try This Today">
+        <p class="block__label">Try This Today (5 minutes)</p>
+        <ul class="checklist">
+    `;
+    
+    items.forEach((item, index) => {
+        const itemSafeTitle = `${safeTitle}_${index}`;
+        const isChecked = localStorage.getItem(`action_${id}_${itemSafeTitle}`) === 'true';
+        const checkedClass = isChecked ? 'is-checked' : '';
+        
+        let parsedItem = item;
+        if (typeof marked !== 'undefined' && marked.parseInline) {
+            parsedItem = marked.parseInline(item);
+        }
+        
+        html += `
+            <li class="checklist__item ${checkedClass}" onclick="toggleChecklist(this, '${id}', '${itemSafeTitle}')">
+                <span class="checklist__box"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+                <span>${parsedItem}</span>
+            </li>
+        `;
+    });
+    
+    html += `</ul></section>`;
+    return html;
 }
 
-function toggleActionItem(id, safeTitle, el) {
-    const container = document.getElementById(`action_container_${id}_${safeTitle}`);
-    const btn = el.closest ? el.closest('button') || el : el;
-    const box = btn.querySelector('.rounded-full');
-    const icon = btn.querySelector('svg');
-    const isChecked = localStorage.getItem(`action_${id}_${safeTitle}`) === 'true';
-    
-    if (isChecked) {
-        localStorage.setItem(`action_${id}_${safeTitle}`, 'false');
-        if(container) { container.classList.remove('opacity-50', 'line-through'); }
-        if(icon) icon.innerHTML = '';
-        if(box) { box.classList.remove('bg-[#0a0a0a]', 'dark:bg-emerald-500', 'border-transparent'); box.classList.add('border-gray-300', 'dark:border-gray-600'); }
-    } else {
-        localStorage.setItem(`action_${id}_${safeTitle}`, 'true');
-        if(container) { container.classList.add('opacity-50', 'line-through'); }
-        if(icon) icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>';
-        if(box) { box.classList.add('bg-[#0a0a0a]', 'dark:bg-emerald-500', 'border-transparent'); box.classList.remove('border-gray-300', 'dark:border-gray-600'); }
-    }
-}
+window.toggleChecklist = function(el, id, safeTitle) {
+    el.classList.toggle('is-checked');
+    const isChecked = el.classList.contains('is-checked');
+    localStorage.setItem(`action_${id}_${safeTitle}`, isChecked ? 'true' : 'false');
+};
 
 function renderMemoryCard(title, content) {
     const clean = content.replace(/\*/g, '').trim();
     return `
-    <div class="reader-section" data-section="Mental Model">
-        <div class="section-label"><span class="section-dot" style="background:#0a0a0a"></span>Mental Model</div>
-        <div class="section-body">
-            <div class="bg-[#0a0a0a] dark:bg-[#0e0e0e] text-white rounded-xl px-8 sm:px-12 py-10 border border-[#1a1a1a]">
-                <p class="text-[1.2rem] sm:text-[1.35rem] font-serif leading-[1.8] italic text-gray-100 text-center">&ldquo;${clean}&rdquo;</p>
-            </div>
+    <section class="block" id="mental-model" data-title="Mental Model">
+        <p class="block__label">Mental Model</p>
+        <div class="card" style="text-align: center; font-style: italic; font-family: 'Fraunces', serif; font-size: 1.25rem; line-height: 1.6;">
+            &ldquo;${clean}&rdquo;
         </div>
-    </div>`;
+    </section>`;
 }
 
 function renderTakeawayCard(content) {
@@ -1360,35 +1325,48 @@ function renderTakeawayCard(content) {
     const display = content.replace(/\*/g, '');
     const copyFn = `(function(){
         navigator.clipboard.writeText('${clean}');
-        const t=document.getElementById('toast');
-        if(t){t.innerHTML='Copied to clipboard';t.classList.remove('opacity-0');setTimeout(()=>t.classList.add('opacity-0'),2000);}
+        alert('Copied to clipboard!');
     })()`;
     return `
-    <div class="reader-section" data-section="Key Takeaway">
-        <div class="section-label"><span class="section-dot" style="background:#166534"></span>Key Takeaway</div>
-        <div class="section-body">
-            <p class="text-[1.4rem] sm:text-[1.6rem] font-serif text-[#0a0a0a] dark:text-white leading-[1.65] font-medium mb-6">${display}</p>
-            <button onclick="${copyFn}" class="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.15em] text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition-colors">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                Copy
-            </button>
+    <section class="block" id="takeaway" data-title="Key Takeaway">
+        <p class="block__label">Key Takeaway</p>
+        <div class="card">
+            <p style="font-family: 'Fraunces', serif; font-size: 1.4rem; font-weight: 500; line-height: 1.6; margin-bottom: 1rem;">${display}</p>
+            <button onclick="${copyFn}" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; color: var(--accent); cursor: pointer; border: none; background: transparent; padding: 0;">Copy text</button>
         </div>
-    </div>`;
+    </section>`;
 }
 
 function renderConceptDisplay() {
     const book = findBookById(currentBookId).book;
-    const display = document.getElementById('reader-display');
+    const display = document.getElementById('reader-content');
+    const tocList = document.getElementById('toc-list');
+    
     const concept = book.concepts[currentConceptIndex];
     const conceptId = `${currentBookId}-${currentConceptIndex}`;
     
-    document.getElementById('reader-author').textContent = book.title;
+    // Set headers
+    const eyebrow = document.getElementById('hero-eyebrow');
+    const titleEl = document.getElementById('hero-title');
+    const meta = document.getElementById('hero-meta');
+    
+    if (eyebrow) eyebrow.innerHTML = `From <strong>${book.title}</strong>`;
+    if (titleEl) titleEl.textContent = concept.title;
+    
+    const wordCount = (concept.markdown || concept.explanation).split(/\s+/).length;
+    const readTime = Math.max(1, Math.ceil(wordCount / 200));
+    if (meta) {
+        meta.innerHTML = `<span><svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 15 14"></polyline></svg>${readTime} min read</span>`;
+    }
 
     let mainContentHtml = '';
     if (concept.htmlFile) {
-        display.innerHTML = `
-            <iframe src="${concept.htmlFile}" class="w-full min-h-[85vh] border-0 rounded-b-2xl" title="${concept.title}"></iframe>
-        `;
+        if (display) {
+            display.innerHTML = `
+                <iframe src="${concept.htmlFile}" class="w-full min-h-[85vh] border-0 rounded-b-2xl" title="${concept.title}"></iframe>
+            `;
+        }
+        if (tocList) tocList.innerHTML = '';
         return;
     } else if (concept.markdown) {
         mainContentHtml = parseConceptToComponents(concept.markdown, conceptId);
@@ -1398,204 +1376,106 @@ function renderConceptDisplay() {
         if (sentences.length > 1 && premise.length < 50) premise += sentences[1];
         let mechanism = concept.explanation.replace(premise, '').trim();
         let steps = concept.approach.split('. ').filter(s => s.trim().length > 0);
-        if (steps.length === 1) steps = concept.approach.split(', ').filter(s => s.trim().length > 0);
         
-        mainContentHtml = renderExplanationCard('The Core Premise', premise) + 
-                          renderExplanationCard('The Mechanism', mechanism) + 
-                          renderActionCard('Actionable Pivot', steps.join('<br>'), conceptId);
+        mainContentHtml = `
+            <section class="block prose" id="explanation" data-title="Explanation">
+                <p class="block__label">Explanation</p>
+                <p><strong>${premise}</strong></p>
+                <p>${mechanism}</p>
+            </section>
+            <section class="block prose" id="try" data-title="Try This Today">
+                <p class="block__label">Try This Today</p>
+                <ul class="checklist">
+                    ${steps.map(s => `<li class="checklist__item"><span>${s}</span></li>`).join('')}
+                </ul>
+            </section>
+        `;
+    }
+    
+    if (display) display.innerHTML = mainContentHtml;
+    
+    const isSaved = arsenalState.some(a => a.bookId === currentBookId && a.conceptIndex === currentConceptIndex);
+    const favToggle = document.getElementById('sidebar-btn-saved');
+    if (favToggle) {
+        if (isSaved) favToggle.classList.add('is-active');
+        else favToggle.classList.remove('is-active');
     }
 
-    // Build sections outline from the content
-    const sectionOrder = ['Visual Framework','Simple Explanation','Why It Matters','Real-Life Example','Common Mistake','Reflect','Try This Today','Mental Model','Key Takeaway'];
+    const hasPrev = currentConceptIndex > 0;
+    const hasNext = currentConceptIndex < book.concepts.length - 1;
+    let navHtml = '';
+    if (hasPrev) {
+        const prevC = book.concepts[currentConceptIndex - 1];
+        navHtml += `
+            <a href="#" class="prev" onclick="openReader('${currentBookId}', ${currentConceptIndex - 1}); return false;">
+                <span class="concept-nav__dir">← Previous</span>
+                <span class="concept-nav__title">${prevC.title}</span>
+            </a>
+        `;
+    } else {
+        navHtml += `<div></div>`;
+    }
+    
+    if (hasNext) {
+        const nextC = book.concepts[currentConceptIndex + 1];
+        navHtml += `
+            <a href="#" class="next" onclick="openReader('${currentBookId}', ${currentConceptIndex + 1}); return false;">
+                <span class="concept-nav__dir">Next →</span>
+                <span class="concept-nav__title">${nextC.title}</span>
+            </a>
+        `;
+    } else {
+        navHtml += `<div></div>`;
+    }
+    
+    const navEl = document.getElementById('concept-nav');
+    if (navEl) navEl.innerHTML = navHtml;
 
-    const premiumBadge = (concept.premium || concept.isPremium) ? `
-        <span class="inline-flex items-center gap-1.5 bg-amber-100 dark:bg-amber-900/20 text-amber-800 dark:text-amber-500 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest mb-6">
-            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.956 11.956 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-            Premium Framework
-        </span>` : '';
-
-    display.innerHTML = `
-        <style>
-            .reader-layout { display: flex; width: 100%; min-height: 100vh; }
-            .reader-sidebar {
-                display: none;
-                width: 220px;
-                min-width: 220px;
-                flex-shrink: 0;
-                padding: 2.5rem 1.5rem 2.5rem 2rem;
-                border-right: 1px solid #f0f0f0;
-                position: sticky;
-                top: 64px;
-                height: calc(100vh - 64px);
-                overflow-y: auto;
+    if (tocList && display) {
+        tocList.innerHTML = '';
+        const blocks = display.querySelectorAll('section.block[id]');
+        blocks.forEach(block => {
+            const title = block.getAttribute('data-title');
+            if (title) {
+                const li = document.createElement('li');
+                li.innerHTML = `<a class="toc__link" data-target="${block.id}"><span class="toc__dot"></span>${title}</a>`;
+                tocList.appendChild(li);
             }
-            .dark .reader-sidebar { border-color: #1f1f1f; }
-            @media (min-width: 1024px) { .reader-sidebar { display: block; } }
-            .sidebar-outline-title {
-                font-size: 9px;
-                font-weight: 800;
-                letter-spacing: 0.18em;
-                text-transform: uppercase;
-                color: #9ca3af;
-                margin-bottom: 1rem;
-            }
-            .sidebar-item {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                padding: 6px 8px;
-                border-radius: 6px;
-                font-size: 12px;
-                font-weight: 500;
-                color: #6b7280;
-                cursor: pointer;
-                transition: all 0.15s;
-                margin-bottom: 2px;
-                text-decoration: none;
-            }
-            .sidebar-item:hover { background: #f9fafb; color: #0a0a0a; }
-            .dark .sidebar-item:hover { background: #1a1a1a; color: #fff; }
-            .sidebar-item.active { background: #f0fdf4; color: #166534; font-weight: 700; }
-            .dark .sidebar-item.active { background: #052e16; color: #4ade80; }
-            .sidebar-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-            .reader-main { flex: 1; min-width: 0; padding: 2.5rem 2rem 6rem; }
-            @media (min-width: 768px) { .reader-main { padding: 2.5rem 3rem 6rem; } }
-            @media (min-width: 1280px) { .reader-main { padding: 2.5rem 4rem 6rem; } }
-            .reader-section { margin-bottom: 0; border-bottom: 1px solid #f3f4f6; }
-            .dark .reader-section { border-color: #1a1a1a; }
-            .reader-section:last-child { border-bottom: none; }
-            .section-label {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                font-size: 10px;
-                font-weight: 800;
-                letter-spacing: 0.18em;
-                text-transform: uppercase;
-                color: #9ca3af;
-                padding: 1.25rem 0 0.75rem;
-                cursor: pointer;
-                user-select: none;
-            }
-            .section-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-            .section-body { padding: 0.5rem 0 2rem 1.25rem; }
-            @media (max-width: 640px) { 
-                .reader-main { padding: 0.5rem 1.25rem 4rem; }
-                .reader-section {
-                    border-bottom: none !important;
-                    position: relative;
-                    padding-top: 1.5rem;
-                    padding-bottom: 1.5rem;
-                }
-                /* Elegant editorial separator */
-                .reader-section::before {
-                    content: '• • •';
-                    position: absolute;
-                    top: -10px;
-                    left: 0;
-                    width: 100%;
-                    text-align: center;
-                    font-size: 1rem;
-                    letter-spacing: 0.2em;
-                    color: #d1d5db;
-                }
-                .dark .reader-section::before { color: #374151; }
-                .reader-section:first-child::before { display: none; }
-                .reader-section:first-child { padding-top: 0; }
-                
-                /* Turn dashboard labels into elegant subheads */
-                .section-label { 
-                    padding: 0 0 1rem 0;
-                    justify-content: center;
-                    font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif; 
-                    font-size: 1.1rem; 
-                    letter-spacing: 0.05em; 
-                    text-transform: uppercase; 
-                    font-weight: 500;
-                    color: #6b7280; 
-                }
-                .dark .section-label { color: #9ca3af; }
-                .section-dot { display: none; }
-                
-                .section-body { padding: 0; }
-                
-                /* Luxurious typography rhythm */
-                .prose, .text-\\[1\\.1rem\\] { 
-                    font-size: 1.125rem !important; 
-                    line-height: 1.85 !important; 
-                    letter-spacing: -0.01em; 
-                }
-                .prose p { margin-bottom: 1.5em; }
-            }
-        </style>
-        <div class="animate-fade">
-            <!-- Concept Header -->
-            <div class="px-5 sm:px-8 pt-8 sm:pt-10 border-b border-[#f3f4f6] dark:border-b-[#1a1a1a] sm:border-b">
-                ${premiumBadge}
-                <h1 class="text-[1.9rem] sm:text-[2.4rem] md:text-[2.9rem] font-bold font-serif text-[#0a0a0a] dark:text-white leading-[1.15] tracking-tight mb-6">
-                    ${concept.title}
-                </h1>
-                <p class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-4">From <span class="text-[#0a0a0a] dark:text-gray-200">${book.title}</span></p>
-            </div>
-
-            <!-- Two Column: Sidebar + Content -->
-            <div class="reader-layout">
-                <!-- Left Outline Sidebar -->
-                <aside class="reader-sidebar" id="reader-outline-sidebar">
-                    <div class="sidebar-outline-title">In this concept</div>
-                    <nav id="reader-outline-nav"></nav>
-                </aside>
-
-                <!-- Main Content -->
-                <div class="reader-main">
-                    ${mainContentHtml}
-                </div>
-            </div>
-        </div>
-    `;
-
-    // Build outline nav from rendered sections
-    setTimeout(() => {
-        const nav = document.getElementById('reader-outline-nav');
-        const sections = document.querySelectorAll('#reader-display .reader-section');
-        if (!nav || !sections.length) return;
-        const dotColors = {
-            'Visual Framework': '#059669',
-            'Simple Explanation': '#166534',
-            'Why It Matters': '#1d4ed8',
-            'Real-Life Example': '#d97706',
-            'Common Mistake': '#dc2626',
-            'Reflect': '#4f46e5',
-            'Mental Model': '#0a0a0a',
-            'Key Takeaway': '#166534'
-        };
-        let html = '';
-        sections.forEach((sec, i) => {
-            const name = sec.getAttribute('data-section') || `Section ${i+1}`;
-            const color = dotColors[name] || '#6b7280';
-            sec.setAttribute('id', `reader-sec-${i}`);
-            html += `<a class="sidebar-item" href="#reader-sec-${i}" onclick="highlightSidebarItem(this); return true;">
-                <span class="sidebar-dot" style="background:${color}"></span>${name}
-            </a>`;
         });
-        nav.innerHTML = html;
-
-        // Scroll spy
-        const overlay = document.getElementById('reader-overlay');
-        if (overlay) {
-            overlay._spyFn && overlay.removeEventListener('scroll', overlay._spyFn);
-            overlay._spyFn = function() {
-                let active = 0;
-                sections.forEach((sec, i) => {
-                    if (sec.getBoundingClientRect().top < 200) active = i;
-                });
-                document.querySelectorAll('#reader-outline-nav .sidebar-item').forEach((a, i) => {
-                    a.classList.toggle('active', i === active);
-                });
-            };
-            overlay.addEventListener('scroll', overlay._spyFn);
+        
+        const links = tocList.querySelectorAll('.toc__link');
+        links.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = document.getElementById(link.dataset.target);
+                if (target) {
+                    const offset = 80;
+                    const readerOverlay = document.getElementById('reader-overlay');
+                    const elementPosition = target.getBoundingClientRect().top;
+                    const offsetPosition = readerOverlay.scrollTop + elementPosition - offset;
+                    
+                    readerOverlay.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+                const toc = document.getElementById('toc');
+                if (window.innerWidth <= 900 && toc) toc.classList.remove('is-open');
+            });
+        });
+        
+        const tocToggle = document.getElementById('tocToggle');
+        if (tocToggle) {
+            const newToggle = tocToggle.cloneNode(true);
+            tocToggle.parentNode.replaceChild(newToggle, tocToggle);
+            newToggle.addEventListener('click', () => {
+                const toc = document.getElementById('toc');
+                if (toc) toc.classList.toggle('is-open');
+            });
         }
-    }, 50);
+    }
+    
+    if (typeof onReaderScroll === 'function') onReaderScroll();
 }
 
 function shareInsight() {
@@ -1930,36 +1810,54 @@ function initializeApp() {
     let progressSaveTimeout = null;
     let lastSavedPct = 0;
 
-    // Reader Progress Bar & Text
-    document.getElementById('reader-overlay').addEventListener('scroll', function() {
-        const overlay = this;
-        const progress = document.getElementById('progress-bar');
-        const progressText = document.getElementById('progress-text');
+    // Reader Progress Bar, TOC Spy & Text
+    window.onReaderScroll = function() {
+        const overlay = document.getElementById('reader-overlay');
+        if (!overlay) return;
+        const progressFill = document.querySelector('.progress-rail__fill');
+        const progressText = document.querySelector('.percent-dial__text');
         
         let scrolled = 0;
         if(overlay.scrollHeight > overlay.clientHeight) {
             scrolled = (overlay.scrollTop / (overlay.scrollHeight - overlay.clientHeight)) * 100;
             scrolled = Math.max(0, Math.min(100, scrolled));
             
-            if (progress) progress.style.width = scrolled + '%';
-            if (progressText) progressText.textContent = Math.round(scrolled) + '%';
+            if (progressFill) progressFill.style.height = scrolled + '%';
+            if (progressText) progressText.textContent = Math.round(scrolled);
+            
+            // TOC active dot logic
+            const blocks = document.querySelectorAll('section.block[id]');
+            let activeId = null;
+            blocks.forEach(block => {
+                if (block.getBoundingClientRect().top < 300) {
+                    activeId = block.id;
+                }
+            });
+            if (activeId) {
+                document.querySelectorAll('.toc__link').forEach(link => {
+                    if (link.dataset.target === activeId) link.classList.add('is-active');
+                    else link.classList.remove('is-active');
+                });
+            }
         }
 
         // Auto Save Progress to Firebase
-        if (currentUser && currentBookId) {
+        if (typeof currentUser !== 'undefined' && currentUser && currentBookId) {
             // Save if scrolled 10% more, or after 10 seconds of stopping
             if (Math.abs(scrolled - lastSavedPct) > 10) {
                 lastSavedPct = scrolled;
-                saveReadingProgress(overlay.scrollTop, scrolled);
+                if (typeof saveReadingProgress === 'function') saveReadingProgress(overlay.scrollTop, scrolled);
             } else {
                 clearTimeout(progressSaveTimeout);
                 progressSaveTimeout = setTimeout(() => {
                     lastSavedPct = scrolled;
-                    saveReadingProgress(overlay.scrollTop, scrolled);
+                    if (typeof saveReadingProgress === 'function') saveReadingProgress(overlay.scrollTop, scrolled);
                 }, 10000);
             }
         }
-    });
+    };
+    document.getElementById('reader-overlay').addEventListener('scroll', window.onReaderScroll);
+
 
     // Check for shared concept in URL
     const urlParams = new URLSearchParams(window.location.search);

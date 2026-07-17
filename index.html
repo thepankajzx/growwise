@@ -21,6 +21,9 @@
         }
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&display=swap');
 
@@ -531,65 +534,62 @@
     </footer>
 
     <!-- READER OVERLAY -->
-    <div id="reader-overlay" class="fixed inset-0 z-[100] bg-white dark:bg-[#121212] hidden overflow-y-auto animate-fade transition-colors duration-300">
-        <!-- Sticky Header with Progress Bar -->
-        <header class="sticky top-0 w-full bg-white/90 dark:bg-[#121212]/90 backdrop-blur-md border-b border-borderLight dark:border-gray-800 z-50 transition-colors duration-300 pt-2 sm:pt-0">
-            <div class="w-full mx-auto px-2 sm:px-8 lg:px-12 xl:px-20 min-h-[3.5rem] sm:min-h-[4rem] py-2 flex items-center justify-between">
-                <div class="flex items-center space-x-1 sm:space-x-4 shrink-0 overflow-hidden">
-                    <button id="reader-back-btn" class="p-3 -ml-2 sm:p-2 sm:ml-0 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition shrink-0" style="cursor:pointer; -webkit-tap-highlight-color: transparent;">
-                        <svg class="w-6 h-6 sm:w-5 sm:h-5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
-                    </button>
-                    <script>
-                        document.getElementById('reader-back-btn').addEventListener('click', function(e) {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            try { if (typeof closeReader === 'function') { closeReader(); return; } } catch(err) { console.error('closeReader error:', err); }
-                            // Fallback: manually close
-                            var overlay = document.getElementById('reader-overlay');
-                            if (overlay) { overlay.classList.add('hidden'); }
-                            document.body.style.overflow = '';
-                            window.location.hash = '#explorer';
-                        });
-                    </script>
-                    <div class="flex flex-col truncate">
-                        <span id="reader-author" class="font-medium text-[11px] sm:text-sm text-secondary tracking-wide uppercase truncate">Atomic Habits</span>
-                    </div>
-                </div>
-                
-                <div class="flex items-center gap-0 sm:gap-2 shrink-0">
-                    <!-- Theme -->
-                    <button onclick="toggleTheme()" class="p-1.5 sm:p-2 rounded-full text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-white transition" title="Toggle Theme">
-                        <svg class="w-4 h-4 sm:w-5 sm:h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                        <svg class="w-4 h-4 sm:w-5 sm:h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
-                    </button>
-                    <!-- Share -->
-                    <button onclick="shareInsight()" class="p-1.5 sm:p-2 rounded-full text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-white transition" title="Share">
-                        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6.632l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
-                    </button>
-                    <!-- Add to My Arsenal (Heart) -->
-                    <button onclick="toggleSaved()" id="sidebar-btn-saved" class="p-1.5 sm:p-2 rounded-full text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-white transition" title="Add to My Arsenal">
-                        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
-                    </button>
-                    <!-- Save for Later -->
-                    <button onclick="toggleSaveLater()" id="sidebar-btn-save_later" class="p-1.5 sm:p-2 rounded-full text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-white transition" title="Save for Later">
-                        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    </button>
-                    <!-- Mark Completed (Scalloped Verified Badge) -->
-                    <button onclick="toggleCompleted()" id="sidebar-btn-completed" class="p-1.5 sm:p-2 rounded-full text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 transition" title="Mark as Completed">
-                        <svg class="w-5 h-5 sm:w-7 sm:h-7" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd"/></svg>
-                    </button>
-                </div>
+    <div id="reader-overlay" class="fixed inset-0 z-[100] bg-white dark:bg-[#121212] hidden overflow-y-auto transition-colors duration-300">
+        <div class="progress-rail"><div class="progress-rail__fill" id="progressFill"></div></div>
+        
+        <header class="navbar">
+            <div class="navbar__left">
+                <button class="navbar__back" id="reader-back-btn" aria-label="Back to book">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+                <script>
+                    document.getElementById('reader-back-btn').addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        try { if (typeof closeReader === 'function') { closeReader(); return; } } catch(err) { console.error('closeReader error:', err); }
+                        var overlay = document.getElementById('reader-overlay');
+                        if (overlay) { overlay.classList.add('hidden'); }
+                        document.body.style.overflow = '';
+                        window.location.hash = '#explorer';
+                    });
+                </script>
+                <span class="navbar__title" id="reader-author">Atomic Habits</span>
             </div>
-            <!-- Enhanced Reading Progress Bar with Glow -->
-            <div class="h-[3px] w-full bg-gray-100 dark:bg-gray-900 absolute bottom-0 left-0 overflow-hidden">
-                <div id="progress-bar" class="h-[3px] bg-emerald-500 w-0 transition-none shadow-[0_0_8px_rgba(16,185,129,0.8)] rounded-r-full"></div>
+            <div class="navbar__right">
+                <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle dark mode">
+                    <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                </button>
+                <button class="icon-btn" onclick="shareInsight()" aria-label="Share">
+                    <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"></line><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"></line></svg>
+                </button>
+                <button class="icon-btn" onclick="toggleSaved()" id="sidebar-btn-saved" aria-label="Save concept">
+                    <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"></path></svg>
+                </button>
+                <button class="icon-btn" onclick="toggleCompleted()" id="sidebar-btn-completed" aria-label="Reading history">
+                    <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 15 14"></polyline></svg>
+                </button>
+                <div class="percent-dial" id="percentDial" title="Reading progress">
+                    <span class="percent-dial__label" id="percentLabel">0%</span>
+                </div>
             </div>
         </header>
 
-        <!-- Fluid Main Layout -->
-        <div class="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-10 xl:px-16 pt-8 pb-32">
-            <main class="w-full flex flex-col space-y-12 component-driven" id="reader-display">
-                <!-- Content will be injected here by JS -->
+        <div class="layout">
+            <nav class="toc" id="toc" aria-label="Table of contents">
+                <button class="toc__mobile-toggle" id="tocToggle">
+                    <span>In this concept</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </button>
+                <p class="toc__eyebrow" style="display:block;">In this concept</p>
+                <ul class="toc__list" id="toc-list">
+                    <!-- TOC injected by JS -->
+                </ul>
+            </nav>
+            
+            <main class="main">
+                <article class="reading" id="reader-display">
+                    <!-- Content injected by JS -->
+                </article>
             </main>
         </div>
     </div></div>

@@ -261,17 +261,23 @@
                     <div class="w-full lg:w-auto flex flex-col md:flex-row items-start md:items-center justify-start lg:justify-end gap-4 overflow-visible pb-2 lg:pb-0 hide-scrollbar">
                         
                         <!-- Popular Niches -->
-                        <div class="flex items-center gap-3 shrink-0 overflow-x-auto hide-scrollbar w-full md:w-auto" id="popular-niches-container">
+                        <div class="hidden sm:flex items-center gap-3 shrink-0 overflow-x-auto hide-scrollbar w-full md:w-auto" id="popular-niches-container">
                             <span class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest shrink-0">Popular:</span>
                             <button onclick="filterCategory('wealth'); closeMegaMenu();" class="px-4 py-1.5 rounded-full text-[12px] font-bold bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition shadow-sm shrink-0">Wealth</button>
                             <button onclick="filterCategory('business'); closeMegaMenu();" class="px-4 py-1.5 rounded-full text-[12px] font-bold bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition shadow-sm shrink-0">Business</button>
                             <button onclick="filterCategory('productivity'); closeMegaMenu();" class="px-4 py-1.5 rounded-full text-[12px] font-bold bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white transition shadow-sm shrink-0">Productivity</button>
                         </div>
 
-                        <!-- Mega Menu Toggle Button -->
-                        <button id="mega-menu-btn" onclick="toggleMegaMenu()" class="flex items-center gap-3 px-6 py-3 bg-[#0a0a0a] dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-[#0a0a0a] rounded-full font-bold uppercase tracking-widest text-sm transition shadow-sm shrink-0">
+                        <!-- Mega Menu Toggle Button (Desktop) -->
+                        <button id="mega-menu-btn" onclick="toggleMegaMenu()" class="hidden sm:flex items-center gap-3 px-6 py-3 bg-[#0a0a0a] dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-[#0a0a0a] rounded-full font-bold uppercase tracking-widest text-sm transition shadow-sm shrink-0">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
                             Filter Directory
+                        </button>
+                        
+                        <!-- Mobile Single Filter Button -->
+                        <button onclick="toggleMegaMenu()" class="flex sm:hidden items-center justify-between w-full px-5 py-3.5 bg-white dark:bg-[#111] border border-gray-200 dark:border-gray-800 text-[#0a0a0a] dark:text-white rounded-xl shadow-sm transition">
+                            <span class="font-sans font-bold text-sm tracking-wide">Browse Categories</span>
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </button>
                         
                         <!-- Mega Menu Dropdown Container -->

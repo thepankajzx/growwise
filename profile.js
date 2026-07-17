@@ -338,48 +338,50 @@ async function loadContinueJourney(uid) {
             const resumeUrl = `index.html?resumeBook=${encodeURIComponent(data.bookId)}&resumeConcept=${data.conceptIndex}&resumeGlobal=${data.globalContentIndex}&scroll=${data.scrollPosition}`;
 
             container.innerHTML = `
-                <div class="flex justify-between items-start mb-4 md:mb-8">
+                <div class="flex justify-between items-start mb-3 md:mb-8">
                     <div class="inline-flex items-center gap-2">
                         <div class="w-2 h-2 rounded-full bg-accent animate-pulse"></div>
                         <span class="font-sans text-xs uppercase tracking-widest font-bold text-accent">Continue Your Journey</span>
                     </div>
                 </div>
                 
-                <div class="mb-6 md:mb-12">
-                    <h2 class="font-serif text-3xl md:text-4xl sm:text-5xl text-white font-medium mb-2 md:mb-4 leading-tight">${bookName}</h2>
-                    <p class="font-sans text-lg sm:text-xl text-white/70 font-light flex items-center gap-3">
-                        <svg class="w-5 h-5 text-accent/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                <div class="mb-3 md:mb-12">
+                    <h2 class="font-serif text-2xl md:text-4xl sm:text-5xl text-white font-medium mb-1 md:mb-4 leading-tight">${bookName}</h2>
+                    <p class="font-sans text-sm sm:text-xl text-white/70 font-light flex items-center gap-2">
+                        <svg class="w-4 h-4 md:w-5 md:h-5 text-accent/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                         Concept ${data.conceptIndex + 1}
                     </p>
                 </div>
                 
-                <div class="flex flex-col md:flex-row items-start md:items-end justify-between gap-8">
+                <div class="flex flex-col md:flex-row items-start md:items-end justify-between gap-3 md:gap-8">
                     <div class="w-full md:w-3/5">
-                        <div class="flex justify-between items-end font-sans mb-3">
-                            <span class="text-3xl font-medium text-white tracking-tight">${pct}<span class="text-lg text-white/50">%</span></span>
+                        <div class="flex justify-between items-end font-sans mb-2 md:mb-3">
+                            <span class="text-2xl md:text-3xl font-medium text-white tracking-tight">${pct}<span class="text-base md:text-lg text-white/50">%</span></span>
                         </div>
-                        <div class="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+                        <div class="w-full h-1.5 md:h-2 bg-white/10 rounded-full overflow-hidden">
                             <div class="h-full bg-accent rounded-full animate-bar" style="width: ${pct}%;"></div>
                         </div>
                     </div>
                     
                     <div class="w-full md:w-auto flex flex-col items-center md:items-end">
-                        <a href="${resumeUrl}" class="w-full sm:w-auto px-5 py-3 md:px-8 md:py-4 bg-white text-primary rounded-full font-sans text-xs md:text-sm font-bold hover:bg-gray-100 hover:scale-105 transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.2)] flex items-center justify-center gap-2">
+                        <a href="${resumeUrl}" class="w-full sm:w-auto px-4 py-2.5 md:px-8 md:py-4 bg-white text-primary rounded-full font-sans text-xs md:text-sm font-bold hover:bg-gray-100 hover:scale-105 transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.2)] flex items-center justify-center gap-2">
                             Resume Learning
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                            <svg class="w-3.5 h-3.5 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                         </a>
                     </div>
                 </div>
             `;
         } else {
             container.innerHTML = `
-                <div class="flex flex-col items-center justify-center h-full text-center py-12">
-                    <div class="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center mb-6">
-                        <svg class="w-8 h-8 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                <div class="flex items-center gap-4 py-3 md:flex-col md:items-center md:justify-center md:h-full md:text-center md:py-12">
+                    <div class="w-10 h-10 md:w-16 md:h-16 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+                        <svg class="w-5 h-5 md:w-8 md:h-8 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                     </div>
-                    <h2 class="font-serif text-3xl text-white font-medium mb-2">No Active Journey</h2>
-                    <p class="font-sans text-white/60 mb-8 max-w-sm">You haven't started reading any concepts yet. Visit the library to begin your learning journey.</p>
-                    <a href="index.html#explorer" class="px-8 py-4 bg-white text-primary rounded-full font-sans text-sm font-bold hover:bg-gray-100 hover:scale-105 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)]">Explore Library</a>
+                    <div class="flex-1 md:flex-none">
+                        <h2 class="font-serif text-lg md:text-3xl text-white font-medium md:mb-2">No Active Journey</h2>
+                        <p class="hidden md:block font-sans text-white/60 mb-8 max-w-sm">You haven't started reading any concepts yet. Visit the library to begin your learning journey.</p>
+                    </div>
+                    <a href="index.html#explorer" class="shrink-0 px-4 py-2 md:px-8 md:py-4 bg-white text-primary rounded-full font-sans text-xs md:text-sm font-bold hover:bg-gray-100 hover:scale-105 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)]">Explore →</a>
                 </div>
             `;
         }

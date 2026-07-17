@@ -1475,11 +1475,58 @@ function renderConceptDisplay() {
             }
             .section-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
             .section-body { padding: 0.5rem 0 2rem 1.25rem; }
-            @media (max-width: 640px) { .section-body { padding-left: 0; } }
+            @media (max-width: 640px) { 
+                .reader-main { padding: 0.5rem 1.25rem 4rem; }
+                .reader-section {
+                    border-bottom: none !important;
+                    position: relative;
+                    padding-top: 1.5rem;
+                    padding-bottom: 1.5rem;
+                }
+                /* Elegant editorial separator */
+                .reader-section::before {
+                    content: '• • •';
+                    position: absolute;
+                    top: -10px;
+                    left: 0;
+                    width: 100%;
+                    text-align: center;
+                    font-size: 1rem;
+                    letter-spacing: 0.2em;
+                    color: #d1d5db;
+                }
+                .dark .reader-section::before { color: #374151; }
+                .reader-section:first-child::before { display: none; }
+                .reader-section:first-child { padding-top: 0; }
+                
+                /* Turn dashboard labels into elegant subheads */
+                .section-label { 
+                    padding: 0 0 1rem 0;
+                    justify-content: center;
+                    font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif; 
+                    font-size: 1.1rem; 
+                    letter-spacing: 0.05em; 
+                    text-transform: uppercase; 
+                    font-weight: 500;
+                    color: #6b7280; 
+                }
+                .dark .section-label { color: #9ca3af; }
+                .section-dot { display: none; }
+                
+                .section-body { padding: 0; }
+                
+                /* Luxurious typography rhythm */
+                .prose, .text-\\[1\\.1rem\\] { 
+                    font-size: 1.125rem !important; 
+                    line-height: 1.85 !important; 
+                    letter-spacing: -0.01em; 
+                }
+                .prose p { margin-bottom: 1.5em; }
+            }
         </style>
         <div class="animate-fade">
             <!-- Concept Header -->
-            <div style="padding: 2.5rem 2rem 0; border-bottom: 1px solid #f3f4f6;" class="dark:border-b-[#1a1a1a]">
+            <div class="px-5 sm:px-8 pt-8 sm:pt-10 border-b border-[#f3f4f6] dark:border-b-[#1a1a1a] sm:border-b">
                 ${premiumBadge}
                 <h1 class="text-[1.9rem] sm:text-[2.4rem] md:text-[2.9rem] font-bold font-serif text-[#0a0a0a] dark:text-white leading-[1.15] tracking-tight mb-6">
                     ${concept.title}

@@ -1815,15 +1815,17 @@ function initializeApp() {
         const overlay = document.getElementById('reader-overlay');
         if (!overlay) return;
         const progressFill = document.querySelector('.progress-rail__fill');
-        const progressText = document.querySelector('.percent-dial__text');
+        const progressText = document.querySelector('.percent-dial__label');
+        const percentDial = document.getElementById('percentDial');
         
         let scrolled = 0;
         if(overlay.scrollHeight > overlay.clientHeight) {
             scrolled = (overlay.scrollTop / (overlay.scrollHeight - overlay.clientHeight)) * 100;
             scrolled = Math.max(0, Math.min(100, scrolled));
             
-            if (progressFill) progressFill.style.height = scrolled + '%';
-            if (progressText) progressText.textContent = Math.round(scrolled);
+            if (progressFill) progressFill.style.width = scrolled + '%';
+            if (progressText) progressText.textContent = Math.round(scrolled) + '%';
+            if (percentDial) percentDial.style.setProperty('--pct', scrolled + '%');
             
             // TOC active dot logic
             const blocks = document.querySelectorAll('section.block[id]');

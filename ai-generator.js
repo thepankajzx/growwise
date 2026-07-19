@@ -132,22 +132,22 @@ const aiUI = {
         conceptSelect.innerHTML = '<option value="">-- Select Book First --</option>';
         conceptSelect.disabled = true;
 
-        if (!domain || typeof window.conceptsDB === 'undefined') {
+        if (!domain || typeof window.allConcepts === 'undefined') {
             bookSelect.disabled = true;
             return;
         }
 
-        const books = new Set();
-        window.conceptsDB.forEach(c => {
-            if (domain === 'all' || c.category === domain) {
-                books.add(c.book);
+        const booksMap = new Map();
+        window.allConcepts.forEach(c => {
+            if (domain === 'all' || c.categoryId === domain) {
+                booksMap.set(c.bookId, c.bookTitle);
             }
         });
 
-        Array.from(books).sort().forEach(book => {
+        Array.from(booksMap.keys()).sort().forEach(bookId => {
             const opt = document.createElement('option');
-            opt.value = book;
-            opt.textContent = book;
+            opt.value = bookId;
+            opt.textContent = booksMap.get(bookId);
             bookSelect.appendChild(opt);
         });
 
@@ -160,16 +160,16 @@ const aiUI = {
         
         conceptSelect.innerHTML = '<option value="">-- Choose Concept --</option>';
 
-        if (!book || typeof window.conceptsDB === 'undefined') {
+        if (!book || typeof window.allConcepts === 'undefined') {
             conceptSelect.disabled = true;
             return;
         }
 
-        window.conceptsDB.forEach(c => {
-            if (c.book === book) {
+        window.allConcepts.forEach(c => {
+            if (c.bookId === book) {
                 const opt = document.createElement('option');
-                opt.value = c.id;
-                opt.textContent = c.title;
+                opt.value = `${c.bookId}-${c.conceptIndex}`;
+                opt.textContent = c.concept.title;
                 conceptSelect.appendChild(opt);
             }
         });

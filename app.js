@@ -1,7 +1,7 @@
 // Global state
 let allConcepts = [];
 let currentCategoryFilter = 'all';
-let currentBookFilter = 'all';
+let currentBookFilters = new Set();
 let currentLibraryFilter = new Set(); // multi-select: set of active filters
 let showPremiumOnly = false;
 
@@ -602,12 +602,20 @@ function updateMembershipUI() {
 
 function filterCategory(catId) {
     currentCategoryFilter = catId;
-    currentBookFilter = 'all';
+    currentBookFilters.clear();
     renderExplorer();
 }
 
 function filterBook(bookId) {
-    currentBookFilter = bookId;
+    if (bookId === 'all') {
+        currentBookFilters.clear();
+    } else {
+        if (currentBookFilters.has(bookId)) {
+            currentBookFilters.delete(bookId);
+        } else {
+            currentBookFilters.add(bookId);
+        }
+    }
     // Also set the category to match the book so we only see this book's concepts
     if (bookId !== 'all') {
         const bookObj = findBookById(bookId);
@@ -775,7 +783,7 @@ function filterLibrary(type) {
 
 function resetToDashboard() {
     currentCategoryFilter = 'all';
-    currentBookFilter = 'all';
+    currentBookFilters.clear();
     currentLibraryFilter.clear();
     filterLibrary('all');
     updateMembershipUI();
@@ -846,8 +854,8 @@ function renderExplorer() {
     if (currentCategoryFilter !== 'all') {
         filtered = filtered.filter(c => c.categoryId === currentCategoryFilter);
     }
-    if (currentBookFilter !== 'all') {
-        filtered = filtered.filter(c => c.bookId === currentBookFilter);
+    if (currentBookFilters.size > 0) {
+        filtered = filtered.filter(c => currentBookFilters.has(c.bookId));
     }
     
     if (filtered.length === 0) {
@@ -2069,4 +2077,132 @@ async function saveReadingMinutesToHistory(minutes) {
     } catch (err) {
         console.error("Failed to update history:", err);
     }
+}
+
+// ==========================================
+// FILTER DIRECTORY MODAL LOGIC
+// ==========================================
+
+let tempCategoryFilter = 'all';
+let tempBookFilters = new Set();
+
+function openFilterModal() {
+    tempCategoryFilter = currentCategoryFilter;
+    tempBookFilters = new Set(currentBookFilters);
+    const modal = document.getElementById('filter-modal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+    
+    renderFilterModalDomains();
+    renderFilterModalBooks();
+    
+    // Listen for Enter key
+    document.addEventListener('keydown', handleFilterModalKeydown);
+}
+
+function closeFilterModal() {
+    const modal = document.getElementById('filter-modal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    document.body.style.overflow = '';
+    document.removeEventListener('keydown', handleFilterModalKeydown);
+}
+
+function handleFilterModalKeydown(e) {
+    if (e.key === 'Enter') {
+        applyFilters();
+    } else if (e.key === 'Escape') {
+        closeFilterModal();
+    }
+}
+
+function applyFilters() {
+    currentCategoryFilter = tempCategoryFilter;
+    currentBookFilters = new Set(tempBookFilters);
+    closeFilterModal();
+    renderExplorer();
+}
+
+function renderFilterModalDomains() {
+    const container = document.getElementById('filter-modal-domains');
+    if (!container) return;
+    
+    let html = `
+        <li>
+            <button onclick="selectFilterModalDomain('all')" class="w-full text-left px-6 py-3 font-bold text-sm tracking-wide transition-colors ${tempCategoryFilter === 'all' ? 'bg-white dark:bg-darkCard text-[#0a0a0a] dark:text-white border-l-4 border-[#0a0a0a] dark:border-white' : 'text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white border-l-4 border-transparent'}">
+                All Concepts
+            </button>
+        </li>
+    `;
+    
+    booksData.forEach(cat => {
+        const isActive = tempCategoryFilter === cat.id;
+        html += `
+            <li>
+                <button onclick="selectFilterModalDomain('${cat.id}')" class="w-full text-left px-6 py-3 font-bold text-sm tracking-wide transition-colors ${isActive ? 'bg-white dark:bg-darkCard text-[#0a0a0a] dark:text-white border-l-4 border-[#0a0a0a] dark:border-white' : 'text-gray-600 dark:text-gray-400 hover:text-[#0a0a0a] dark:hover:text-white border-l-4 border-transparent'}">
+                    ${cat.category}
+                </button>
+            </li>
+        `;
+    });
+    container.innerHTML = html;
+}
+
+function selectFilterModalDomain(domainId) {
+    tempCategoryFilter = domainId;
+    renderFilterModalDomains();
+    renderFilterModalBooks();
+}
+
+function toggleFilterModalBook(bookId) {
+    if (tempBookFilters.has(bookId)) {
+        tempBookFilters.delete(bookId);
+    } else {
+        tempBookFilters.add(bookId);
+    }
+    renderFilterModalBooks();
+}
+
+function renderFilterModalBooks() {
+    const container = document.getElementById('filter-modal-books');
+    const title = document.getElementById('filter-modal-books-title');
+    if (!container) return;
+    
+    if (tempCategoryFilter === 'all') {
+        title.textContent = 'Select Books (All Domains)';
+    } else {
+        const catData = booksData.find(c => c.id === tempCategoryFilter);
+        title.textContent = catData ? \`Select Books in \${catData.category}\` : 'Select Books';
+    }
+    
+    let html = '';
+    
+    // Get books for current selected domain
+    let booksToShow = [];
+    if (tempCategoryFilter === 'all') {
+        booksData.forEach(cat => {
+            booksToShow = booksToShow.concat(cat.books);
+        });
+    } else {
+        const catData = booksData.find(c => c.id === tempCategoryFilter);
+        if (catData) booksToShow = catData.books;
+    }
+    
+    booksToShow.forEach(book => {
+        const isSelected = tempBookFilters.has(book.id);
+        html += \`
+            <button onclick="toggleFilterModalBook('\${book.id}')" class="flex items-center justify-between text-left p-4 rounded-xl border \${isSelected ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20' : 'border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-[#0f0f0f] hover:border-[#0a0a0a] dark:hover:border-white'} transition group shadow-sm">
+                <div>
+                    <p class="font-serif text-lg font-medium \${isSelected ? 'text-emerald-800 dark:text-emerald-400' : 'text-[#0a0a0a] dark:text-white'} transition">\${book.title}</p>
+                    <p class="text-xs \${isSelected ? 'text-emerald-600 dark:text-emerald-500' : 'text-gray-500'} mt-1 uppercase tracking-widest">\${book.concepts.length} Concepts</p>
+                </div>
+                <div class="w-5 h-5 md:w-6 md:h-6 rounded-md border \${isSelected ? 'border-emerald-500 bg-emerald-500 text-white' : 'border-gray-300 dark:border-gray-600'} flex items-center justify-center transition shrink-0">
+                    \${isSelected ? '<svg class="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>' : ''}
+                </div>
+            </button>
+        \`;
+    });
+    
+    container.innerHTML = html;
 }

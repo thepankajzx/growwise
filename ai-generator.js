@@ -214,7 +214,7 @@ const aiUI = {
         this.currentPrompt = AIEngine.buildSystemPrompt(config);
 
         // Check Cache
-        const cacheKey = \`ai_gen_\${conceptId}_\${config.audience}_\${config.tone}\`;
+        const cacheKey = `ai_gen_${conceptId}_${config.audience}_${config.tone}`;
         let htmlResponse = sessionStorage.getItem(cacheKey);
 
         if (!htmlResponse) {

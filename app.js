@@ -2173,7 +2173,7 @@ function renderFilterModalBooks() {
         title.textContent = 'Select Books (All Domains)';
     } else {
         const catData = booksData.find(c => c.id === tempCategoryFilter);
-        title.textContent = catData ? \`Select Books in \${catData.category}\` : 'Select Books';
+        title.textContent = catData ? `Select Books in ${catData.category}` : 'Select Books';
     }
     
     let html = '';
@@ -2191,17 +2191,17 @@ function renderFilterModalBooks() {
     
     booksToShow.forEach(book => {
         const isSelected = tempBookFilters.has(book.id);
-        html += \`
-            <button onclick="toggleFilterModalBook('\${book.id}')" class="flex items-center justify-between text-left p-4 rounded-xl border \${isSelected ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20' : 'border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-[#0f0f0f] hover:border-[#0a0a0a] dark:hover:border-white'} transition group shadow-sm">
+        html += `
+            <button onclick="toggleFilterModalBook('${book.id}')" class="flex items-center justify-between text-left p-4 rounded-xl border ${isSelected ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20' : 'border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-[#0f0f0f] hover:border-[#0a0a0a] dark:hover:border-white'} transition group shadow-sm">
                 <div>
-                    <p class="font-serif text-lg font-medium \${isSelected ? 'text-emerald-800 dark:text-emerald-400' : 'text-[#0a0a0a] dark:text-white'} transition">\${book.title}</p>
-                    <p class="text-xs \${isSelected ? 'text-emerald-600 dark:text-emerald-500' : 'text-gray-500'} mt-1 uppercase tracking-widest">\${book.concepts.length} Concepts</p>
+                    <p class="font-serif text-lg font-medium ${isSelected ? 'text-emerald-800 dark:text-emerald-400' : 'text-[#0a0a0a] dark:text-white'} transition">${book.title}</p>
+                    <p class="text-xs ${isSelected ? 'text-emerald-600 dark:text-emerald-500' : 'text-gray-500'} mt-1 uppercase tracking-widest">${book.concepts.length} Concepts</p>
                 </div>
-                <div class="w-5 h-5 md:w-6 md:h-6 rounded-md border \${isSelected ? 'border-emerald-500 bg-emerald-500 text-white' : 'border-gray-300 dark:border-gray-600'} flex items-center justify-center transition shrink-0">
-                    \${isSelected ? '<svg class="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>' : ''}
+                <div class="w-5 h-5 md:w-6 md:h-6 rounded-md border ${isSelected ? 'border-emerald-500 bg-emerald-500 text-white' : 'border-gray-300 dark:border-gray-600'} flex items-center justify-center transition shrink-0">
+                    ${isSelected ? '<svg class="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>' : ''}
                 </div>
             </button>
-        \`;
+        `;
     });
     
     container.innerHTML = html;

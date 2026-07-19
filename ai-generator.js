@@ -132,13 +132,13 @@ const aiUI = {
         conceptSelect.innerHTML = '<option value="">-- Select Book First --</option>';
         conceptSelect.disabled = true;
 
-        if (!domain || typeof window.allConcepts === 'undefined') {
+        if (!domain || typeof allConcepts === 'undefined') {
             bookSelect.disabled = true;
             return;
         }
 
         const booksMap = new Map();
-        window.allConcepts.forEach(c => {
+        allConcepts.forEach(c => {
             if (domain === 'all' || c.categoryId === domain) {
                 booksMap.set(c.bookId, c.bookTitle);
             }
@@ -160,12 +160,12 @@ const aiUI = {
         
         conceptSelect.innerHTML = '<option value="">-- Choose Concept --</option>';
 
-        if (!book || typeof window.allConcepts === 'undefined') {
+        if (!book || typeof allConcepts === 'undefined') {
             conceptSelect.disabled = true;
             return;
         }
 
-        window.allConcepts.forEach(c => {
+        allConcepts.forEach(c => {
             if (c.bookId === book) {
                 const opt = document.createElement('option');
                 opt.value = `${c.bookId}-${c.conceptIndex}`;

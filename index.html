@@ -470,12 +470,19 @@ section.block { margin-bottom: 3rem; }
 
         <!-- ADMIN VIEW (CAROUSEL GENERATOR) -->
         <section id="view-admin" class="hidden animate-fade max-w-[1400px] mx-auto pb-20 w-full">
-            <div class="mb-8">
-                <h2 class="text-3xl font-bold serif text-[#0a0a0a] dark:text-white">Studio Generator</h2>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Generate 1080x1080 carousels for X and LinkedIn.</p>
+            <div class="mb-8 flex flex-col md:flex-row md:justify-between md:items-end border-b border-gray-200 dark:border-gray-800 pb-4 gap-4">
+                <div>
+                    <h2 class="text-3xl font-bold serif text-[#0a0a0a] dark:text-white">Admin Studio</h2>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Manage content and generate assets.</p>
+                </div>
+                <div class="flex gap-4">
+                    <button id="tab-btn-carousel" onclick="switchAdminTab('carousel')" class="px-4 py-2 text-xs font-bold uppercase tracking-widest border-b-2 border-[#0a0a0a] dark:border-white text-[#0a0a0a] dark:text-white transition">Carousel Studio</button>
+                    <button id="tab-btn-ai" onclick="switchAdminTab('ai')" class="px-4 py-2 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-gray-500 hover:text-[#0a0a0a] dark:hover:text-white transition">AI Content Generator</button>
+                </div>
             </div>
             
-            <div class="flex flex-col lg:flex-row gap-8 w-full">
+            <!-- CAROUSEL STUDIO TAB -->
+            <div id="admin-tab-carousel" class="flex flex-col lg:flex-row gap-8 w-full">
                 <!-- Sidebar Menu (Categories/Books) -->
                 <div class="w-full lg:w-1/4 space-y-6">
                     <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-800 pb-2">Select Concept</h3>
@@ -596,7 +603,87 @@ section.block { margin-bottom: 3rem; }
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> <!-- END CAROUSEL STUDIO TAB -->
+
+            <!-- AI CONTENT GENERATOR TAB -->
+            <div id="admin-tab-ai" class="hidden flex-col gap-8 w-full">
+                <!-- UI for AI Generator goes here -->
+                <div class="flex flex-col lg:flex-row gap-8 w-full">
+                    <!-- Left Config Sidebar -->
+                    <div class="w-full lg:w-1/4 space-y-6">
+                        <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-800 pb-2">1. Select Concept</h3>
+                        <div>
+                            <select id="ai-domain-select" onchange="aiUI.populateBooks()" class="w-full bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-700 dark:text-white rounded-sm px-3 py-2.5 text-xs font-semibold focus:outline-none focus:border-[#0a0a0a] dark:focus:border-white">
+                                <option value="">-- Choose Domain --</option>
+                                <option value="all">All Domains / All Concepts</option>
+                                <option value="wealth">Wealth & Finance</option>
+                                <option value="business">Business & Strategy</option>
+                                <option value="productivity">Productivity & Systems</option>
+                                <option value="self-improvement">Self-Improvement</option>
+                            </select>
+                        </div>
+                        <div>
+                            <select id="ai-book-select" onchange="aiUI.populateConcepts()" disabled class="w-full bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-700 dark:text-white rounded-sm px-3 py-2.5 text-xs font-semibold focus:outline-none focus:border-[#0a0a0a] dark:focus:border-white disabled:opacity-50">
+                                <option value="">-- Select Domain First --</option>
+                            </select>
+                        </div>
+                        <div>
+                            <select id="ai-concept-select" disabled class="w-full bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-700 dark:text-white rounded-sm px-3 py-2.5 text-xs font-semibold focus:outline-none focus:border-[#0a0a0a] dark:focus:border-white disabled:opacity-50">
+                                <option value="">-- Select Book First --</option>
+                            </select>
+                        </div>
+                        
+                        <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-800 pb-2 pt-4">2. Configuration</h3>
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-2">Audience</label>
+                            <select id="ai-audience-select" class="w-full bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-700 dark:text-white rounded-sm px-3 py-2.5 text-xs font-semibold focus:outline-none focus:border-[#0a0a0a] dark:focus:border-white">
+                                <option value="Students">Students</option>
+                                <option value="Entrepreneurs">Entrepreneurs</option>
+                                <option value="Investors">Investors</option>
+                                <option value="Law Students">Law Students</option>
+                                <option value="Professionals">Professionals</option>
+                                <option value="General Audience" selected>General Audience</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-2">Tone</label>
+                            <select id="ai-tone-select" class="w-full bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-700 dark:text-white rounded-sm px-3 py-2.5 text-xs font-semibold focus:outline-none focus:border-[#0a0a0a] dark:focus:border-white">
+                                <option value="Professional">Professional</option>
+                                <option value="Minimal">Minimal</option>
+                                <option value="Educational" selected>Educational</option>
+                                <option value="Bold">Bold</option>
+                                <option value="Inspirational">Inspirational</option>
+                                <option value="Intellectual">Intellectual</option>
+                                <option value="Simple">Simple</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-2">Platform Options</label>
+                            <div class="grid grid-cols-2 gap-2 text-xs font-medium text-gray-600 dark:text-gray-300">
+                                <label class="flex items-center gap-2"><input type="checkbox" checked value="Instagram" class="ai-platform-chk"> Instagram</label>
+                                <label class="flex items-center gap-2"><input type="checkbox" checked value="Facebook" class="ai-platform-chk"> Facebook</label>
+                                <label class="flex items-center gap-2"><input type="checkbox" checked value="Twitter" class="ai-platform-chk"> Twitter</label>
+                                <label class="flex items-center gap-2"><input type="checkbox" checked value="LinkedIn" class="ai-platform-chk"> LinkedIn</label>
+                            </div>
+                        </div>
+                        <button onclick="aiUI.generate()" class="w-full bg-[#0a0a0a] dark:bg-white text-white dark:text-[#0a0a0a] py-3 rounded-sm font-bold uppercase tracking-widest text-xs hover:bg-gray-800 dark:hover:bg-gray-200 transition">Generate Content</button>
+                    </div>
+
+                    <!-- Right Results Area -->
+                    <div class="w-full lg:w-3/4 space-y-6">
+                        <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-800 pb-2">
+                            <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">Generated Assets</h3>
+                            <div class="flex gap-2" id="ai-action-buttons" style="display: none;">
+                                <button onclick="aiUI.generate()" class="px-3 py-1 bg-gray-100 dark:bg-darkBg text-xs font-bold uppercase text-gray-600 dark:text-gray-300 rounded-sm hover:bg-gray-200 dark:hover:bg-gray-800 transition">Regenerate</button>
+                                <button onclick="aiUI.copyPrompt()" class="px-3 py-1 bg-emerald-50 dark:bg-emerald-900/30 text-xs font-bold uppercase text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50 rounded-sm transition">Copy Prompt</button>
+                            </div>
+                        </div>
+                        <div id="ai-results-container" class="min-h-[400px] bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 rounded-sm p-6 overflow-y-auto">
+                            <div class="flex h-full items-center justify-center text-gray-400 text-sm font-medium pt-32" id="ai-placeholder-msg">Select a concept and click Generate.</div>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- END AI CONTENT GENERATOR TAB -->
         </section>
 
     <!-- REMOVED PROFILE VIEW (Moved to profile.html) -->
@@ -628,7 +715,7 @@ section.block { margin-bottom: 3rem; }
                     </a>
                     
                     <p class="font-serif text-[15px] leading-[1.8] text-gray-500 dark:text-gray-400">
-                        The Last Percent™ transforms timeless ideas into practical systems that help ambitious people think better, remember longer, and execute consistently.
+                        The Last Percentâ„¢ transforms timeless ideas into practical systems that help ambitious people think better, remember longer, and execute consistently.
                     </p>
                 </div>
 
@@ -679,7 +766,7 @@ section.block { margin-bottom: 3rem; }
 
             <div class="mt-16 lg:mt-24 pt-8 border-t border-borderLight dark:border-darkBorder flex flex-col md:flex-row items-center justify-between gap-6 md:gap-4">
                 <div class="text-sm font-medium text-gray-500 dark:text-gray-400 w-full md:w-auto text-center md:text-left">
-                    &copy; 2026 The Last Percent™ All rights reserved.
+                    &copy; 2026 The Last Percentâ„¢ All rights reserved.
                 </div>
                 <div class="text-[15px] font-serif italic text-primary dark:text-gray-300 w-full md:w-auto text-center md:absolute md:left-1/2 md:-translate-x-1/2">
                     Designed for lifelong learners.
@@ -772,11 +859,11 @@ section.block { margin-bottom: 3rem; }
                 <form onsubmit="handleLogin(event)" class="space-y-4 pt-4 text-left">
                     <div>
                         <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-1">Email Address</label>
-                        <input type="email" id="login-email" required placeholder="you@example.com" class="w-full institutional-border dark:bg-darkBg dark:text-white rounded-sm px-4 py-3 text-sm focus:outline-none focus:border-[#0a0a0a] dark:focus:border-white">
+                        <input type="text" id="login-email" required placeholder="you@example.com" class="w-full institutional-border dark:bg-darkBg dark:text-white rounded-sm px-4 py-3 text-sm focus:outline-none focus:border-[#0a0a0a] dark:focus:border-white">
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-1">Password</label>
-                        <input type="password" id="login-password" required placeholder="••••••••" class="w-full institutional-border dark:bg-darkBg dark:text-white rounded-sm px-4 py-3 text-sm focus:outline-none focus:border-[#0a0a0a] dark:focus:border-white">
+                        <input type="password" id="login-password" required placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" class="w-full institutional-border dark:bg-darkBg dark:text-white rounded-sm px-4 py-3 text-sm focus:outline-none focus:border-[#0a0a0a] dark:focus:border-white">
                     </div>
                     <div id="login-error" class="hidden text-red-500 text-xs font-bold mb-2"></div>
                     <div class="pt-2 flex flex-col gap-2">
@@ -836,11 +923,11 @@ section.block { margin-bottom: 3rem; }
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
-    <!-- Scripts: timestamp cache-bust — always loads latest, no Ctrl+F5 needed -->
+    <!-- Scripts: timestamp cache-bust â€” always loads latest, no Ctrl+F5 needed -->
     <script>
         (function() {
             var ts = Date.now();
-            var scripts = ['firebase-config.js', 'data.js', 'app.js'];
+            var scripts = ['firebase-config.js', 'data.js', 'app.js', 'ai-generator.js'];
             function loadNext(i) {
                 if (i >= scripts.length) return;
                 var el = document.createElement('script');

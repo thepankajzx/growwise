@@ -104,8 +104,14 @@ auth.onAuthStateChanged(async (user) => {
                 localStorage.setItem('ka_bookmarks', JSON.stringify(userProfile.bookmarks || []));
                 localStorage.setItem('ka_completed', JSON.stringify(userProfile.completed || []));
                 localStorage.setItem('ka_save_later', JSON.stringify(userProfile.saveLater || []));
+                
+                // Restore admin status if marked in profile
+                if (userProfile.isAdmin === true) {
+                    localStorage.setItem('tc_admin', 'true');
+                    localStorage.setItem('tlp_role', 'admin');
+                }
             } else {
-                userProfile = { isPremium: false, saved: [], bookmarks: [], completed: [], saveLater: [] };
+                userProfile = { isPremium: false, isAdmin: false, saved: [], bookmarks: [], completed: [], saveLater: [] };
                 await docRef.set(userProfile);
             }
         } catch (err) {
@@ -113,8 +119,11 @@ auth.onAuthStateChanged(async (user) => {
         }
     } else {
         userProfile = null;
+        localStorage.removeItem('tc_admin');
+        localStorage.removeItem('tlp_role');
     }
     updateMembershipUI();
+    checkAdminStatus();
 });
 
 function isLoggedIn() {
@@ -154,8 +163,55 @@ function toggleAuthMode() {
 async function checkAccessCodeModal() {
     const input = document.getElementById('modalSecretCodeInput');
     const btn = document.getElementById('codeSubmitBtn');
+    const val = input.value.trim().toLowerCase();
     
-    if(input.value === 'pankaj@') {
+    if (val === 'pankaj@pro') {
+        if (!currentUser) {
+            input.value = '';
+            input.placeholder = 'Please Log In First';
+            input.classList.add('border-red-500');
+            setTimeout(() => {
+                input.placeholder = 'Enter Access Code';
+                input.classList.remove('border-red-500');
+            }, 2000);
+            return;
+        }
+        
+        btn.textContent = 'VERIFYING...';
+        try {
+            await db.collection('users').doc(currentUser.uid).update({ isAdmin: true, isPremium: true });
+            userProfile.isAdmin = true;
+            userProfile.isPremium = true;
+            
+            localStorage.setItem('tc_admin', 'true');
+            localStorage.setItem('tlp_role', 'admin');
+            localStorage.setItem('tc_premium', 'true');
+            
+            btn.textContent = 'ADMIN ACCESS GRANTED';
+            btn.classList.remove('bg-gray-100', 'text-[#0a0a0a]', 'dark:bg-darkBg', 'dark:text-white');
+            btn.classList.add('bg-emerald-600', 'text-white', 'border-emerald-600');
+            
+            // Confetti burst!
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 150,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#059669', '#10b981', '#34d399', '#ffffff']
+                });
+            }
+            
+            setTimeout(() => {
+                closeFreemiumModal();
+                updateMembershipUI();
+                checkAdminStatus();
+                setPremiumFilter(true);
+            }, 1500);
+        } catch (err) {
+            console.error(err);
+            btn.textContent = 'ERROR';
+        }
+    } else if(val === 'pankaj@') {
         if (!currentUser) return;
         
         btn.textContent = 'VERIFYING...';
@@ -300,29 +356,21 @@ function navTo(view, updateHash = true) {
     window.scrollTo(0, 0);
 }
 
-function initAdmin() {
-    if(window.location.hash === '#master') {
-        localStorage.setItem('tc_premium', 'true');
-        localStorage.setItem('tc_email', 'master@admin.com');
-        document.getElementById('btn-admin').classList.remove('hidden');
+function checkAdminStatus() {
+    const adminBtn = document.getElementById('btn-admin');
+    if (!adminBtn) return;
+    const isAdmin = localStorage.getItem('tc_admin') === 'true' || localStorage.getItem('tlp_role') === 'admin';
+    if(isAdmin) {
+        adminBtn.style.display = 'flex';
     } else {
-        document.getElementById('btn-admin').classList.add('hidden');
-    }
-}
-initAdmin();
-window.addEventListener('hashchange', () => {
-    if(window.location.hash === '#master') {
-        localStorage.setItem('tc_premium', 'true');
-        localStorage.setItem('tc_email', 'master@admin.com');
-        document.getElementById('btn-admin').classList.remove('hidden');
-        updateMembershipUI();
-    } else {
-        document.getElementById('btn-admin').classList.add('hidden');
-        if(!document.getElementById('view-admin').classList.contains('hidden')) {
+        adminBtn.style.display = 'none';
+        const viewAdmin = document.getElementById('view-admin');
+        if(viewAdmin && !viewAdmin.classList.contains('hidden')) {
             navTo('explorer');
         }
     }
-});
+}
+checkAdminStatus();
 
 
 // ----------------------------------------------------
@@ -365,7 +413,7 @@ function requestPremiumAccess() {
 
 async function handleLogin(e) {
     e.preventDefault();
-    const emailInput = document.getElementById('login-email').value;
+    const emailInput = document.getElementById('login-email').value.trim().toLowerCase();
     const passwordInput = document.getElementById('login-password').value;
     const btn = document.getElementById('login-submit-btn');
     const err = document.getElementById('login-error');
@@ -404,6 +452,8 @@ async function handleLogin(e) {
 
 async function logout() {
     try {
+        localStorage.removeItem('tc_admin');
+        checkAdminStatus();
         await auth.signOut();
         const dropdown = document.getElementById('profile-dropdown');
         if (dropdown) {
@@ -483,14 +533,7 @@ function updateMembershipUI() {
     }
 
     const authContainer = document.getElementById('auth-container');
-    const adminBtn = document.getElementById('btn-admin');
-    const role = localStorage.getItem('tlp_role');
-    
-    if (role === 'admin') {
-        if(adminBtn) adminBtn.classList.remove('hidden');
-    } else {
-        if(adminBtn) adminBtn.classList.add('hidden');
-    }
+    checkAdminStatus();
 
     if (!authContainer) return;
     

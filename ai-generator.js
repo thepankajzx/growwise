@@ -187,8 +187,8 @@ const aiUI = {
             return;
         }
 
-        const concept = window.conceptsDB.find(c => c.id === conceptId);
-        if (!concept || !concept.content || concept.content.trim() === '') {
+        const cObj = allConcepts.find(c => `${c.bookId}-${c.conceptIndex}` === conceptId);
+        if (!cObj || !cObj.concept.content || cObj.concept.content.trim() === '') {
             resultsContainer.innerHTML = '<div class="flex h-full items-center justify-center text-amber-500 text-sm font-medium pt-32">No content available for this concept.</div>';
             return;
         }
@@ -203,9 +203,9 @@ const aiUI = {
 
         const config = {
             domain: document.getElementById('ai-domain-select').value,
-            book: concept.book,
-            conceptTitle: concept.title,
-            conceptContent: concept.content,
+            book: cObj.bookTitle,
+            conceptTitle: cObj.concept.title,
+            conceptContent: cObj.concept.content,
             audience: document.getElementById('ai-audience-select').value,
             tone: document.getElementById('ai-tone-select').value,
             platforms: Array.from(document.querySelectorAll('.ai-platform-chk:checked')).map(cb => cb.value)

@@ -374,8 +374,13 @@ section.block { margin-bottom: 3rem; }
                 <p class="text-base md:text-lg text-gray-600 dark:text-gray-400 leading-relaxed mb-8">
                     An execution-focused directory of the world's most powerful frameworks, distilled from top-tier literature.
                 </p>
-                <div class="pt-4 flex justify-center gap-4">
-                    <button onclick="navTo('explorer')" class="bg-[#0a0a0a] text-white px-8 py-4 rounded-sm font-semibold uppercase tracking-widest text-xs md:text-sm hover:bg-gray-800 transition duration-300">Access The Directory</button>
+                <div class="pt-4 flex flex-col md:flex-row justify-center items-center gap-4">
+                    <button onclick="navTo('explorer')" class="relative overflow-hidden bg-white/70 dark:bg-black/50 backdrop-blur-xl border border-gray-200 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.08)] text-[#0a0a0a] dark:text-white px-8 py-4 rounded-xl font-bold uppercase tracking-widest text-xs md:text-sm hover:-translate-y-1 hover:shadow-[0_15px_40px_rgb(0,0,0,0.15)] transition-all duration-300">
+                        Access The Directory
+                    </button>
+                    <button onclick="promptAdminLanding()" class="relative overflow-hidden bg-white/70 dark:bg-black/50 backdrop-blur-xl border border-emerald-500/30 shadow-[0_8px_30px_rgb(16,185,129,0.1)] text-emerald-700 dark:text-emerald-400 px-8 py-4 rounded-xl font-bold uppercase tracking-widest text-xs md:text-sm hover:-translate-y-1 hover:shadow-[0_15px_40px_rgb(16,185,129,0.2)] transition-all duration-300">
+                        Admin Access
+                    </button>
                 </div>
             </div>
 

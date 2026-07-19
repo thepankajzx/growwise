@@ -259,6 +259,49 @@ async function checkAccessCodeModal() {
     }
 }
 
+async function promptAdminLanding() {
+    // If they already have admin, just go to it
+    if(localStorage.getItem('tc_admin') === 'true' || localStorage.getItem('tlp_role') === 'admin') {
+        navTo('admin');
+        return;
+    }
+
+    const code = prompt("Enter Admin Code:");
+    if (code === 'pankaj@pro') {
+        localStorage.setItem('tc_admin', 'true');
+        localStorage.setItem('tlp_role', 'admin');
+        localStorage.setItem('tc_premium', 'true');
+        
+        // Try to update Firebase if logged in, but grant access regardless since it's a direct code!
+        if (currentUser) {
+            try {
+                await db.collection('users').doc(currentUser.uid).update({ isAdmin: true, isPremium: true });
+                if (userProfile) {
+                    userProfile.isAdmin = true;
+                    userProfile.isPremium = true;
+                }
+            } catch(e) {
+                console.error("Firebase update failed but local access granted:", e);
+            }
+        }
+        
+        checkAdminStatus();
+        navTo('admin');
+        
+        // Confetti burst!
+        if (typeof confetti === 'function') {
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#059669', '#10b981', '#34d399', '#ffffff']
+            });
+        }
+    } else if (code !== null) {
+        alert("Access Denied: Invalid Code");
+    }
+}
+
 // ----------------------------------------------------
 // NAVIGATION & UI
 // ----------------------------------------------------
